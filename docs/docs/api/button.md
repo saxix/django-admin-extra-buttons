@@ -1,5 +1,4 @@
-@button
--------
+# @button()
 
 This decorator transform any ModelAdmin method to a view and add a button to the Admin objects toolbar.
 
@@ -28,7 +27,57 @@ Examples:
 
 !!! Note
 
+    AEB try to understand if a button should appear in the `change_form` and/or in the `change_list` page.
+    If the decorated method has only one argument (es. `def scan(self, request)`), the button will only be visible
+    on the `change_list` page, if it contains more that one argumente (es. `def scan(self, request, pk)`)
+    the button will be visible in the `change_form` page.
 
-    MkDocs [community wiki]. If you want to share a theme you create, you
-    should list it on the Wiki.
+## Options
+
+change_form
+: set to `True` do show the button on the `change_form` page
+
+change_list
+: set to `True` do show the button on the `change_list` page
+
+html_attrs
+:   Dictionary of html tags to use in button rendering
+
+pattern:
+: url pattern to use for the url genaration.
+    Default to `<function_name>/<path:arg1>/<path:arg2>/....`
+        
+permission
+:   Django permission code needed to access the view and display the button
+
+## Examples
+
+### Simple
+Very basic usage, Display a button and create a view on `admin/mymodel/scan`.
+    
+    @register(MyModel)
+    class MyModelAdmin(ExtrButtonsMixi, admin.ModelAdmin):
+        
+        @button()
+        def scan(self, request):
+            pass
+
+### Check Permissions
+Buttons with custom permission, one for `change_list` and other for `change_form`
+
+    @register(MyModel)
+    class MyModelAdmin(ExtrButtonsMixi, admin.ModelAdmin):
+        
+        @button(permission=lambda request, obj: request.user.is_superuser)
+        def delete_all(self, request):
+            pass
+
+        @button(permission='app.delete_mymodel)
+        def mark(self, request, pk):
+            obj = self.get_object(request.pk)
+            obj.mark = True
+            obj.save()
+
+
+
 
