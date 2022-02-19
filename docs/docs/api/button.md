@@ -4,7 +4,7 @@ This decorator transform any ModelAdmin method to a view and add a button to the
 
 Examples:
 
-    from admin_extra_buttons.api import ExtraButtonsMixin, button, confirm_action, link, view
+    from admin_extra_buttons.api import ExtraButtonsMixin, button
 
     class MyModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
         @button()    

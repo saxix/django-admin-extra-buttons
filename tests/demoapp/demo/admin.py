@@ -103,6 +103,14 @@ class Admin3(ExtraButtonsMixin, admin.ModelAdmin):
     def api2(self, request, pk):
         return HttpResponse(pk)
 
+    @view(login_required=False)
+    def api3(self, request):
+        return HttpResponse("Anonymous access allowed")
+
+    @view(http_basic_auth=True)
+    def api4(self, request):
+        return HttpResponse("Basic Authentication allowed")
+
 
 class Admin4(UploadMixin, admin.ModelAdmin):
     upload_handler = lambda *args: [1, 2, 3]  # noqa

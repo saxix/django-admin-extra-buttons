@@ -1,10 +1,52 @@
 import ast
+import codecs
 import inspect
+from functools import wraps
 from urllib.parse import urlencode
+
+from django.contrib.auth.decorators import login_required
 
 from demo import settings
 from django.core.exceptions import PermissionDenied
+
 from django.http import HttpResponseRedirect
+
+
+def handle_basic_auth(request):
+    from django.contrib.auth import authenticate, login
+    if "HTTP_AUTHORIZATION" in request.META:
+        authmeth, auth = request.META["HTTP_AUTHORIZATION"].split(" ", 1)
+        if authmeth.lower() == "basic":
+            auth = codecs.decode(auth.encode("utf8").strip(), "base64").decode()
+            username, password = auth.split(":", 1)
+            user = authenticate(username=username, password=password)
+            if user:
+                login(request, user)
+                return user
+    raise PermissionDenied()
+
+
+def http_basic_auth(func):
+    @wraps(func)
+    def _decorator(request, *args, **kwargs):
+        from django.contrib.auth import authenticate, login
+        if "HTTP_AUTHORIZATION" in request.META:
+            authmeth, auth = request.META["HTTP_AUTHORIZATION"].split(" ", 1)
+            if authmeth.lower() == "basic":
+                auth = codecs.decode(auth.encode("utf8").strip(), "base64").decode()
+                username, password = auth.split(":", 1)
+                user = authenticate(username=username, password=password)
+                if user:
+                    login(request, user)
+                else:
+                    raise PermissionDenied()
+        return func(request, *args, **kwargs)
+
+    return _decorator
+
+
+def http_basic_login(func):
+    return http_basic_auth(login_required(func))
 
 
 def get_preserved_filters(request, **extras):

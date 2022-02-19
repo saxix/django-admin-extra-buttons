@@ -5,6 +5,7 @@ from functools import partial
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
+from django.db import OperationalError
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
@@ -82,9 +83,12 @@ class ExtraButtonsMixin:
 
     @classmethod
     def check(cls, **kwargs):
-        from admin_extra_buttons.utils import check_decorator_errors
         errors = []
-        errors.extend(check_decorator_errors(cls))
+        try:
+            from admin_extra_buttons.utils import check_decorator_errors
+            errors.extend(check_decorator_errors(cls))
+        except OperationalError:
+            pass
         return errors
 
     def get_common_context(self, request, pk=None, **kwargs):
