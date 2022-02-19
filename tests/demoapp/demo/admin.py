@@ -27,7 +27,9 @@ class TestFilter(SimpleListFilter):
 class Admin1(ExtraButtonsMixin, admin.ModelAdmin):
     list_filter = [TestFilter]
 
-    @button(permission='demo.add_demomodel1', html_attrs={'style': 'background-color:#88FF88;color:black'})
+    @button(permission='demo.add_demomodel1',
+            change_form=True,
+            html_attrs={'style': 'background-color:#88FF88;color:black'})
     def refresh(self, request):
         opts = self.model._meta
         self.message_user(request, 'refresh called')

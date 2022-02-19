@@ -59,8 +59,13 @@ class ViewButton:
 
     @property
     def url(self):
+        func = self.options.get('get_url', self.get_url)
+        return func(self.context)
+
+    def get_url(self, context):
+        detail = len(self.handler.sig.parameters) > 2
         try:
-            if self.change_form and self.original:
+            if self.change_form and self.original and detail:
                 url_ = reverse(f'admin:{self.handler.url_name}', args=[self.original.pk])
             elif self.change_list:
                 url_ = reverse(f'admin:{self.handler.url_name}')

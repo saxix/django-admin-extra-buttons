@@ -79,5 +79,20 @@ Buttons with custom permission, one for `change_list` and other for `change_form
             obj.save()
 
 
+### Fully featured
+Buttons with custom permission, one for `change_list` and other for `change_form`
+
+    @register(MyModel)
+    class MyModelAdmin(ExtrButtonsMixi, admin.ModelAdmin):
+        
+        @button(permission=lambda request, obj: request.user.is_superuser,
+                html_attrs={'style': 'background-color:var(--button-bg)'},
+                label=_('Delete All Records'),
+                change_
+                )
+        def delete_all(self, request):
+            pass
+
+
 
 
