@@ -1,0 +1,5 @@
+{% spaceless %}<li>
+<a href="{{ button.url }}{% if is_popup %}&_popup=1{% endif %}"
+        {% include "admin_extra_buttons/includes/attrs.html" with button=button %}>
+    {% if button.icon %}<i class="{{ button.icon }}"></i>&nbsp;{% endif %}{{ button.label }}</a>
+</li>{% endspaceless %}

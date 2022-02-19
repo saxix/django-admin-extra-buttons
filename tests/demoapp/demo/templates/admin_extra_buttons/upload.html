@@ -1,0 +1,16 @@
+{% extends "admin_extra_buttons/action_page.html" %}{% load i18n static admin_list admin_urls %}
+
+{% block action-content %}
+    <div>
+    {{ help_text|safe }}
+    </div>
+    <br>
+    <br>
+    <hr>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="file">
+        <input type="submit">
+    </form>
+
+{% endblock %}

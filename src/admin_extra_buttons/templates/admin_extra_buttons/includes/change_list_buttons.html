@@ -1,0 +1,20 @@
+{% load extra_buttons i18n static admin_list admin_urls %}
+{#{% for button in cl.model_admin.get_changelist_buttons %}#}
+{#    {% bind button as button %}#}
+{% get_changelist_buttons cl.model_admin as buttons %}
+{% for button in buttons %}
+    {% if button.authorized and button.url and button.change_list %}
+        {% include "admin_extra_buttons/includes/button.html" with button=button %}
+    {% endif %}
+{% endfor %}
+<script>
+     (function ($) {
+        $('.btn').click(function (e) {
+            if ($(this).hasClass("disabled")) {
+                e.preventDefault();
+            } else {
+                $(this).removeClass('btn-success').addClass('disabled');
+            }
+        });
+    })(django.jQuery);
+</script>

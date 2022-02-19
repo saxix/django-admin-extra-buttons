@@ -1,0 +1,13 @@
+include README.rst
+include CHANGES
+include LICENSE
+include MANIFEST.in
+include tox.ini
+include setup.py
+include setup.cfg
+
+include tests/.coveragerc
+recursive-include src/requirements *.pip
+recursive-include docs *
+recursive-include src/admin_extra_buttons *
+recursive-include tests *

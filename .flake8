@@ -1,0 +1,12 @@
+[flake8]
+max-complexity = 14
+max-line-length = 120
+exclude = _plugin_template migrations settings python_twitter tweepy
+ignore = E401,W391,E128,E261,E731,Q000,W504,W606
+putty-ignore =
+
+
+per-file-ignores =
+    */__init__.py:F401,F403
+    src/admin_extra_buttons/extras.py:F401
+    src/admin_extra_buttons/api.py:F401
