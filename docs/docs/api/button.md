@@ -53,7 +53,7 @@ permission
 ## Examples
 
 ### Simple
-Very basic usage, Display a button and create a view on `admin/mymodel/scan`.
+Simplest usage. Display a button and create a view on `admin/mymodel/scan`.
     
     @register(MyModel)
     class MyModelAdmin(ExtrButtonsMixi, admin.ModelAdmin):
