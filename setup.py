@@ -55,9 +55,9 @@ setup(
     version=version,
     url='https://github.com/saxix/django-admin-extra-buttons',
     download_url='https://pypi.python.org/pypi/django-admin-extra-buttons',
-
     description='Django mixin to easily add buttons to any ModelAdmin',
     long_description=read("README.md"),
+    long_description_content_type='text/markdown',
     package_dir={'': 'src'},
     packages=find_packages('src'),
     include_package_data=True,
