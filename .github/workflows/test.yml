@@ -46,7 +46,7 @@ jobs:
                 run: python -m pip install tox
 
             -   name: Test with Tox
-                run: tox -e py${PYTHON_VERSION//.}-d${DJANGO_VERSION//.}
+                run: tox -e d${DJ_VER//.}-py${PY_VER//.}
 
             -   uses: codecov/codecov-action@v1
                 with:
