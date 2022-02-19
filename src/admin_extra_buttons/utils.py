@@ -2,10 +2,9 @@ import ast
 import inspect
 from urllib.parse import urlencode
 
+from demo import settings
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
-
-from demo import settings
 
 
 def get_preserved_filters(request, **extras):
