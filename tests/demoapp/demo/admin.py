@@ -79,17 +79,13 @@ class Admin1(ExtraButtonsMixin, admin.ModelAdmin):
         self.message_user(request, 'action called')
         return HttpResponseRedirect(reverse(admin_urlname(opts, 'changelist')))
 
-    @button()
-    def wizard(self, request, object_id):
-        return Tem(reverse(admin_urlname(opts, 'changelist')))
-
 
 class Admin2(ExtraButtonsMixin, admin.ModelAdmin):
     @link(href="https://www.google.com/", change_form=False, html_attrs={'target': '_new'})
     def google(self, button):
         pass
 
-    @link(href=None, change_list=False, html_attrs={'target': '_new', 'style': 'background-color:var(--default-button-bg)'})
+    @link(href=None, change_list=False, html_attrs={'target': '_new', 'style': 'background-color:var(--button-bg)'})
     def search_on_google(self, button):
         original = button.context['original']
         button.label = f"Search '{original.name}' on Google"

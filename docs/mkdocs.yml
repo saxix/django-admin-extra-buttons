@@ -1,0 +1,40 @@
+site_name: django-admin-extra-buttons
+site_url: https://example.com/
+#site_description: ""
+#site_author: ""
+repo_url: https://github.com/mkdocs/mkdocs/
+#edit_uri: ""
+
+nav:
+  - Home: index.md
+  - API:
+    - button: api/button.md
+    - link: api/link.md
+    - view: api/view.md
+    - ExtraButtonsMixin: api/mixin.md
+    - utils: api/utils.md
+  - How To: howto.md
+
+#theme: readthedocs
+#theme:
+#  name: mkdocs
+#  locale: en
+##  analytics: {gtag: 'G-274394082'}
+#  highlightjs: true
+#  hljs_languages:
+#    - yaml
+#    - django
+#    -
+
+markdown_extensions:
+#  - toc:
+#      permalink: "#"
+#  - admonition
+#  - attr_list
+#  - def_list
+#  - mdx_gh_links:
+#      user: mkdocs
+#      repo: mkdocs
+
+#extra_css:
+#  - css/extra.css
