@@ -6,6 +6,7 @@
 !.isort.cfg
 !.flake8
 !.bumpversion.cfg
+!.readthedocs.yaml
 *.py[co]
 *.egg-info
 *.sqlite
