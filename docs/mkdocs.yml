@@ -1,8 +1,8 @@
 site_name: django-admin-extra-buttons
-site_url: https://example.com/
+site_url: https://github.com/saxix/django-admin-extra-buttons
 #site_description: ""
 #site_author: ""
-repo_url: https://github.com/mkdocs/mkdocs/
+repo_url: https://github.com/saxix/django-admin-extra-buttons
 #edit_uri: ""
 
 nav:
