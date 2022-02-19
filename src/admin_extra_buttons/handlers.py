@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.utils.functional import cached_property
 
 from .buttons import LinkButton, ViewButton
-from .utils import HttpResponseRedirectToReferrer, check_permission, labelize, handle_basic_auth
+from .utils import HttpResponseRedirectToReferrer, check_permission, handle_basic_auth, labelize
 
 
 class BaseExtraHandler:

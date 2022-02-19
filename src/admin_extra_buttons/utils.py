@@ -4,11 +4,9 @@ import inspect
 from functools import wraps
 from urllib.parse import urlencode
 
-from django.contrib.auth.decorators import login_required
-
 from demo import settings
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-
 from django.http import HttpResponseRedirect
 
 
