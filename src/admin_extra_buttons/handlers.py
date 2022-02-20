@@ -23,6 +23,7 @@ class BaseExtraHandler:
         return f"<{self.__class__.__name__} {self.name}>"
 
     def get_instance(self):
+        """ return a 'clone' of current Handler"""
         return self.__class__(self.func, **self.options)
 
     @cached_property
@@ -101,6 +102,8 @@ class ButtonMixin:
 
 
 class ButtonHandler(ButtonMixin, ViewHandler):
+    """View handler for `@button` decorated views"""
+
     button_class = ViewButton
 
 

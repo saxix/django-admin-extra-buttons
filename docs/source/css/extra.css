@@ -47,3 +47,14 @@ body.homepage>div.container>div.row>div.col-md-9 {
     flex: 0 0 100%;
     max-width: 100%;
 }
+
+div.autodoc-docstring {
+    padding-left: 20px;
+    margin-bottom: 30px;
+    border-left: 5px solid rgba(230, 230, 230);
+}
+
+div.autodoc-members {
+    padding-left: 20px;
+    margin-bottom: 15px;
+}

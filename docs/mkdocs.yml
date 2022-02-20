@@ -5,6 +5,7 @@ site_url: https://github.com/saxix/django-admin-extra-buttons
 repo_url: https://github.com/saxix/django-admin-extra-buttons
 edit_uri: "tree/develop/docs/"
 dev_addr: 127.0.0.1:9000
+docs_dir: "source"
 
 nav:
   - Home: index.md
@@ -13,8 +14,8 @@ nav:
     - '@link': api/link.md
     - '@view': api/view.md
     - ExtraButtonsMixin: api/mixin.md
-    - utils: api/utils.md
-  - How To: howto.md
+    - Handlers: api/handlers.md
+  - 'howto.md'
 
 theme: readthedocs
 
@@ -22,6 +23,7 @@ markdown_extensions:
   - toc:
       permalink: "#"
   - admonition
+  - mkautodoc
   - attr_list
   - def_list
   - mdx_gh_links:

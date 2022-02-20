@@ -26,7 +26,8 @@ get_action_buttons(context)
 : Return the list of buttons that will be displayed on the extra action page.
 
 get_common_context()
-: This method returns a standard django template Context that can be useful when create custom views 
+: This method returns a django template Context filled with the common values 
+that can be useful when create custom views that render templates. (\@see [Build two steps action](/howto/#build-two-steps-action))
 
 message_error_to_user()
 : Shortcut to display message on Exception

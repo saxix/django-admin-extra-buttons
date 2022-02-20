@@ -31,9 +31,7 @@ class Admin1(ExtraButtonsMixin, admin.ModelAdmin):
             change_form=True,
             html_attrs={'style': 'background-color:#88FF88;color:black'})
     def refresh(self, request):
-        opts = self.model._meta
         self.message_user(request, 'refresh called')
-        return HttpResponseRedirect(reverse(admin_urlname(opts, 'changelist')))
 
     @button(label='Refresh', permission=lambda request, object: False)
     def refresh_callable(self, request):

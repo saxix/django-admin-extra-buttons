@@ -121,24 +121,24 @@ class ExtraButtonsMixin:
 
     def get_urls(self):
         self.extra_button_handlers = []
-        extra_urls = {}
-        extras = []
-        info = self.model._meta.app_label, self.model._meta.model_name
+        handlers = {}
+        extra_urls = []
+        opts = self.model._meta
         original = super().get_urls()
         for cls in inspect.getmro(self.__class__):
             for method_name, method in cls.__dict__.items():
                 if callable(method) and isinstance(method, BaseExtraHandler):
-                    extra_urls[method_name] = method.get_instance()
+                    handlers[method_name] = method.get_instance()
 
-        for __, handler in extra_urls.items():
-            handler.url_name = f'%s_%s_{handler.func.__name__}' % info
+        for handler in handlers.values():
+            handler.url_name = f'{opts.app_label}_{opts.model_name}_{handler.func.__name__}'
             if handler.url_pattern:
-                extras.append(path(handler.url_pattern,
-                                   partial(getattr(self, handler.func.__name__), self),
-                                   name=handler.url_name))
+                extra_urls.append(path(handler.url_pattern,
+                                       partial(getattr(self, handler.func.__name__), self),
+                                       name=handler.url_name))
             if hasattr(handler, 'button_class'):
                 self.extra_button_handlers.append(handler)
-        return extras + original
+        return extra_urls + original
 
     def get_changeform_buttons(self, context):
         return [h for h in self.extra_button_handlers if h.change_form in [True, None]]

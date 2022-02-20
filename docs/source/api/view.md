@@ -14,7 +14,7 @@ login_required
 : Set to False to allow access to  anonymous users 
 
 http_basic_auth
-: Enable Basic Authentication for this url 
+: Enable Basic Authentication for this view 
 
 ## Examples
 
