@@ -5,13 +5,9 @@ django-admin-extra-buttons
 [![Pypi](https://badge.fury.io/py/django-admin-extra-buttons.svg)](https://badge.fury.io/py/django-admin-extra-buttons)
 [![coverage](https://codecov.io/github/saxix/django-admin-extra-buttons/coverage.svg?branch=develop)](https://codecov.io/github/saxix/django-admin-extra-buttons?branch=develop)
 [![Test](https://github.com/saxix/django-admin-extra-buttons/actions/workflows/test.yml/badge.svg)](https://github.com/saxix/django-admin-extra-buttons/actions/workflows/test.yml)
-
-[comment]: <> ([![ReadTheDocs]&#40;https://readthedocs.org/projects/django-admin-extra-buttons/badge/?version=latest&#41;]&#40;https://django-admin-extra-buttons.readthedocs.io/en/latest/&#41;)
-
 [![Docs](https://github.com/saxix/django-admin-extra-buttons/actions/workflows/docs.yml/badge.svg)](https://github.com/saxix/django-admin-extra-buttons/actions/workflows/docs.yml)
 
-![Buttons](./docs/images/screenshot.png)
-
+![my image](https://raw.githubusercontent.com/saxix/django-admin-extra-buttons/develop/docs/images/screenshot.png)
 
 This is a full rewriting of the original `django-admin-extra-url`. It
 provides decorators to easily add custom buttons to Django Admin pages.

@@ -6,7 +6,7 @@ repo_url: https://github.com/saxix/django-admin-extra-buttons
 edit_uri: "/tree/develop/docs/source"
 dev_addr: 127.0.0.1:9000
 docs_dir: "docs"
-site_dir: "~build/docs"
+site_dir: "./~build/docs"
 
 nav:
   - Home: index.md
