@@ -33,8 +33,5 @@ markdown_extensions:
       user: saxix
       repo: django-admin-extra-buttons
 
-plugins:
-  - include-markdown
-
 extra_css:
   - css/extra.css

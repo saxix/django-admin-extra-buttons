@@ -1,4 +1,5 @@
 mdx_gh_links
 mkdocs-material
 markdown-include
+include-markdown
 
