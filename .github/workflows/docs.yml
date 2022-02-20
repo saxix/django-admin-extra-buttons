@@ -4,7 +4,6 @@ on:
         branches:
             - develop
             - master
-
 jobs:
     build:
         name: Deploy docs
@@ -19,7 +18,7 @@ jobs:
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #                  CUSTOM_DOMAIN: optionaldomain.com
-                  CONFIG_FILE: docs/mkdocs.yml
+                  CONFIG_FILE: ./mkdocs.yml
                   EXTRA_PACKAGES: build-base
                   # GITHUB_DOMAIN: github.myenterprise.com
                   REQUIREMENTS: docs/requirements.txt
