@@ -10,7 +10,7 @@ django-admin-extra-buttons
 
 [![Docs](https://github.com/saxix/django-admin-extra-buttons/actions/workflows/docs.yml/badge.svg)](https://github.com/saxix/django-admin-extra-buttons/actions/workflows/docs.yml)
 
-![Buttons](./docs/source/images/screenshot.png)
+![Buttons](./docs/images/screenshot.png)
 
 
 This is a full rewriting of the original `django-admin-extra-url`. It

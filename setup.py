@@ -50,8 +50,10 @@ dev_require = ['autopep8',
                'isort',
                ]
 docs_require = [
-    'markdown-include',
     'mkdocs',
+    'markdown-include',
+    'mkdocs-include-markdown-plugin',
+    'mkdocs-material',
 ]
 setup(
     name=name,

@@ -9,6 +9,7 @@ docs_dir: "docs"
 site_dir: "~build/docs"
 
 nav:
+  - Home: index.md
   - API:
     - '@button': api/button.md
     - '@link': api/link.md
@@ -23,13 +24,17 @@ theme: material
 markdown_extensions:
   - toc:
       permalink: "#"
+  - markdown_include.include:
+      base_path: .
   - admonition
   - attr_list
   - def_list
-  - include
   - mdx_gh_links:
       user: saxix
       repo: django-admin-extra-buttons
+
+plugins:
+  - include-markdown
 
 extra_css:
   - css/extra.css
