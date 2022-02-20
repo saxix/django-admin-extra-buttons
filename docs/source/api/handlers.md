@@ -7,24 +7,12 @@
 
 ## ButtonHandler
 
-::: admin_extra_buttons.handlers.ButtonHandler
-    :docstring:
-    :members:
-
+View handler for `@button` decorated views
 
 ## LinkHandler
 
 View handler for `@link` decorated views
 
-::: admin_extra_buttons.handlers.LinkHandler
-    :docstring:
-    :members:
-
-
 ## ViewHandler
 
 View handler for `@view` decorated views
-
-::: admin_extra_buttons.handlers.ViewHandler
-    :docstring:
-    :members:
