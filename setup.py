@@ -49,7 +49,10 @@ dev_require = ['autopep8',
                'wheel',
                'isort',
                ]
-
+docs_require = [
+    'markdown-include',
+    'mkdocs',
+]
 setup(
     name=name,
     version=version,
@@ -65,6 +68,7 @@ setup(
     extras_require={
         'test': tests_require,
         'dev': dev_require,
+        'docs': docs_require,
     },
     tests_require=tests_require,
     classifiers=[
