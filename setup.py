@@ -42,6 +42,7 @@ tests_require =['coverage',
 dev_require = ['autopep8',
                'check-manifest',
                'django',
+               'pip-tools',
                'flake8',
                'pep8',
                'readme',
@@ -49,12 +50,9 @@ dev_require = ['autopep8',
                'wheel',
                'isort',
                ]
-docs_require = [
-    'mkdocs',
-    'markdown-include',
-    'mkdocs-include-markdown-plugin',
-    'mkdocs-material',
-]
+
+docs_require = read('docs/requirements.txt')
+
 setup(
     name=name,
     version=version,
