@@ -29,7 +29,7 @@ def test_basic_auth(django_app, staff_user):
     url = reverse('admin:demo_demomodel3_api4')
     res = django_app.get(url, expect_errors=True)
     assert res.status_code == 403
-    
+
     credentials = f'{staff_user.username}:password'.encode()
     authorization = 'Basic %s' % base64.b64encode(credentials).decode("ascii")
     res = django_app.get(url, extra_environ=dict(HTTP_AUTHORIZATION=authorization))

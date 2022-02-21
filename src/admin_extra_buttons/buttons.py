@@ -17,16 +17,16 @@ class ViewButton:
         self.change_form = self.get_change_form_flag(change_form)
         self.change_list = self.get_change_list_flag(change_list)
 
-    def __str__(self):
+    def __repr__(self):
         return f"<ViewButton '{self.label}' {self.handler}>"
 
     def get_change_form_flag(self, arg):
-        if arg is None:
+        if arg is None:  # pragma: no cover
             return len(self.handler.sig.parameters) > 2
         return arg
 
     def get_change_list_flag(self, arg):
-        if arg is None:
+        if arg is None:  # pragma: no cover
             return len(self.handler.sig.parameters) == 2
         return arg
 
@@ -73,7 +73,7 @@ class ViewButton:
                 return None
             filters = get_preserved_filters(self.request)
             return f'{url_}?{filters}'
-        except NoReverseMatch:
+        except NoReverseMatch:  # pragma: no cover
             return None
 
 

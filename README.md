@@ -38,34 +38,45 @@ After installation add it to ``INSTALLED_APPS``
 How to use it
 -------------
 
-    from admin_extra_buttons.api import ExtraButtonsMixin, button, link, view
+```python
 
-    class MyModelModelAdmin(extras.ExtraButtonsMixin, admin.ModelAdmin):
+    from admin_extra_buttons.api import ExtraButtonsMixin, button, confirm_action, link, view
+    from django.http import HttpResponse, JsonResponse
+    from django.contrib import admin
 
-        @link(label='Search On Google', change_form=True, change_list=False)
+    class MyModelModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
+
+        @button(permission='demo.add_demomodel1',
+                change_form=True,
+                html_attrs={'style': 'background-color:#88FF88;color:black'})
+        def refresh(self, request):
+            self.message_user(request, 'refresh called')
+
+        @button(html_attrs={'style': 'background-color:#DC6C6C;color:black'})
+        def confirm(self, request):
+            def _action(request):
+                pass
+
+            return confirm_action(self, request, _action, "Confirm action",
+                              "Successfully executed", )
+
+        @link(href=None, 
+              change_list=False, 
+              html_attrs={'target': '_new', 'style': 'background-color:var(--button-bg)'})
         def search_on_google(self, button):
-            obj = button.context['original']
-            button.href = f'http://www.google.com?q={obj.name}'
+            original = button.context['original']
+            button.label = f"Search '{original.name}' on Google"
+            button.href = f"https://www.google.com/?q={original.name}"
 
-        @button() # /admin/myapp/mymodel/update_all/
-        def consolidate(self, request):
-            ...
-            ...
+        @view()
+        def select2_autocomplete(self, request):
+            return JsonResponse({})
+    
+        @view(http_basic_auth=True)
+        def api4(self, request):
+            return HttpResponse("Basic Authentication allowed")
 
-        @button() # /admin/myapp/mymodel/update/10/
-        def update(self, request, pk):
-            # if we use `pk` in the args, the button will be in change_form
-            obj = self.get_object(request, pk)
-            ...
-
-        @button(permission=lambda request, obj: request.user.is_superuser)
-        def empty_table(self, request):
-            if request.method == 'POST':
-                self.model.objects.all().delete()
-            else:
-                return extras._confirm_action(self, request, self.truncate,
-                                       'Continuing will erase the entire content of the table.',
-                                       'Successfully executed', )
+```
 
 #### Project Links
 
