@@ -82,6 +82,6 @@ How to use it
 
 
 - Code: https://github.com/saxix/django-admin-extra-buttons
-- Decumentation: https://saxix.github.io/django-admin-extra-buttons/
+- Documentation: https://saxix.github.io/django-admin-extra-buttons/
 - Issue Tracker: https://github.com/saxix/django-admin-extra-buttons/issues
 - Download Package: https://pypi.org/project/django-admin-extra-buttons/
