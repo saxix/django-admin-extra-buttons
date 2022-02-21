@@ -48,7 +48,7 @@ jobs:
 
             -   name: Test with Tox
 #                run: tox -e d${DJ_VER//.}-py${PY_VER//.}
-                run: py.test tests/ -v
+                run: py.test -S -vv --cov-report=xml --cov-report=term --junitxml=pytest.xml
 
             -   uses: codecov/codecov-action@v1
                 with:
