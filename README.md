@@ -67,9 +67,10 @@ How to use it
                                        'Continuing will erase the entire content of the table.',
                                        'Successfully executed', )
 
-Project Links
+#### Project Links
 
-- [Code](https://github.com/saxix/django-admin-extra-buttons) 
-- [Decumentation](https://saxix.github.io/django-admin-extra-buttons/)
-- [Issue Tracker](https://github.com/saxix/django-admin-extra-buttons/issues)
-- [Download](https://pypi.org/project/django-admin-extra-buttons/)
+
+- Code: https://github.com/saxix/django-admin-extra-buttons
+- Decumentation: https://saxix.github.io/django-admin-extra-buttons/
+- Issue Tracker: https://github.com/saxix/django-admin-extra-buttons/issues
+- Download Package: https://pypi.org/project/django-admin-extra-buttons/
