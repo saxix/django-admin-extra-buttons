@@ -1,9 +1,10 @@
 name: Documentation
 on:
     push:
-        branches:
-            - develop
-            - master
+        paths:
+            - 'docs'
+            - 'README.md'
+
 jobs:
     build:
         name: Deploy docs
