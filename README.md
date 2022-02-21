@@ -66,3 +66,10 @@ How to use it
                 return extras._confirm_action(self, request, self.truncate,
                                        'Continuing will erase the entire content of the table.',
                                        'Successfully executed', )
+
+Project Links
+
+- [Code](https://github.com/saxix/django-admin-extra-buttons) 
+- [Decumentation](https://saxix.github.io/django-admin-extra-buttons/)
+- [Issue Tracker](https://github.com/saxix/django-admin-extra-buttons/issues)
+- [Download](https://pypi.org/project/django-admin-extra-buttons/)
