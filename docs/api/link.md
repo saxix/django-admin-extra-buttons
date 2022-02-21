@@ -27,20 +27,20 @@ Examples:
 
 ## Options
 
-change_form
-: set to `True` do show the button on the `change_form` page
+change_form: `True`
+: display the button on the `change_form` page
 
-change_list
-: set to `True` do show the button on the `change_list` page
+change_list: `True`
+: display  the button on the `change_list` page
 
-href
+href: `"""`
 : HTML `href` attribute value 
 
-html_attrs
+html_attrs: `{}`
 : Dictionary of html tags to use in button rendering
 
-label
-: Button label.
+label: `decorated method name`
+: button label
 
 ### Attributes
 

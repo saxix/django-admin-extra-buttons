@@ -34,20 +34,35 @@ Examples:
 
 ## Options
 
-change_form
+change_form: `None`
 : set to `True` do show the button on the `change_form` page
+  If set to `None` (default), use method signature to display the button 
 
-change_list
+change_list: `None`
 : set to `True` do show the button on the `change_list` page
+    If set to `None` (default), use method signature to display the button
 
-html_attrs
-:   Dictionary of html tags to use in button rendering
+disable_on_click: `True`
+: automatically disable button on click() to prevent unintentional double processing
 
-pattern:
+disable_on_edit: `True`
+: automatically disable button when any FORM in page is modified
+
+html_attrs: `{}`
+: Dictionary of html tags to use in button rendering.
+    
+!!! Note
+
+    `id` is automacally set if not provided, 
+    `class` is updated/set based on `disable_on_click` and `disable_on_edit` values 
+
+label: `decorated method name`
+: button label
+
+pattern: `<function_name>/<path:arg1>/<path:arg2>/....`
 : url pattern to use for the url genaration.
-    Default to `<function_name>/<path:arg1>/<path:arg2>/....`
         
-permission
+permission: `None`
 :   Django permission code needed to access the view and display the button
 
 ## Examples

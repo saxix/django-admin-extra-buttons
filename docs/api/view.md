@@ -4,24 +4,33 @@ Use this decorator to add views to any ModelAdmin. This decorator will not creat
 
 ## Options
 
-pattern:
-: url pattern to use for the url genaration. Default to `<function_name>/<path:arg1>/<path:arg2>/....`
+pattern: `<function_name>/<path:arg1>/<path:arg2>/....`
+: url pattern to use for the url generation. 
 
-permission
+permission: `None`
 :   Django permission code needed to access the view and display the button. Can be a callable
 
-login_required
+login_required: `True`
 : Set to False to allow access to  anonymous users 
 
-http_basic_auth
+http_basic_auth: `False`
 : Enable Basic Authentication for this view 
 
 ## Examples
 
 ### Simple
+
     @register(MyModel)
     class MyModelAdmin(ExtrButtonsMixi, admin.ModelAdmin):
         
         @view()
         def sele(self, request):
-            
+
+### HTTP Basic Authentication
+
+    @register(MyModel)
+    class MyModelAdmin(ExtrButtonsMixi, admin.ModelAdmin):
+
+        @view(http_basic_auth=True)
+        def api4(self, request):
+            return HttpResponse("Basic Authentication allowed")

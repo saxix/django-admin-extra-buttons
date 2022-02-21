@@ -2,6 +2,7 @@ import inspect
 import logging
 from functools import partial
 
+from django import forms
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
@@ -148,3 +149,20 @@ class ExtraButtonsMixin:
 
     def get_action_buttons(self, context):
         return []
+
+    @property
+    def media(self):
+        extra = '' if settings.DEBUG else '.min'
+        base = super().media
+        return base + forms.Media(
+            js=[
+                'admin/js/vendor/jquery/jquery%s.js' % extra,
+                'admin/js/jquery.init.js',
+                'admin_extra_buttons%s.js' % extra,
+                ],
+            css={
+                'screen': (
+                    'admin_extra_buttons.css',
+                ),
+            },
+        )

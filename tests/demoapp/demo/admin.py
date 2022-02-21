@@ -29,7 +29,8 @@ class Admin1(ExtraButtonsMixin, admin.ModelAdmin):
 
     @button(permission='demo.add_demomodel1',
             change_form=True,
-            html_attrs={'style': 'background-color:#88FF88;color:black'})
+            html_attrs={'class': 'aeb-green'})
+            # html_attrs={'style': 'background-color:#88FF88;color:black'})
     def refresh(self, request):
         self.message_user(request, 'refresh called')
 
