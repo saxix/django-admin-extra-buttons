@@ -38,5 +38,6 @@ def staff_user(request, django_user_model, django_username_field):
 
     user, _ = django_user_model._default_manager.get_or_create(**{django_username_field: 'username',
                                                                   'is_staff': True})
-
+    user.set_password('password')
+    user.save()
     return user
