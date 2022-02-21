@@ -46,13 +46,17 @@ def test_action_permission(app, staff_user):
     perms = Permission.objects.filter(codename__in=['change_demomodel1'])
     staff_user.user_permissions.add(*perms)
 
-    url = reverse('admin:demo_demomodel1_change', args=[obj.pk])
-    res = app.get(url, user=staff_user)
-    assert not res.pyquery('#btn-update')
-
+    # try to by-pass button and call url directly as user with no permission
     url = reverse('admin:demo_demomodel1_update', args=[obj.pk])
+    res = app.get(url, expect_errors=True)
+    assert res.status_code == 403
 
-    res = app.get(url, user=staff_user, expect_errors=True)
+
+@pytest.mark.django_db
+def test_login_required(app):
+    # try to by-pass button and call url directly as anonymous
+    url = reverse('admin:demo_demomodel1_confirm')
+    res = app.get(url, expect_errors=True)
     assert res.status_code == 403
 
 

@@ -42,7 +42,7 @@ def confirm_action(modeladmin, request,
         try:
             ret = action(request)
             modeladmin.message_user(request, success_message, messages.SUCCESS)
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             modeladmin.message_user(request, error_message or str(e), messages.ERROR)
 
         return ret or HttpResponseRedirect(reverse(admin_urlname(opts, 'changelist')))
@@ -59,7 +59,7 @@ class DummyAdminform:
         self.prepopulated_fields = []
         self.__dict__.update(**kwargs)
 
-    def __iter__(self):
+    def __iter__(self):  # pragma: no cover
         yield
 
 

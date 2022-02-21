@@ -26,7 +26,7 @@ class ViewButton:
         return arg
 
     def get_change_list_flag(self, arg):
-        if arg is None:  # pragma: no cover
+        if arg is None:  # pragma: no branch
             return len(self.handler.sig.parameters) == 2
         return arg
 
@@ -39,13 +39,13 @@ class ViewButton:
 
     @property
     def request(self):
-        if not self.context:
+        if not self.context:  # pragma: no branch
             raise ValueError(f"You need to call bind() to access 'request' on {self}")
         return self.context['request']
 
     @property
     def original(self):
-        if not self.context:
+        if not self.context:  # pragma: no branch
             raise ValueError(f"You need to call bind() to access 'original' on {self}")
         return self.context.get('original', None)
 

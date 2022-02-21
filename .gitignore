@@ -8,6 +8,8 @@
 !.flake8
 !.bumpversion.cfg
 !.readthedocs.yaml
+coverage.xml
+pytest.xml
 *.py[co]
 *.egg-info
 *.sqlite

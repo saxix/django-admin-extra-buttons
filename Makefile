@@ -36,7 +36,7 @@ release:
 	twine upload dist/
 
 coverage:
-	 py.test src tests -vv --capture=no --doctest-modules --cov=adminfilters --cov-report=html --cov-config=tests/.coveragerc
+	tox -e d40-py39 -- --create-db --cov-report=xml --cov-report=term --junitxml=pytest.xml
 
 docs: .mkbuilddir
 	@sh docs/to_gif.sh docs/images

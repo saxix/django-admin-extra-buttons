@@ -4,6 +4,7 @@ import inspect
 from urllib.parse import urlencode
 
 from django.conf import settings
+from django.core.checks import Warning
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
 
@@ -16,7 +17,7 @@ def handle_basic_auth(request):
             auth = codecs.decode(auth.encode("utf8").strip(), "base64").decode()
             username, password = auth.split(":", 1)
             user = authenticate(username=username, password=password)
-            if user:
+            if user:  # pragma: no branch
                 login(request, user)
                 return user
     raise PermissionDenied()
@@ -65,7 +66,7 @@ def check_decorator_errors(cls):
     target = cls
     standard_permissions = []
     errors = []
-    if 'django.contrib.auth' in settings.INSTALLED_APPS:
+    if 'django.contrib.auth' in settings.INSTALLED_APPS:  # pragma: no branch
         standard_permissions = get_all_permissions()
 
     def visit_FunctionDef(node):
@@ -76,7 +77,7 @@ def check_decorator_errors(cls):
             else:
                 name = n.attr if isinstance(n, ast.Attribute) else n.id
             if name in ['button', 'view']:
-                if standard_permissions:
+                if standard_permissions:  # pragma: no branch
                     for k in n.keywords:
                         if k.arg == 'permission' and isinstance(k.value, ast.Constant):
                             perm_name = k.value.value
