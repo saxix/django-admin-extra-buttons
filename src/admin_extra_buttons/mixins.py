@@ -159,7 +159,7 @@ class ExtraButtonsMixin:
                 'admin/js/vendor/jquery/jquery%s.js' % extra,
                 'admin/js/jquery.init.js',
                 'admin_extra_buttons%s.js' % extra,
-                ],
+            ],
             css={
                 'screen': (
                     'admin_extra_buttons.css',
