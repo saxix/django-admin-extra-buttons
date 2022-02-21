@@ -1,3 +1,9 @@
+1.0.0
+-----
+* refactor javascript
+* add HTTP Basi Auth support
+
+
 0.1.0
 -----
 * Initial Release
