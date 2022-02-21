@@ -10,7 +10,7 @@ django-admin-extra-buttons
 ![my image](https://raw.githubusercontent.com/saxix/django-admin-extra-buttons/develop/docs/images/screenshot.png)
 
 This is a full rewriting of the original `django-admin-extra-url`. It
-provides decorators to easily add custom buttons to Django Admin pages.
+provides decorators to easily add custom buttons to Django Admin pages as well add views to any ModelAdmin
 
 It allows to create wizards, actions and/or links to external resources 
 as well as api only views.
