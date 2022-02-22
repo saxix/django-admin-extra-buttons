@@ -57,7 +57,7 @@ class ViewButton:
 
     def is_visible(self):
         if not self.context:  # pragma: no branch
-            raise ValueError(f"Button not initialised.")
+            raise ValueError("Button not initialised.")
         if callable(self.visible):
             try:
                 return self.visible(self)
@@ -69,13 +69,13 @@ class ViewButton:
     @property
     def request(self):
         if not self.context:  # pragma: no branch
-            raise ValueError(f"Button not initialised.")
+            raise ValueError("Button not initialised.")
         return self.context['request']
 
     @property
     def original(self):
         if not self.context:  # pragma: no branch
-            raise ValueError(f"Button not initialised.")
+            raise ValueError("Button not initialised.")
         return self.context.get('original', None)
 
     def authorized(self):
