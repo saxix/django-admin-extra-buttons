@@ -15,7 +15,7 @@ class BaseExtraHandler:
         self.func = func
         self.options = kwargs
         self.login_required = kwargs.get('login_required', True)
-        self.pattern = kwargs.get('pattern', None)
+        self._pattern = kwargs.get('pattern', None)
         self.permission = kwargs.get('permission')
         self.sig: inspect.Signature = inspect.signature(self.func)
 
@@ -64,8 +64,8 @@ class ViewHandler(BaseExtraHandler):
 
     @cached_property
     def url_pattern(self):
-        if self.pattern:
-            return self.pattern
+        if self._pattern:
+            return self._pattern
         else:
             pattern = ''
             for arg in list(self.sig.parameters)[2:]:
@@ -76,13 +76,18 @@ class ViewHandler(BaseExtraHandler):
 
 class ButtonMixin:
 
-    def __init__(self, func, html_attrs=None, change_list=None, change_form=None, **kwargs):
+    def __init__(self, func, html_attrs=None,
+                 change_list=None, change_form=None, visible=True, enabled=True, **kwargs):
         self.change_form = change_form
         self.change_list = change_list
+        self.visible = visible
+        self.enabled = enabled
         self.html_attrs = html_attrs or {}
         super().__init__(func, change_form=change_form,
                          change_list=change_list,
                          html_attrs=html_attrs,
+                         enabled=enabled,
+                         visible=visible,
                          **kwargs)
 
     def get_button_params(self, context, **extra):
@@ -91,6 +96,8 @@ class ButtonMixin:
                 'html_attrs': self.html_attrs,
                 'change_list': self.change_list,
                 'change_form': self.change_form,
+                'visible': self.visible,
+                'enabled': self.enabled,
                 'context': context,
                 'login_required': self.login_required,
                 'permission': self.permission,
@@ -103,7 +110,6 @@ class ButtonMixin:
 
 class ButtonHandler(ButtonMixin, ViewHandler):
     """View handler for `@button` decorated views"""
-
     button_class = ViewButton
 
 
@@ -111,9 +117,9 @@ class LinkHandler(ButtonMixin, BaseExtraHandler):
     button_class = LinkButton
     url_pattern = None
 
-    def __init__(self, func, href, **kwargs):
-        self.href = href
-        super().__init__(func, href=href, **kwargs)
+    def __init__(self, func, **kwargs):
+        self.href = kwargs.pop('href', None)
+        super().__init__(func, href=self.href, **kwargs)
 
     def get_button_params(self, context, **extra):
         return super().get_button_params(context,

@@ -36,11 +36,18 @@ change_list: `True`
 href: `"""`
 : HTML `href` attribute value 
 
+enabled: `True`
+: bool or callable to set enable status
+
 html_attrs: `{}`
 : Dictionary of html tags to use in button rendering
 
 label: `decorated method name`
 : button label
+
+visible: `True`
+: bool or callable show/hide button
+
 
 ### Attributes
 

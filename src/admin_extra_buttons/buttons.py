@@ -5,13 +5,15 @@ from admin_extra_buttons.utils import check_permission, get_preserved_filters
 
 
 class ViewButton:
-    def __init__(self, handler, context, label=None,
+    def __init__(self, handler, context, label=None, visible=True, enabled=True,
                  change_form=None, change_list=None, **options):
         self.label = label
         self.url_pattern = options.get('url_pattern', None)
         self.href = options.get('href', None)
         self.options = options
         self.handler = handler
+        self.visible = visible
+        self.enabled = enabled
         self.context = context
         self.disable_on_click = True
         self.disable_on_edit = True
@@ -19,7 +21,7 @@ class ViewButton:
         self.change_list = self.get_change_list_flag(change_list)
 
     def __repr__(self):
-        return f"<ViewButton '{self.label}' {self.handler}>"
+        return f"<ViewButton '{self.label}' {self.handler.name}>"
 
     def get_change_form_flag(self, arg):
         if arg is None:  # pragma: no cover
@@ -41,19 +43,39 @@ class ViewButton:
             css_class += " aeb-disable-on-click"
         if self.disable_on_edit and "aeb-disable_on_edit" not in css_class:
             css_class += " aeb-disable_on_edit"
+        # enabled
+        if not self.enabled:
+            css_class += " disabled"
+        elif callable(self.enabled) and not self.enabled(self):
+            css_class += " disabled"
+
         attrs['class'] = css_class
         return attrs
+
+    def can_render(self):
+        return self.authorized and self.url and self.is_visible()
+
+    def is_visible(self):
+        if not self.context:  # pragma: no branch
+            raise ValueError(f"Button not initialised.")
+        if callable(self.visible):
+            try:
+                return self.visible(self)
+            except Exception:
+                return False
+
+        return self.visible
 
     @property
     def request(self):
         if not self.context:  # pragma: no branch
-            raise ValueError(f"You need to call bind() to access 'request' on {self}")
+            raise ValueError(f"Button not initialised.")
         return self.context['request']
 
     @property
     def original(self):
         if not self.context:  # pragma: no branch
-            raise ValueError(f"You need to call bind() to access 'original' on {self}")
+            raise ValueError(f"Button not initialised.")
         return self.context.get('original', None)
 
     def authorized(self):

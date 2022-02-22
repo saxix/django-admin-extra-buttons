@@ -48,9 +48,19 @@ disable_on_click: `True`
 disable_on_edit: `True`
 : automatically disable button when any FORM in page is modified
 
+enabled: `True`
+: bool or callable to set enable status
+
 html_attrs: `{}`
 : Dictionary of html tags to use in button rendering.
-    
+
+label: `decorated method name`
+: button label
+
+visible: `True`
+: bool or callable show/hide button
+
+   
 !!! Note
 
     `id` is automacally set if not provided, 
@@ -108,6 +118,14 @@ Buttons with custom permission, one for `change_list` and other for `change_form
         def delete_all(self, request):
             pass
 
+        @button(permission=lambda request, obj: request.user.is_superuser,
+                html_attrs={'style': 'background-color:var(--button-bg)'},
+                enabled=lambda btn: btn.original.status == SUCCESS,
+                label=_('Delete All Records'),
+                change_form=True
+                )
+        def toggle(self, request, pk):
+            pass
 
 
 
