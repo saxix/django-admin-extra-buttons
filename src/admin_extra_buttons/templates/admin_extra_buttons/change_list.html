@@ -1,0 +1,6 @@
+{% extends "admin/change_list.html" %}{% load extra_buttons %}
+{% block object-tools-items %}
+    {% for n in cl.model_admin.names %}<div>{{ n }}</div>{% endfor %}
+    {{ block.super }}
+    {% include "admin_extra_buttons/includes/change_list_buttons.html" %}
+{% endblock %}

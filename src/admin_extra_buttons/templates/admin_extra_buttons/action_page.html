@@ -1,0 +1,31 @@
+{% extends "admin/change_form.html" %}{% load i18n static extra_buttons admin_list admin_urls %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+{% block breadcrumbs-items %}
+<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+&rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+&rsaquo; <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+{% if original %}&rsaquo; <a href="{% url opts|admin_urlname:'change' original.pk %}">{{ original }}</a>{% endif %}
+{% block breadcrumbs-active %}&rsaquo; {{ action|default_if_empty:title }}{% endblock %}
+{% endblock %}
+</div>
+{% endblock %}
+{% block content_title %}<h1>{{ title|default_if_none:"" }}&nbsp;</h1>{% endblock %}
+{% block content %}<div id="content-main">
+{% block object-tools %}
+  <ul class="object-tools">
+    {% block object-tools-items %}
+        {% include "admin_extra_buttons/includes/action_buttons.html" %}
+    {% endblock %}
+  </ul>
+{% endblock %}
+    <div class="module">
+    {% block action-content %}{% endblock %}
+    </div>
+{% block admin_change_form_document_ready %}
+{% block document_ready %}
+
+{% endblock %}
+{% endblock %}
+</div>
+{% endblock %}

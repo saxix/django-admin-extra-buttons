@@ -1,0 +1,37 @@
+site_name: django-admin-extra-buttons
+site_url: https://github.com/saxix/django-admin-extra-buttons
+#site_description: ""
+#site_author: ""
+repo_url: https://github.com/saxix/django-admin-extra-buttons
+edit_uri: "/tree/develop/docs/source"
+dev_addr: 127.0.0.1:9000
+docs_dir: "docs"
+site_dir: "./~build/docs"
+
+nav:
+  - Home: index.md
+  - API:
+    - '@button': api/button.md
+    - '@link': api/link.md
+    - '@view': api/view.md
+    - ExtraButtonsMixin: api/mixin.md
+    - Handlers: api/handlers.md
+  - 'howto.md'
+
+#theme: readthedocs
+theme: material
+
+markdown_extensions:
+  - toc:
+      permalink: "#"
+  - markdown_include.include:
+      base_path: .
+  - admonition
+  - attr_list
+  - def_list
+  - mdx_gh_links:
+      user: saxix
+      repo: django-admin-extra-buttons
+
+extra_css:
+  - css/extra.css

@@ -1,0 +1,24 @@
+.object-tools {
+  li {
+    a {
+      &.disabled {
+        background: #ece8e8;
+        cursor: not-allowed;
+        color: #adacac;
+      }
+      &.aeb-green{
+        background-color:#88FF88;
+        color:black
+      }
+      &.aeb-warn{
+        background-color:#EDD372;
+        color:black
+      }
+      &.aeb-error{
+        background-color:#DC6C6C;
+        color:black
+      }
+    }
+  }
+}
+

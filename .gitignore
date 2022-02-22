@@ -1,0 +1,17 @@
+.*
+~*
+/build
+!tests/.coveragerc
+!.gitignore
+!.github
+!.isort.cfg
+!.flake8
+!.bumpversion.cfg
+!.readthedocs.yaml
+coverage.xml
+pytest.xml
+*.py[co]
+*.egg-info
+*.sqlite
+dist/*
+docs/site

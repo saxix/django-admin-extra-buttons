@@ -1,0 +1,29 @@
+{% extends 'admin/base_site.html' %}{% load i18n static admin_list admin_urls %}
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+        &rsaquo;
+        <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_label|capfirst|escape }}</a>
+        &rsaquo;
+        {{ title }}
+    </div>
+{% endblock %}
+
+{% block content %}
+    <h1>Warning:</h1>
+    <h2>{{ message }}</h2>
+    <br>
+    <div><h3>{{ description }}</h3></div>
+    <hr>
+    <br><br><br><br><br>
+    <form method="post">
+        {% csrf_token %}
+        <input type="submit" class="btn btn-large btn-danger" value="Confirm">
+        <input type="button" class="btn btn-large btn-success"
+               onclick="javascript:history.back()"
+               value="Go Back">
+    </form>
+    <script>
+
+    </script>
+{% endblock content %}

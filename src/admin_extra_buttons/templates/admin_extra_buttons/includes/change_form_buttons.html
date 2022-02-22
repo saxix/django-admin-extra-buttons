@@ -1,0 +1,8 @@
+{% load extra_buttons i18n static admin_list admin_urls %}
+{{ extra_buttons }}
+{% get_changeform_buttons adminform.model_admin as buttons %}
+{% for button in buttons %}
+    {% if button.can_render and button.change_form %}
+        {% include "admin_extra_buttons/includes/button.html" with button=button %}
+    {% endif %}
+{% endfor %}

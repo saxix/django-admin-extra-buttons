@@ -1,0 +1,10 @@
+{% extends "admin/change_form.html" %}{% load i18n static admin_list admin_urls %}
+{% block object-tools-items %}
+    {{ block.super }}
+    {% include "admin_extra_buttons/includes/change_form_buttons.html" %}
+{% endblock %}
+{#{% block admin_change_form_document_ready %}{{ block.super }}#}
+{#    <script>#}
+{##}
+{#    </script>#}
+{#{% endblock %}#}
