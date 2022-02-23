@@ -9,7 +9,9 @@ Examples:
     class MyModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
         @button()    
         def refresh_all(self, request):
+            # your business logic here
             ...
+            self.message_user(request, 'refresh called')
             # do not return HttpResponse(), so user will be redirected to the original page
     
         @button()
