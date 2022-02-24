@@ -12,10 +12,10 @@ django-admin-extra-buttons
 This is a full rewriting of the original `django-admin-extra-url`. It
 provides decorators to easily add custom buttons to Django Admin pages as well add views to any ModelAdmin
 
-It allows to create wizards, actions and/or links to external resources 
+It allows easy creation of wizards, actions and/or links to external resources 
 as well as api only views.
 
-It provides 3 decorators: 
+Three decorators are available: 
 
 - ``button()`` to mark a method as extra view and show related button
 - ``link()`` This is used for "external" link, where you don't need to invoke local views.
