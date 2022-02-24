@@ -14,8 +14,12 @@
         background-color:#EDD372;
         color:black
       }
-      &.aeb-error{
+      &.aeb-danger{
         background-color:#DC6C6C;
+        color:black
+      }
+      &.aeb-error{
+        background-color: #ff5252;
         color:black
       }
     }
