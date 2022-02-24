@@ -38,11 +38,13 @@ class ViewButton:
         attrs = self.options.get('html_attrs', {})
         if 'id' not in attrs:
             attrs['id'] = f'btn-{self.handler.func.__name__}'
+
         css_class = attrs.get("class", "")
         if self.disable_on_click and "aeb-disable-on-click" not in css_class:
             css_class += " aeb-disable-on-click"
         if self.disable_on_edit and "aeb-disable_on_edit" not in css_class:
             css_class += " aeb-disable_on_edit"
+
         # enabled
         if not self.enabled:
             css_class += " disabled"
