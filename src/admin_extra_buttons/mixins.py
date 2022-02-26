@@ -34,11 +34,12 @@ def confirm_action(modeladmin, request,
                    template='admin_extra_buttons/confirm.html',
                    error_message=None):
     opts = modeladmin.model._meta
-    _title = extra_context.pop('title', title)
+    if extra_context and title:
+        title = extra_context.pop('title', title)
     context = modeladmin.get_common_context(request,
                                             message=message,
                                             description=description,
-                                            title=_title,
+                                            title=title,
                                             pk=pk,
                                             **(extra_context or {}))
     if request.method == 'POST':
