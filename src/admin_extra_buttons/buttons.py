@@ -47,7 +47,7 @@ class ViewButton:
             css_class += " aeb-disable_on_edit"
 
         # enabled
-        css_class= css_class.replace("disabled", "")
+        css_class = css_class.replace("disabled", "")
         if not self.enabled:
             css_class += " disabled"
         elif callable(self.enabled) and not self.enabled(self):
