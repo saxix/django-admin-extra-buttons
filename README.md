@@ -41,6 +41,7 @@ How to use it
 ```python
 
     from admin_extra_buttons.api import ExtraButtonsMixin, button, confirm_action, link, view
+    from admin_extra_buttons.utils import HttpResponseRedirectToReferrer
     from django.http import HttpResponse, JsonResponse
     from django.contrib import admin
 
@@ -51,7 +52,9 @@ How to use it
                 html_attrs={'style': 'background-color:#88FF88;color:black'})
         def refresh(self, request):
             self.message_user(request, 'refresh called')
-
+            # Optional: returns HttpResponse
+            return HttpResponseRedirectToReferrer(request)
+        
         @button(html_attrs={'style': 'background-color:#DC6C6C;color:black'})
         def confirm(self, request):
             def _action(request):
