@@ -1,3 +1,5 @@
+import os
+
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
@@ -30,7 +32,7 @@ class Admin1(ExtraButtonsMixin, admin.ModelAdmin):
     @button(permission='demo.add_demomodel1',
             change_form=True,
             html_attrs={'class': 'aeb-green'})
-            # html_attrs={'style': 'background-color:#88FF88;color:black'})
+    # html_attrs={'style': 'background-color:#88FF88;color:black'})
     def refresh(self, request):
         self.message_user(request, 'refresh called')
 
@@ -80,6 +82,25 @@ class Admin1(ExtraButtonsMixin, admin.ModelAdmin):
         self.message_user(request, 'action called')
         return HttpResponseRedirect(reverse(admin_urlname(opts, 'changelist')))
 
+    @button(visible=lambda btn: 'BTN_SHOW' in os.environ)
+    def custom_visibile(self, request):
+        pass
+
+    @button(enabled=False)
+    def disabled(self, request):
+        pass
+
+    @button(enabled=lambda btn: 'BTN_ENABLED' in os.environ)
+    def enabled(self, request):
+        pass
+
+    @button()
+    def error_message(self, request):
+        try:
+            1 / 0
+        except Exception as e:
+            self.message_error_to_user(request, e)
+
 
 class Admin2(ExtraButtonsMixin, admin.ModelAdmin):
     @link(href="https://www.google.com/", change_form=False, html_attrs={'target': '_new'})
@@ -91,6 +112,10 @@ class Admin2(ExtraButtonsMixin, admin.ModelAdmin):
         original = button.context['original']
         button.label = f"Search '{original.name}' on Google"
         button.href = f"https://www.google.com/?q={original.name}"
+
+    @link(href="/", visible=lambda btn: 'BTN_SHOW2' in os.environ, change_list=True)
+    def custom_visibile(self, button):
+        pass
 
 
 class Admin3(ExtraButtonsMixin, admin.ModelAdmin):

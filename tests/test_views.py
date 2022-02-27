@@ -1,5 +1,4 @@
 import base64
-import codecs
 import logging
 
 from django.urls import reverse

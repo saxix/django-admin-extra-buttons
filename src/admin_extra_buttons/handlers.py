@@ -19,6 +19,10 @@ class BaseExtraHandler:
         self.permission = kwargs.get('permission')
         self.sig: inspect.Signature = inspect.signature(self.func)
 
+    @cached_property
+    def func_args(self):
+        return list(self.sig.parameters)
+
     def __repr__(self):
         return f"<{self.__class__.__name__} {self.name}>"
 
@@ -125,6 +129,7 @@ class LinkHandler(ButtonMixin, BaseExtraHandler):
         return super().get_button_params(context,
                                          href=self.href,
                                          url_pattern=self.url_pattern,
+                                         **extra,
                                          )
 
     def get_button(self, context):

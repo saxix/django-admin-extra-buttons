@@ -35,6 +35,7 @@ class Class2:
     def aaa(self):
         pass
 
+
 @pytest.mark.django_db
 @pytest.mark.parametrize("cls, expected", ((Class1, 1), (Class2, 0)))
 def test_check_decorator_errors(cls, expected):
