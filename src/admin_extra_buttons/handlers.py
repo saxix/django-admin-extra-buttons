@@ -9,8 +9,6 @@ from .utils import HttpResponseRedirectToReferrer, check_permission, handle_basi
 
 
 class BaseExtraHandler:
-    """Decorator example mixing class and function definitions."""
-
     def __init__(self, func, **kwargs):
         self.func = func
         self.options = kwargs
@@ -108,7 +106,7 @@ class ButtonMixin:
                 **extra
                 }
 
-    def get_button(self, context):
+    def get_button(self, context, model_admin):
         return self.button_class(**self.get_button_params(context))
 
 
@@ -132,8 +130,8 @@ class LinkHandler(ButtonMixin, BaseExtraHandler):
                                          **extra,
                                          )
 
-    def get_button(self, context):
+    def get_button(self, context, model_admin):
         params = self.get_button_params(context)
         button = self.button_class(**params)
-        self.func(self, button)
+        self.func(model_admin, button)
         return button

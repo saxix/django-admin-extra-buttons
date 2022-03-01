@@ -6,7 +6,7 @@ from django import forms
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
-from django.db import OperationalError
+from django.db import OperationalError, ProgrammingError
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
@@ -92,7 +92,7 @@ class ExtraButtonsMixin:
         try:
             from admin_extra_buttons.utils import check_decorator_errors
             errors.extend(check_decorator_errors(cls))
-        except OperationalError:
+        except (OperationalError, ProgrammingError):
             pass
         return errors
 
