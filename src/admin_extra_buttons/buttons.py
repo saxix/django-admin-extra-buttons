@@ -1,5 +1,5 @@
 from django.core.exceptions import PermissionDenied
-from django.template import Template, RequestContext
+from django.template import RequestContext, Template
 from django.template.loader import get_template
 from django.urls import NoReverseMatch, reverse
 

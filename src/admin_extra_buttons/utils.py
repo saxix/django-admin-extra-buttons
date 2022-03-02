@@ -7,7 +7,6 @@ from django.conf import settings
 from django.core.checks import Warning
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
-from django.urls import reverse
 
 
 def handle_basic_auth(request):

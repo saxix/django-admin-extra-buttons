@@ -1,4 +1,4 @@
-from .handlers import ButtonHandler, LinkHandler, ViewHandler, MenuHandler
+from .handlers import ButtonHandler, LinkHandler, MenuHandler, ViewHandler
 
 
 def button(**kwargs):
