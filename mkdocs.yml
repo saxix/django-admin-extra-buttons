@@ -14,7 +14,7 @@ nav:
     - '@button': api/button.md
     - '@link': api/link.md
     - '@view': api/view.md
-    - '@menu': api/menu.md
+    - '@choice': api/choice.md
     - ExtraButtonsMixin: api/mixin.md
     - Handlers: api/handlers.md
   - 'howto.md'

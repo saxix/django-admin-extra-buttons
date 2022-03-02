@@ -7,8 +7,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.template.response import TemplateResponse
 from django.urls import reverse
 
-from admin_extra_buttons.api import ExtraButtonsMixin, button, confirm_action, link, view
-from admin_extra_buttons.decorators import menu
+from admin_extra_buttons.api import ExtraButtonsMixin, button, confirm_action, link, view, choice
 
 from .models import DemoModel1, DemoModel2, DemoModel3, DemoModel4, DemoModel5
 from .upload import UploadMixin
@@ -150,7 +149,7 @@ class Admin4(UploadMixin, admin.ModelAdmin):
 class Admin5(ExtraButtonsMixin, admin.ModelAdmin):
     list_filter = [TestFilter]
 
-    @menu(change_list=True, label="Menu #1")
+    @choice(change_list=True, label="Menu #1")
     def menu1(self, button):
         button.choices = [self.test1, self.test2, self.test21]
 
@@ -162,7 +161,7 @@ class Admin5(ExtraButtonsMixin, admin.ModelAdmin):
     def test2(self, request):
         self.message_user(request, "You have selected test2")
 
-    @menu(change_list=False, change_form=True)
+    @choice(change_list=False, change_form=True)
     def menu2(self, button):
         button.choices = [self.test21, self.test22]
 

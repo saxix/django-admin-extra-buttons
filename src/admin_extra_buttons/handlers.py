@@ -4,7 +4,7 @@ from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.utils.functional import cached_property
 
-from .buttons import Button, LinkButton, MenuButton
+from .buttons import Button, LinkButton, ChoiceButton
 from .utils import HttpResponseRedirectToReferrer, check_permission, handle_basic_auth, labelize
 
 
@@ -140,8 +140,8 @@ class LinkHandler(ButtonMixin, BaseExtraHandler):
         return button
 
 
-class MenuHandler(LinkHandler):
-    button_class = MenuButton
+class ChoiceHandler(LinkHandler):
+    button_class = ChoiceButton
 
     def __init__(self, func, **kwargs):
         self.href = kwargs.pop('href', None)

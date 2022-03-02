@@ -134,7 +134,7 @@ class LinkButton(Button):
         return arg
 
 
-class MenuButton(LinkButton):
+class ChoiceButton(LinkButton):
     default_template = "admin_extra_buttons/includes/choice.html"
 
     def get_choices(self):
