@@ -28,3 +28,8 @@ Button class for Django views based buttons
 ## LinkButton
 
 Button class for links based buttons (buttons not linked to Django views)  
+
+
+## ChoiceButton
+
+Button class for choices buttons  
