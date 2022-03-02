@@ -1,10 +1,9 @@
 from unittest.mock import MagicMock
 
+from demo.models import DemoModel1
 from django.contrib.admin import site
 from django.urls import reverse
 from factory.django import DjangoModelFactory
-
-from demo.models import DemoModel1
 
 
 class DemoModel1Factory(DjangoModelFactory):

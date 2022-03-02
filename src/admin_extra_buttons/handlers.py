@@ -4,7 +4,7 @@ from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.utils.functional import cached_property
 
-from .buttons import Button, LinkButton, ChoiceButton
+from .buttons import Button, ChoiceButton, LinkButton
 from .utils import HttpResponseRedirectToReferrer, check_permission, handle_basic_auth, labelize
 
 

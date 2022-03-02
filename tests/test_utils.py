@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 
 from admin_extra_buttons.decorators import button
-from admin_extra_buttons.utils import check_permission, check_decorator_errors
+from admin_extra_buttons.utils import check_decorator_errors, check_permission
 
 
 def test_check_permission(rf, staff_user, admin_user):

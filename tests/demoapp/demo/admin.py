@@ -3,11 +3,11 @@ import os
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 
-from admin_extra_buttons.api import ExtraButtonsMixin, button, confirm_action, link, view, choice
+from admin_extra_buttons.api import ExtraButtonsMixin, button, choice, confirm_action, link, view
 
 from .models import DemoModel1, DemoModel2, DemoModel3, DemoModel4, DemoModel5
 from .upload import UploadMixin
@@ -142,10 +142,6 @@ class Admin4(UploadMixin, admin.ModelAdmin):
     upload_handler = lambda *args: [1, 2, 3]  # noqa
 
 
-class Admin4(UploadMixin, admin.ModelAdmin):
-    upload_handler = lambda *args: [1, 2, 3]  # noqa
-
-
 class Admin5(ExtraButtonsMixin, admin.ModelAdmin):
     list_filter = [TestFilter]
 
@@ -178,7 +174,6 @@ class Admin5(ExtraButtonsMixin, admin.ModelAdmin):
 
     def get_action_buttons(self, context):
         return [h for h in self.extra_button_handlers.values() if h.name in ['menu2', ]]
-
 
 
 admin.site.register(DemoModel1, Admin1)

@@ -1,8 +1,8 @@
+from demo.admin import Admin1
+from demo.models import DemoModel1
 from django.contrib.admin import site
 
 from admin_extra_buttons.utils import check_decorator_errors
-from demo.admin import Admin1
-from demo.models import DemoModel1
 
 
 def test_permissions(db):
