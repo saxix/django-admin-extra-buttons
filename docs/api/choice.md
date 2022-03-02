@@ -5,7 +5,7 @@ This decorator allows "grouping" different `@view()` decorated methods under the
 
 Examples:
     
-    from admin_extra_buttons.api import ExtraButtonsMixin, link
+    from admin_extra_buttons.api import ExtraButtonsMixin, choice, view
 
     class MyModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
         @choice(change_list=True)
