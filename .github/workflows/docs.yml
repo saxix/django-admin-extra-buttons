@@ -4,6 +4,7 @@ on:
         paths:
             - 'docs/**'
             - 'README.md'
+            - '.github/workflows/docs.yml'
 
 jobs:
     build:
