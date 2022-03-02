@@ -92,7 +92,7 @@ class ExtraButtonsMixin:
         try:
             from admin_extra_buttons.utils import check_decorator_errors
             errors.extend(check_decorator_errors(cls))
-        except (OperationalError, ProgrammingError):
+        except (OperationalError, ProgrammingError):  # pragma: no cover
             pass
         return errors
 

@@ -29,7 +29,7 @@ class ViewButton:
         return arg
 
     def get_change_list_flag(self, arg):
-        if arg is None:  # pragma: no branch
+        if arg is None:
             return len(self.handler.func_args) == 2
         return arg
 

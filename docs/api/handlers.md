@@ -9,10 +9,22 @@
 
 View handler for `@button` decorated views
 
+
 ## LinkHandler
 
 View handler for `@link` decorated views
 
+
 ## ViewHandler
 
 View handler for `@view` decorated views
+
+
+## ViewButton
+
+Button class for Django views based buttons 
+
+
+## LinkButton
+
+Button class for links based buttons (buttons not linked to Django views)  
