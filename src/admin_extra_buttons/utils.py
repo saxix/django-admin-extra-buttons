@@ -7,6 +7,7 @@ from django.conf import settings
 from django.core.checks import Warning
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 
 def handle_basic_auth(request):
@@ -51,6 +52,7 @@ def check_permission(permission, request, obj=None):
 class HttpResponseRedirectToReferrer(HttpResponseRedirect):
     def __init__(self, request, *args, **kwargs):
         redirect_to = request.META.get('HTTP_REFERER', '/')
+        # redirect_to = request.META.get('HTTP_REFERER', reverse("admin:index"))
         super().__init__(redirect_to, *args, **kwargs)
 
 

@@ -4,11 +4,13 @@ from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
 from django.http import HttpResponseRedirect, HttpResponse
+from django.template.response import TemplateResponse
 from django.urls import reverse
 
 from admin_extra_buttons.api import ExtraButtonsMixin, button, confirm_action, link, view
+from admin_extra_buttons.decorators import menu
 
-from .models import DemoModel1, DemoModel2, DemoModel3, DemoModel4
+from .models import DemoModel1, DemoModel2, DemoModel3, DemoModel4, DemoModel5
 from .upload import UploadMixin
 
 
@@ -141,7 +143,47 @@ class Admin4(UploadMixin, admin.ModelAdmin):
     upload_handler = lambda *args: [1, 2, 3]  # noqa
 
 
+class Admin4(UploadMixin, admin.ModelAdmin):
+    upload_handler = lambda *args: [1, 2, 3]  # noqa
+
+
+class Admin5(ExtraButtonsMixin, admin.ModelAdmin):
+    list_filter = [TestFilter]
+
+    @menu(change_list=True, label="Menu #1")
+    def menu1(self, button):
+        button.choices = [self.test1, self.test2, self.test21]
+
+    @view()
+    def test1(self, request):
+        self.message_user(request, "You have selected test1")
+
+    @view()
+    def test2(self, request):
+        self.message_user(request, "You have selected test2")
+
+    @menu(change_list=False, change_form=True)
+    def menu2(self, button):
+        button.choices = [self.test21, self.test22]
+
+    @view()
+    def test21(self, request, pk):
+        context = self.get_common_context(request, pk)
+        self.message_user(request, f"You have selected test21 on {context['original']}")
+
+    @view()
+    def test22(self, request, pk):
+        context = self.get_common_context(request, pk)
+        self.message_user(request, f"You have selected test22 on {context['original']}")
+        return TemplateResponse(request, "demo/test22.html", context)
+
+    def get_action_buttons(self, context):
+        return [h for h in self.extra_button_handlers.values() if h.name in ['menu2', ]]
+
+
+
 admin.site.register(DemoModel1, Admin1)
 admin.site.register(DemoModel2, Admin2)
 admin.site.register(DemoModel3, Admin3)
 admin.site.register(DemoModel4, Admin4)
+admin.site.register(DemoModel5, Admin5)
