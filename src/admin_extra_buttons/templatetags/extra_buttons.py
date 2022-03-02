@@ -12,17 +12,17 @@ def default_if_empty(v, default):
 
 @register.simple_tag(takes_context=True)
 def get_action_buttons(context, model_admin):
-    return [handler.get_button(context, model_admin=model_admin)
+    return [handler.get_button(context)
             for handler in model_admin.get_action_buttons(context)]
 
 
 @register.simple_tag(takes_context=True)
 def get_changeform_buttons(context, model_admin):
-    return [handler.get_button(context, model_admin=model_admin)
+    return [handler.get_button(context)
             for handler in model_admin.get_changeform_buttons(context)]
 
 
 @register.simple_tag(takes_context=True)
 def get_changelist_buttons(context, model_admin):
-    return [handler.get_button(context, model_admin=model_admin)
+    return [handler.get_button(context)
             for handler in model_admin.get_changelist_buttons(context)]

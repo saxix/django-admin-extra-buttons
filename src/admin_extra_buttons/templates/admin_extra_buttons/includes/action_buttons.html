@@ -2,6 +2,6 @@
 {% get_action_buttons adminform.model_admin as buttons %}
 {% for button in buttons %}
     {% if button.authorized %}
-        {% include "admin_extra_buttons/includes/button.html" with button=button %}
+        {{ button }}
     {% endif %}
 {% endfor %}

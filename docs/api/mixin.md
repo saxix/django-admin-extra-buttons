@@ -1,6 +1,6 @@
 # ExtraButtonMixin
 
-This Mixin n 
+Mixin to use with ModelAdmin to properly handle button [decorators]()
 
 ## Attributes
 

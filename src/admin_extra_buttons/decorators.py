@@ -1,4 +1,4 @@
-from .handlers import ButtonHandler, LinkHandler, ViewHandler
+from .handlers import ButtonHandler, LinkHandler, ViewHandler, MenuHandler
 
 
 def button(**kwargs):
@@ -23,5 +23,12 @@ def link(**kwargs):
 def view(**kwargs):
     def decorator(func):
         return ViewHandler(func, **kwargs)
+
+    return decorator
+
+
+def menu(**kwargs):
+    def decorator(func):
+        return MenuHandler(func, **kwargs)
 
     return decorator
