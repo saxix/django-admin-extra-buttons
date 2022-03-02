@@ -2,7 +2,7 @@ name: Documentation
 on:
     push:
         paths:
-            - 'docs'
+            - 'docs/**'
             - 'README.md'
 
 jobs:
