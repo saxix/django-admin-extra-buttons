@@ -1,4 +1,4 @@
-# @menu()
+# @choice()
 
 This decorator allows "grouping" different `@view()` decorated methods under the same HTML `<select>` 
 
@@ -8,7 +8,7 @@ Examples:
     from admin_extra_buttons.api import ExtraButtonsMixin, link
 
     class MyModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
-        @menu(change_list=True)
+        @choice(change_list=True)
         def menu1(self, button):
             button.choices = [self.test1, self.test2]
     
@@ -51,24 +51,33 @@ context
 
 ## Examples
 
-### Dynamic Configuration
+### Complex Configuration
 
     class MyModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
 
-        @menu(label="Menu #1")
-        def search_on_google(self, button):
+        @choice(label="Menu #1",
+                change_list=False,
+                html_attrs={'target': '_new', 'style': 'background-color:var(--button-bg)'})
+        def menu1(self, button):
             original = button.original
             button.label = f"Search '{original.name}' on Google"
-            button.href = f"https://www.google.com/?q={original.name}"
+            if button.requst.user.is_superuser: 
+                button.choices = [self.feat1, self.feat2, self.feat3, self.feat4]
+            else:
+                button.choices = [self.feat1, self.feat2]
 
-### Fully featured
+        @view()
+        def feat1(self, request):
+            self.message_user(request, "You have selected Feature #1") 
 
-    class MyModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
+        @view()
+        def feat2(self, request):
+            return TemplateResponse(request, "demo/feat2.html", context)
 
-    @link(href=None, 
-          change_list=False, 
-          html_attrs={'target': '_new', 'style': 'background-color:var(--button-bg)'})
-    def search_on_google(self, button):
-        original = button.context['original']
-        button.label = f"Search '{original.name}' on Google"
-        button.href = f"https://www.google.com/?q={original.name}"
+        @view(permission=lambda request, obj: request.user.is_superuser)
+        def feat3(self, request):
+            return HttpResponse("You have selected Feature #3") 
+
+        @view(permission=lambda request, obj: request.user.is_superuser)
+        def feat3(self, request):
+            self.message_user(request, "You have selected Feature #3") 

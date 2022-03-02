@@ -64,3 +64,13 @@ context
             button.label = f"Search '{button.original.name}' on Google"
             button.href = f"https://www.google.com/?q={original.name}"
 
+### Fully featured
+
+    class MyModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
+
+    @link(href=None, 
+          change_list=False, 
+          html_attrs={'target': '_new', 'style': 'background-color:var(--button-bg)'})
+    def search_on_google(self, button):
+        button.label = f"Search '{button.original.name}' on Google"
+        button.href = f"https://www.google.com/?q={button.original.name}"
