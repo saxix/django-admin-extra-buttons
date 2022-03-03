@@ -1,6 +1,11 @@
-1.2
+1.3
 ---
 * new @choice() decorator
+* bug fixes
+
+
+1.2
+---
 * bug fixes
 
 
