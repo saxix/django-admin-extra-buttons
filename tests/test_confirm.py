@@ -26,5 +26,6 @@ def test_confirm_action(rf, staff_user):
                    "Confirm action",
                    "Successfully executed",
                    description="",
+                   title="Custom Title",
                    pk=None,
                    extra_context={'a': 1})

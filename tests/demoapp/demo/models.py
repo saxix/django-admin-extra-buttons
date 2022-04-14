@@ -44,3 +44,11 @@ class DemoModel4(models.Model):
         verbose_name = 'Wizard Example'
         verbose_name_plural = 'Wizard Examples'
 
+
+class DemoModel5(models.Model):
+    name = models.CharField(max_length=255)
+
+    class Meta:
+        verbose_name = 'Choice Example'
+        verbose_name_plural = 'Choice Examples'
+

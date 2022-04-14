@@ -4,27 +4,32 @@ from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.utils.functional import cached_property
 
-from .buttons import LinkButton, ViewButton
+from .buttons import Button, ChoiceButton, LinkButton
 from .utils import HttpResponseRedirectToReferrer, check_permission, handle_basic_auth, labelize
 
 
 class BaseExtraHandler:
-    """Decorator example mixing class and function definitions."""
-
     def __init__(self, func, **kwargs):
         self.func = func
-        self.options = kwargs
+        self.func._handler = self
+        self.config = kwargs
+        self.model_admin = kwargs.get('model_admin', None)
+
         self.login_required = kwargs.get('login_required', True)
         self._pattern = kwargs.get('pattern', None)
         self.permission = kwargs.get('permission')
         self.sig: inspect.Signature = inspect.signature(self.func)
 
+    @cached_property
+    def func_args(self):
+        return list(self.sig.parameters)
+
     def __repr__(self):
         return f"<{self.__class__.__name__} {self.name}>"
 
-    def get_instance(self):
+    def get_instance(self, model_admin):
         """ return a 'clone' of current Handler"""
-        return self.__class__(self.func, **self.options)
+        return self.__class__(self.func, model_admin=model_admin, **self.config)
 
     @cached_property
     def name(self):
@@ -91,7 +96,7 @@ class ButtonMixin:
                          **kwargs)
 
     def get_button_params(self, context, **extra):
-        return {'label': self.options.get('label', labelize(self.name)),
+        return {'label': self.config.get('label', labelize(self.name)),
                 'handler': self,
                 'html_attrs': self.html_attrs,
                 'change_list': self.change_list,
@@ -110,7 +115,7 @@ class ButtonMixin:
 
 class ButtonHandler(ButtonMixin, ViewHandler):
     """View handler for `@button` decorated views"""
-    button_class = ViewButton
+    button_class = Button
 
 
 class LinkHandler(ButtonMixin, BaseExtraHandler):
@@ -125,10 +130,27 @@ class LinkHandler(ButtonMixin, BaseExtraHandler):
         return super().get_button_params(context,
                                          href=self.href,
                                          url_pattern=self.url_pattern,
+                                         **extra,
                                          )
 
     def get_button(self, context):
         params = self.get_button_params(context)
         button = self.button_class(**params)
-        self.func(self, button)
+        self.func(self.model_admin, button)
         return button
+
+
+class ChoiceHandler(LinkHandler):
+    button_class = ChoiceButton
+
+    def __init__(self, func, **kwargs):
+        self.href = kwargs.pop('href', None)
+        self.choices = kwargs.pop('choices', None)
+        self.selected_choice = None
+        super().__init__(func, href=self.href, choices=self.choices, **kwargs)
+
+    def get_button_params(self, context, **extra):
+        return super().get_button_params(context,
+                                         choices=self.choices,
+                                         **extra,
+                                         )

@@ -6,7 +6,7 @@ from django import forms
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
-from django.db import OperationalError
+from django.db import OperationalError, ProgrammingError
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
@@ -34,11 +34,12 @@ def confirm_action(modeladmin, request,
                    template='admin_extra_buttons/confirm.html',
                    error_message=None):
     opts = modeladmin.model._meta
-    _title = extra_context.pop('title', title)
+    if extra_context and title:
+        title = extra_context.pop('title', title)
     context = modeladmin.get_common_context(request,
                                             message=message,
                                             description=description,
-                                            title=_title,
+                                            title=title,
                                             pk=pk,
                                             **(extra_context or {}))
     if request.method == 'POST':
@@ -68,9 +69,7 @@ class DummyAdminform:
 
 
 class ExtraButtonsMixin:
-    """
-    Allow to add new 'url' to the standard ModelAdmin
-    """
+    _registered_buttons = []
     if IS_GRAPPELLI_INSTALLED:  # pragma: no cover
         change_list_template = 'admin_extra_buttons/grappelli/change_list.html'
         change_form_template = 'admin_extra_buttons/grappelli/change_form.html'
@@ -91,7 +90,7 @@ class ExtraButtonsMixin:
         try:
             from admin_extra_buttons.utils import check_decorator_errors
             errors.extend(check_decorator_errors(cls))
-        except OperationalError:
+        except (OperationalError, ProgrammingError):  # pragma: no cover
             pass
         return errors
 
@@ -124,7 +123,7 @@ class ExtraButtonsMixin:
         return context
 
     def get_urls(self):
-        self.extra_button_handlers = []
+        self.extra_button_handlers = {}
         handlers = {}
         extra_urls = []
         opts = self.model._meta
@@ -132,7 +131,7 @@ class ExtraButtonsMixin:
         for cls in inspect.getmro(self.__class__):
             for method_name, method in cls.__dict__.items():
                 if callable(method) and isinstance(method, BaseExtraHandler):
-                    handlers[method_name] = method.get_instance()
+                    handlers[method_name] = method.get_instance(self)
 
         for handler in handlers.values():
             handler.url_name = f'{opts.app_label}_{opts.model_name}_{handler.func.__name__}'
@@ -141,14 +140,14 @@ class ExtraButtonsMixin:
                                        partial(getattr(self, handler.func.__name__), self),
                                        name=handler.url_name))
             if hasattr(handler, 'button_class'):
-                self.extra_button_handlers.append(handler)
+                self.extra_button_handlers[handler.func.__name__] = handler
         return extra_urls + original
 
     def get_changeform_buttons(self, context):
-        return [h for h in self.extra_button_handlers if h.change_form in [True, None]]
+        return [h for h in self.extra_button_handlers.values() if h.change_form in [True, None]]
 
     def get_changelist_buttons(self, context):
-        return [h for h in self.extra_button_handlers if h.change_list in [True, None]]
+        return [h for h in self.extra_button_handlers.values() if h.change_list in [True, None]]
 
     def get_action_buttons(self, context):
         return []

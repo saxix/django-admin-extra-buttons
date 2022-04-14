@@ -41,7 +41,7 @@ coverage:
 docs: .mkbuilddir
 	@sh docs/to_gif.sh docs/images
 	@mkdir -p ${BUILDDIR}/docs
-	sphinx-build -aE docs ${BUILDDIR}/docs
+	mkdocs build
 
 
 .PHONY: build docs

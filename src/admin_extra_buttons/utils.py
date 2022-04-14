@@ -51,6 +51,7 @@ def check_permission(permission, request, obj=None):
 class HttpResponseRedirectToReferrer(HttpResponseRedirect):
     def __init__(self, request, *args, **kwargs):
         redirect_to = request.META.get('HTTP_REFERER', '/')
+        # redirect_to = request.META.get('HTTP_REFERER', reverse("admin:index"))
         super().__init__(redirect_to, *args, **kwargs)
 
 

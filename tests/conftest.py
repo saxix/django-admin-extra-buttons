@@ -2,7 +2,7 @@ import os
 
 import django_webtest
 import pytest
-from demo.models import DemoModel1, DemoModel2
+from demo.models import DemoModel1, DemoModel2, DemoModel5
 
 
 def pytest_configure(config):
@@ -31,6 +31,11 @@ def demomodel2():
 @pytest.fixture
 def demomodel1():
     return DemoModel1.objects.get_or_create(name='name1')[0]
+
+
+@pytest.fixture
+def demomodel5():
+    return DemoModel5.objects.get_or_create(name='name1')[0]
 
 
 @pytest.fixture(scope='function')

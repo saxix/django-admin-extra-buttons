@@ -10,7 +10,7 @@ django-admin-extra-buttons
 ![my image](https://raw.githubusercontent.com/saxix/django-admin-extra-buttons/develop/docs/images/screenshot.png)
 
 This is a full rewriting of the original `django-admin-extra-url`. It
-provides decorators to easily add custom buttons to Django Admin pages as well add views to any ModelAdmin
+provides decorators to easily add custom buttons to Django Admin pages and/or add views to any ModelAdmin
 
 It allows easy creation of wizards, actions and/or links to external resources 
 as well as api only views.
@@ -40,41 +40,44 @@ How to use it
 
 ```python
 
-    from admin_extra_buttons.api import ExtraButtonsMixin, button, confirm_action, link, view
-    from django.http import HttpResponse, JsonResponse
-    from django.contrib import admin
+from admin_extra_buttons.api import ExtraButtonsMixin, button, confirm_action, link, view
+from admin_extra_buttons.utils import HttpResponseRedirectToReferrer
+from django.http import HttpResponse, JsonResponse
+from django.contrib import admin
 
-    class MyModelModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
+class MyModelModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
 
-        @button(permission='demo.add_demomodel1',
-                change_form=True,
-                html_attrs={'style': 'background-color:#88FF88;color:black'})
-        def refresh(self, request):
-            self.message_user(request, 'refresh called')
-
-        @button(html_attrs={'style': 'background-color:#DC6C6C;color:black'})
-        def confirm(self, request):
-            def _action(request):
-                pass
-
-            return confirm_action(self, request, _action, "Confirm action",
-                              "Successfully executed", )
-
-        @link(href=None, 
-              change_list=False, 
-              html_attrs={'target': '_new', 'style': 'background-color:var(--button-bg)'})
-        def search_on_google(self, button):
-            original = button.context['original']
-            button.label = f"Search '{original.name}' on Google"
-            button.href = f"https://www.google.com/?q={original.name}"
-
-        @view()
-        def select2_autocomplete(self, request):
-            return JsonResponse({})
+    @button(permission='demo.add_demomodel1',
+            change_form=True,
+            html_attrs={'style': 'background-color:#88FF88;color:black'})
+    def refresh(self, request):
+        self.message_user(request, 'refresh called')
+        # Optional: returns HttpResponse
+        return HttpResponseRedirectToReferrer(request)
     
-        @view(http_basic_auth=True)
-        def api4(self, request):
-            return HttpResponse("Basic Authentication allowed")
+    @button(html_attrs={'style': 'background-color:#DC6C6C;color:black'})
+    def confirm(self, request):
+        def _action(request):
+            pass
+
+        return confirm_action(self, request, _action, "Confirm action",
+                          "Successfully executed", )
+
+    @link(href=None, 
+          change_list=False, 
+          html_attrs={'target': '_new', 'style': 'background-color:var(--button-bg)'})
+    def search_on_google(self, button):
+        original = button.context['original']
+        button.label = f"Search '{original.name}' on Google"
+        button.href = f"https://www.google.com/?q={original.name}"
+
+    @view()
+    def select2_autocomplete(self, request):
+        return JsonResponse({})
+
+    @view(http_basic_auth=True)
+    def api4(self, request):
+        return HttpResponse("Basic Authentication allowed")
 
 ```
 

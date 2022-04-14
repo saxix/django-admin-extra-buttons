@@ -72,3 +72,29 @@ def test_action_permission_callable(app, staff_user):
     url = reverse('admin:demo_demomodel1_update_callable_permission', args=[obj.pk])
     res = app.get(url, user=staff_user, expect_errors=True)
     assert res.status_code == 403
+
+
+def test_visible_callable(app, admin_user, monkeypatch):
+    url = reverse('admin:demo_demomodel1_changelist')
+    res = app.get(url, user=admin_user)
+    assert not res.pyquery('#btn-custom_visibile')
+
+    monkeypatch.setenv('BTN_SHOW', '1')
+    res = app.get(url, user=admin_user)
+    assert res.pyquery('#btn-custom_visibile')
+
+
+def test_disabled(app, admin_user):
+    url = reverse('admin:demo_demomodel1_changelist')
+    res = app.get(url, user=admin_user)
+    assert res.pyquery('#btn-disabled.disabled')
+
+
+def test_enabled(app, admin_user, monkeypatch):
+    url = reverse('admin:demo_demomodel1_changelist')
+    res = app.get(url, user=admin_user)
+    assert res.pyquery('#btn-enabled.disabled')
+
+    monkeypatch.setenv('BTN_ENABLED', '1')
+    res = app.get(url, user=admin_user)
+    assert not res.pyquery('#btn-enabled.disabled')

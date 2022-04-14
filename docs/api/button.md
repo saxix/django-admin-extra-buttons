@@ -4,26 +4,31 @@ This decorator transform any ModelAdmin method to a view and add a button to the
 
 Examples:
 
-    from admin_extra_buttons.api import ExtraButtonsMixin, button
+```python 
 
-    class MyModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
-        @button()    
-        def refresh_all(self, request):
-            # your business logic here
-            ...
-            self.message_user(request, 'refresh called')
-            # do not return HttpResponse(), so user will be redirected to the original page
-    
-        @button()
-        def scan(self, request):
-            return HttpResponse("Done")  # return specific response
+from admin_extra_buttons.api import ExtraButtonsMixin, button
 
-        @button()
-        def scan(self, request):
-            if request.method == 'POST':
-                ....
-            else:
-                return TemplateResponse()
+
+class MyModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
+    @button()    
+    def refresh_all(self, request):
+        # your business logic here
+        ...
+        self.message_user(request, 'refresh called')
+        # do not return HttpResponse(), so user will be redirected to the original page
+
+    @button()
+    def scan(self, request):
+        return HttpResponse("Done")  # return specific response
+
+    @button()
+    def scan(self, request):
+        if request.method == 'POST':
+            ....
+        else:
+            return TemplateResponse()
+
+```
 
 ---
 

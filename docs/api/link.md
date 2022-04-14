@@ -20,9 +20,8 @@ Examples:
     
         @link(href=None, change_list=False)
         def search_on_google(self, button):
-            original = button.context['original']
-            button.label = f"Search '{original.name}' on Google"
-            button.href = f"https://www.google.com/?q={original.name}"
+            button.label = f"Search '{button.original.name}' on Google"
+            button.href = f"https://www.google.com/?q={button.original.name}"
      
 
 ## Options
@@ -62,8 +61,7 @@ context
 
         @link(href=None, change_list=False)
         def search_on_google(self, button):
-            original = button.context['original']
-            button.label = f"Search '{original.name}' on Google"
+            button.label = f"Search '{button.original.name}' on Google"
             button.href = f"https://www.google.com/?q={original.name}"
 
 ### Fully featured
@@ -74,6 +72,5 @@ context
           change_list=False, 
           html_attrs={'target': '_new', 'style': 'background-color:var(--button-bg)'})
     def search_on_google(self, button):
-        original = button.context['original']
-        button.label = f"Search '{original.name}' on Google"
-        button.href = f"https://www.google.com/?q={original.name}"
+        button.label = f"Search '{button.original.name}' on Google"
+        button.href = f"https://www.google.com/?q={button.original.name}"

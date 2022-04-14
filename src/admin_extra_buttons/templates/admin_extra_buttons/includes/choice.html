@@ -1,0 +1,10 @@
+{% spaceless %}
+    <li>
+        <select {% include "admin_extra_buttons/includes/attrs.html" with button=button %}
+            onchange="window.location = this.options[this.selectedIndex].value">
+            <option value="#">{{ button.label }}</option>
+            {% for choice in button.get_choices %}
+                <option {% if choice.selected %}selected="selected"{% endif %}
+                        value="{{ choice.url }}">{{ choice.label }}</option>{% endfor %}
+        </select>
+    </li>{% endspaceless %}
