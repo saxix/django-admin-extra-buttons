@@ -27,9 +27,11 @@ class Button:
         self.change_list = self.get_change_list_flag(change_list)
 
     def __repr__(self):
+        return f"<{self.__class__.__name__} '{self.label}'>"
+
+    def __str__(self):
         tpl: Template = get_template(self.template)
         return tpl.render(self.context.flatten())
-        # return f"<ViewButton '{self.label}' {self.handler.name}>"
 
     def get_change_form_flag(self, arg):
         if arg is None:  # pragma: no branch
