@@ -44,6 +44,8 @@ from admin_extra_buttons.api import ExtraButtonsMixin, button, confirm_action, l
 from admin_extra_buttons.utils import HttpResponseRedirectToReferrer
 from django.http import HttpResponse, JsonResponse
 from django.contrib import admin
+from django.views.decorators.clickjacking import xframe_options_sameorigin
+from django.views.decorators.csrf import csrf_exempt
 
 class MyModelModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
 
@@ -78,6 +80,13 @@ class MyModelModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
     @view(http_basic_auth=True)
     def api4(self, request):
         return HttpResponse("Basic Authentication allowed")
+
+    @view(decorators=[csrf_exempt, xframe_options_sameorigin])
+    def preview(self, request):
+        if request.method == "POST":
+            return HttpResponse("POST")
+        return HttpResponse("GET")
+            
 
 ```
 

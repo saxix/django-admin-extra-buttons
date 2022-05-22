@@ -11,7 +11,7 @@ from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
 
-from .handlers import BaseExtraHandler
+from .handlers import BaseExtraHandler, ViewHandler
 
 logger = logging.getLogger(__name__)
 
@@ -133,11 +133,15 @@ class ExtraButtonsMixin:
                 if callable(method) and isinstance(method, BaseExtraHandler):
                     handlers[method_name] = method.get_instance(self)
 
+        handler: ViewHandler
         for handler in handlers.values():
             handler.url_name = f'{opts.app_label}_{opts.model_name}_{handler.func.__name__}'
             if handler.url_pattern:
+                f = partial(getattr(self, handler.func.__name__), self)
+                for deco in handler.decorators[::-1]:
+                    f = deco(f)
                 extra_urls.append(path(handler.url_pattern,
-                                       partial(getattr(self, handler.func.__name__), self),
+                                       f,
                                        name=handler.url_name))
             if hasattr(handler, 'button_class'):
                 self.extra_button_handlers[handler.func.__name__] = handler
