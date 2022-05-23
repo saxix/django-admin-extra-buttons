@@ -34,7 +34,7 @@ def confirm_action(modeladmin, request,
                    template='admin_extra_buttons/confirm.html',
                    error_message=None):
     opts = modeladmin.model._meta
-    if extra_context and title:
+    if extra_context:
         title = extra_context.pop('title', title)
     context = modeladmin.get_common_context(request,
                                             message=message,
@@ -78,7 +78,7 @@ class ExtraButtonsMixin:
         change_form_template = 'admin_extra_buttons/change_form.html'
 
     def __init__(self, model, admin_site):
-        self.extra_button_handlers = []
+        self.extra_button_handlers = {}
         super().__init__(model, admin_site)
 
     def message_error_to_user(self, request, exception):
