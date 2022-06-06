@@ -14,7 +14,7 @@ class BaseExtraHandler:
         self.func._handler = self
         self.config = kwargs
         self.model_admin = kwargs.get('model_admin', None)
-
+        self.decorators = kwargs.get('decorators', [])
         self.login_required = kwargs.get('login_required', True)
         self._pattern = kwargs.get('pattern', None)
         self.permission = kwargs.get('permission')

@@ -1,3 +1,13 @@
+1.4.2
+-----
+* catch OSError when checking decorator
+
+
+1.4
+-----
+* add support for @decorators
+
+
 1.3.1
 -----
 * uses __str__ instead of __repr__ (DjangoDebugToolbar issue)
