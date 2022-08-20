@@ -35,7 +35,6 @@ tests_require =['coverage',
                 'pytest-cov',
                 'pytest-django',
                 'pytest-echo',
-                'pytest-pythonpath',
                 'tox>=2.3',
                 'wheel',
                 ]

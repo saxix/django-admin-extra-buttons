@@ -39,9 +39,9 @@ def labelize(label):
     return label.replace('_', ' ').strip().title()
 
 
-def check_permission(permission, request, obj=None):
+def check_permission(handler, permission, request, obj=None):
     if callable(permission):
-        if not permission(request, obj):
+        if not permission(request, obj, handler=handler):
             raise PermissionDenied
     elif not request.user.has_perm(permission):
         raise PermissionDenied

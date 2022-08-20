@@ -14,7 +14,8 @@ def test_confirm(django_app, admin_user):
     res = django_app.get(url, user=admin_user)
     res = res.click('Confirm')
     assert str(res.content).find("Confirm action")
-    res = res.form.submit().follow()
+    form = res.forms[1] if len(res.forms) > 1 else res.form
+    res = form.submit().follow()
     assert str(res.context['messages']._loaded_messages[0].message) == 'Successfully executed'
 
 

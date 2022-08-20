@@ -20,6 +20,7 @@ Three decorators are available:
 - ``button()`` to mark a method as extra view and show related button
 - ``link()`` This is used for "external" link, where you don't need to invoke local views.
 - ``view()`` View only decorator, this adds a new url but do not render any button.
+- ``choice()`` Menu like button, can be used to group multiple @views().
 
 
 Install

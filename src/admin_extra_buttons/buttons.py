@@ -95,7 +95,8 @@ class Button:
     def authorized(self):
         if self.handler.permission:
             try:
-                return check_permission(self.handler.permission, self.request, self.original)
+                return check_permission(self.handler,
+                                        self.handler.permission, self.request, self.original)
             except PermissionDenied:
                 return False
         return True

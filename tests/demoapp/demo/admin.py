@@ -38,7 +38,7 @@ class Admin1(ExtraButtonsMixin, admin.ModelAdmin):
     def refresh(self, request):
         self.message_user(request, 'refresh called')
 
-    @button(label='Refresh', permission=lambda request, object: False)
+    @button(label='Refresh', permission=lambda request, object, **kw: False)
     def refresh_callable(self, request):
         opts = self.model._meta
         self.message_user(request, 'refresh called')
@@ -72,7 +72,7 @@ class Admin1(ExtraButtonsMixin, admin.ModelAdmin):
     def no_response_single(self, request, object_id):
         self.message_user(request, 'No_response_obj.')
 
-    @button(permission=lambda request, obj: False)
+    @button(permission=lambda request, obj, **kw: False)
     def update_callable_permission(self, request, object_id):
         opts = self.model._meta
         self.message_user(request, 'action called')
