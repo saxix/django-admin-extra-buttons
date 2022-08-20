@@ -10,7 +10,6 @@ from django.db import OperationalError, ProgrammingError
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
-from django.views.decorators.csrf import csrf_exempt
 
 from .handlers import BaseExtraHandler, ViewHandler
 
