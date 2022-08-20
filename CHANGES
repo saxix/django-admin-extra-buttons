@@ -2,6 +2,7 @@
 -----
 * pass `handler` to permission callable
 
+
 1.4.2
 -----
 * catch OSError when checking decorator
