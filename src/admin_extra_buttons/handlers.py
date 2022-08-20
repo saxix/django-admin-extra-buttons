@@ -42,7 +42,7 @@ class BaseExtraHandler:
             obj = model_admin.get_object(request, pk)
 
         if self.permission:
-            check_permission(self.permission, request, obj)
+            check_permission(self, self.permission, request, obj)
         elif self.login_required and not request.user.is_authenticated:
             raise PermissionDenied
 
