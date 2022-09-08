@@ -37,6 +37,7 @@ class BaseExtraHandler:
 
     def __call__(self, model_admin, request, *args, **kwargs):
         obj = None
+        self.model_admin = model_admin
         if len(self.sig.parameters) > 2:
             pk = kwargs.get(list(self.sig.parameters)[2])
             obj = model_admin.get_object(request, pk)
@@ -96,13 +97,23 @@ class ButtonMixin:
                          **kwargs)
 
     def get_button_params(self, context, **extra):
+        request = context['request']
+        if callable(self.enabled):
+            enabled = bool(self.enabled(request))
+        else:
+            enabled = self.enabled
+
+        if callable(self.visible):
+            visible = bool(self.visible(request))
+        else:
+            visible = self.visible
         return {'label': self.config.get('label', labelize(self.name)),
                 'handler': self,
                 'html_attrs': self.html_attrs,
                 'change_list': self.change_list,
                 'change_form': self.change_form,
-                'visible': self.visible,
-                'enabled': self.enabled,
+                'visible': visible,
+                'enabled': enabled,
                 'context': context,
                 'login_required': self.login_required,
                 'permission': self.permission,
