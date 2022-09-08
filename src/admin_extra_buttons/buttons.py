@@ -17,8 +17,8 @@ class Button:
         self.href = config.get('href', None)
         self.config = config
         self.handler = handler
-        self.visible = visible
-        self.enabled = enabled
+        self._visible = visible
+        self._enabled = enabled
         self.template = template or self.default_template
         self.context: RequestContext = context
         self.disable_on_click = True
@@ -56,29 +56,42 @@ class Button:
         if self.disable_on_edit and "aeb-disable_on_edit" not in css_class:
             css_class += " aeb-disable_on_edit"
 
-        # enabled
         css_class = css_class.replace("disabled", "")
-        if not self.enabled:
-            css_class += " disabled"
-        elif callable(self.enabled) and not self.enabled(self):
+        if self.enabled:
+            css_class += " enabled"
+        else:
             css_class += " disabled"
 
         attrs['class'] = css_class
         return attrs
 
     def can_render(self):
-        return self.authorized() and self.url and self.is_visible()
+        return self.authorized() and self.url and self.visible
 
-    def is_visible(self):
+    @property
+    def enabled(self):
         if not self.context:  # pragma: no cover
             raise ValueError("Button not initialised.")
-        if callable(self.visible):
+        if callable(self._enabled):
             try:
-                return self.visible(self)
+                return self._enabled(self)
+            except Exception:  # pragma: no cover
+                raise
+                return False
+
+        return self._enabled
+
+    @property
+    def visible(self):
+        if not self.context:  # pragma: no cover
+            raise ValueError("Button not initialised.")
+        if callable(self._visible):
+            try:
+                return self._visible(self)
             except Exception:  # pragma: no cover
                 return False
 
-        return self.visible
+        return self._visible
 
     @property
     def request(self):
@@ -103,6 +116,8 @@ class Button:
 
     @property
     def url(self):
+        if not self.enabled:
+            return '#'
         func = self.config.get('get_url', self.get_url)
         return func(self.context)
 
