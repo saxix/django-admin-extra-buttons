@@ -76,7 +76,6 @@ class Button:
             try:
                 return self._enabled(self)
             except Exception:  # pragma: no cover
-                raise
                 return False
 
         return self._enabled
