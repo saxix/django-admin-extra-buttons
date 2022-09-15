@@ -55,17 +55,25 @@ class BaseExtraHandler:
 
 
 class ViewHandler(BaseExtraHandler):
-    def __init__(self, func, login_required=True, http_basic_auth=False, **kwargs):
+    def __init__(self, func, login_required=True, http_basic_auth=False, http_auth_handler=None, **kwargs):
         self.login_required = login_required
-        self.http_basic_auth = http_basic_auth
+        if http_auth_handler:
+            if http_basic_auth:
+                raise ValueError("'http_basic_auth' and 'http_auth_handler' are mutually exclusive")
+            self.http_auth_handler = http_auth_handler
+        else:
+            self.http_basic_auth = http_basic_auth
+            self.http_auth_handler = handle_basic_auth
         super().__init__(func,
+                         http_auth_handler=http_auth_handler,
                          http_basic_auth=http_basic_auth,
                          login_required=login_required,
                          **kwargs)
 
     def __call__(self, model_admin, request, *args, **kwargs):
+        self.model_admin = model_admin
         if self.login_required and self.http_basic_auth and not request.user.is_authenticated:
-            handle_basic_auth(request)
+            self.http_auth_handler(request)
         return super().__call__(model_admin, request, *args, **kwargs)
 
     @cached_property
