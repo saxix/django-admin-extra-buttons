@@ -96,6 +96,10 @@ class Admin1(ExtraButtonsMixin, admin.ModelAdmin):
     def enabled(self, request):
         pass
 
+    @link(href="https://www.google.com/", visible=lambda btn: True)
+    def invisible(self, button):
+        button.visible = False
+
     @button()
     def error_message(self, request):
         try:
