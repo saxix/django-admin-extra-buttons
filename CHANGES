@@ -1,3 +1,8 @@
+1.5.4
+-----
+* allow overwrite visible inside handler
+
+
 1.5.3
 -----
 * bug fixing
