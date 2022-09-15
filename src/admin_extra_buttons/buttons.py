@@ -96,6 +96,10 @@ class Button:
 
         return self._visible
 
+    @visible.setter
+    def visible(self, value):
+        self._visible = value
+
     @property
     def request(self):
         if not self.context:  # pragma: no cover
