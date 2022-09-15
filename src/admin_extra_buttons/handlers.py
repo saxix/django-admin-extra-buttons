@@ -64,6 +64,7 @@ class ViewHandler(BaseExtraHandler):
                          **kwargs)
 
     def __call__(self, model_admin, request, *args, **kwargs):
+        self.model_admin = model_admin
         if self.login_required and self.http_basic_auth and not request.user.is_authenticated:
             handle_basic_auth(request)
         return super().__call__(model_admin, request, *args, **kwargs)

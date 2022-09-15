@@ -82,6 +82,10 @@ class Button:
         return self._enabled
 
     @property
+    def model_admin(self):
+        return self.handler.model_admin
+
+    @property
     def visible(self):
         if not self.context:  # pragma: no cover
             raise ValueError("Button not initialised.")
