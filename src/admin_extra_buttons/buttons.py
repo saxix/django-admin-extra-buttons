@@ -85,6 +85,10 @@ class Button:
         return self.handler.model_admin
 
     @property
+    def admin_site(self):
+        return self.handler.model_admin.admin_site
+
+    @property
     def visible(self):
         if not self.context:  # pragma: no cover
             raise ValueError("Button not initialised.")
@@ -132,9 +136,9 @@ class Button:
         detail = len(self.handler.sig.parameters) > self.default_change_form_arguments
         try:
             if self.change_form and self.original and detail:
-                url_ = reverse(f'admin:{self.handler.url_name}', args=[self.original.pk])
+                url_ = reverse(f'{self.admin_site.name}:{self.handler.url_name}', args=[self.original.pk])
             elif self.change_list:
-                url_ = reverse(f'admin:{self.handler.url_name}')
+                url_ = reverse(f'{self.admin_site.name}:{self.handler.url_name}')
             else:
                 return None
             filters = get_preserved_filters(self.request)

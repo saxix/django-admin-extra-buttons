@@ -1,3 +1,8 @@
+1.5.5
+-----
+* minor refactoring of get_urls()
+
+
 1.5.4
 -----
 * allow overwrite visible inside handler
