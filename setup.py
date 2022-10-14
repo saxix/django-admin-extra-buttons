@@ -39,6 +39,7 @@ tests_require =['coverage',
                 'wheel',
                 ]
 dev_require = ['autopep8',
+               'bump2version',
                'check-manifest',
                'django',
                'pip-tools',
