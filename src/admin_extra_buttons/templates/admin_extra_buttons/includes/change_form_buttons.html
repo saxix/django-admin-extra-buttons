@@ -3,6 +3,5 @@
 {% for button in buttons %}
     {% if button.can_render and button.change_form %}
         {{ button }}
-{#        {% include "admin_extra_buttons/includes/button.html" with button=button %}#}
     {% endif %}
 {% endfor %}
