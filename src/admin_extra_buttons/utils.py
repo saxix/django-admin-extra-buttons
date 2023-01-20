@@ -16,7 +16,7 @@ def handle_basic_auth(request):
         if authmeth.lower() == "basic":
             auth = codecs.decode(auth.encode("utf8").strip(), "base64").decode()
             username, password = auth.split(":", 1)
-            user = authenticate(username=username, password=password)
+            user = authenticate(request=request, username=username, password=password)
             if user:  # pragma: no branch
                 login(request, user)
                 return user
