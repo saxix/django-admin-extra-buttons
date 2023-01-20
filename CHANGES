@@ -1,3 +1,8 @@
+1.5.6
+-----
+* pass request when basic_auth authenticate
+
+
 1.5.5
 -----
 * minor refactoring of get_urls()
