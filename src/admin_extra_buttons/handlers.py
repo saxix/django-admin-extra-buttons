@@ -49,7 +49,7 @@ class BaseExtraHandler:
 
         ret = self.func(model_admin, request, *args, **kwargs)
 
-        if not isinstance(ret, HttpResponse):
+        if not isinstance(ret, (FileResponse, HttpResponse)):
             return HttpResponseRedirectToReferrer(request)
         return ret
 
