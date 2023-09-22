@@ -1,7 +1,7 @@
 import inspect
 
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
 from django.utils.functional import cached_property
 
 from .buttons import Button, ChoiceButton, LinkButton
