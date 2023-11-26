@@ -11,6 +11,7 @@ from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
 
+from django.contrib import admin
 from .handlers import BaseExtraHandler, ViewHandler
 
 logger = logging.getLogger(__name__)
@@ -68,7 +69,7 @@ class DummyAdminform:
         yield
 
 
-class ExtraButtonsMixin:
+class ExtraButtonsMixin(admin.ModelAdmin):
     _registered_buttons = []
     if IS_GRAPPELLI_INSTALLED:  # pragma: no cover
         change_list_template = 'admin_extra_buttons/grappelli/change_list.html'
@@ -84,12 +85,11 @@ class ExtraButtonsMixin:
     def message_error_to_user(self, request, exception):
         self.message_user(request, f'{exception.__class__.__name__}: {exception}', messages.ERROR)
 
-    @classmethod
-    def check(cls, **kwargs):
-        errors = []
+    def check(self, **kwargs):
+        errors = super().check(**kwargs)
         try:
             from admin_extra_buttons.utils import check_decorator_errors
-            errors.extend(check_decorator_errors(cls))
+            errors.extend(check_decorator_errors(self))
         except (OSError, OperationalError, ProgrammingError):  # pragma: no cover
             pass
         return errors

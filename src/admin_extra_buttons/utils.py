@@ -63,8 +63,8 @@ def get_all_permissions():
                       .values_list('content_type__app_label', 'codename'))]
 
 
-def check_decorator_errors(cls):
-    target = cls
+def check_decorator_errors(model_admin: "ExtraButtonsMixin"):
+    target = type(model_admin)
     standard_permissions = []
     errors = []
     if 'django.contrib.auth' in settings.INSTALLED_APPS:  # pragma: no branch
@@ -83,7 +83,7 @@ def check_decorator_errors(cls):
                         if k.arg == 'permission' and isinstance(k.value, ast.Constant):
                             perm_name = k.value.value
                             if perm_name not in standard_permissions:
-                                errors.append(Warning(f'"{cls.__name__}.{node.name}" '
+                                errors.append(Warning(f'"{target.__name__}.{node.name}" '
                                                       f'is checking for a non existing permission '
                                                       f'"{perm_name}"',
                                                       id='admin_extra_buttons.PERM', ))
