@@ -4,7 +4,7 @@ from functools import partial
 
 from django import forms
 from django.conf import settings
-from django.contrib import messages
+from django.contrib import admin, messages
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
 from django.db import OperationalError, ProgrammingError
 from django.http import HttpResponseRedirect
@@ -68,7 +68,7 @@ class DummyAdminform:
         yield
 
 
-class ExtraButtonsMixin:
+class ExtraButtonsMixin(admin.ModelAdmin):
     _registered_buttons = []
     if IS_GRAPPELLI_INSTALLED:  # pragma: no cover
         change_list_template = 'admin_extra_buttons/grappelli/change_list.html'
@@ -84,12 +84,11 @@ class ExtraButtonsMixin:
     def message_error_to_user(self, request, exception):
         self.message_user(request, f'{exception.__class__.__name__}: {exception}', messages.ERROR)
 
-    @classmethod
-    def check(cls, **kwargs):
-        errors = []
+    def check(self, **kwargs):
+        errors = super().check(**kwargs)
         try:
             from admin_extra_buttons.utils import check_decorator_errors
-            errors.extend(check_decorator_errors(cls))
+            errors.extend(check_decorator_errors(self))
         except (OSError, OperationalError, ProgrammingError):  # pragma: no cover
             pass
         return errors

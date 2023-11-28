@@ -1,7 +1,7 @@
 import inspect
 
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse
+from django.http.response import HttpResponseBase
 from django.utils.functional import cached_property
 
 from .buttons import Button, ChoiceButton, LinkButton
@@ -49,7 +49,7 @@ class BaseExtraHandler:
 
         ret = self.func(model_admin, request, *args, **kwargs)
 
-        if not isinstance(ret, HttpResponse):
+        if not isinstance(ret, HttpResponseBase):
             return HttpResponseRedirectToReferrer(request)
         return ret
 
