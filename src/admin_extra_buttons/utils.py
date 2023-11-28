@@ -1,14 +1,13 @@
 import ast
 import codecs
 import inspect
+from typing import TYPE_CHECKING
 from urllib.parse import urlencode
 
 from django.conf import settings
 from django.core.checks import Warning
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
-
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .mixins import ExtraButtonsMixin

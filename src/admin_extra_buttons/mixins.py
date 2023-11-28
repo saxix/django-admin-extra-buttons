@@ -4,14 +4,13 @@ from functools import partial
 
 from django import forms
 from django.conf import settings
-from django.contrib import messages
+from django.contrib import admin, messages
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
 from django.db import OperationalError, ProgrammingError
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
 
-from django.contrib import admin
 from .handlers import BaseExtraHandler, ViewHandler
 
 logger = logging.getLogger(__name__)
