@@ -1,10 +1,6 @@
-(dev)
------
-* BUG FIX: fixes check() implementation
-
-
 1.5.7
 -----
+* BUG FIX: fixes check() implementation
 * Allow any HttpResponse as return value
 
 
