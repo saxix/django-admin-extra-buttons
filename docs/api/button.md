@@ -106,7 +106,7 @@ Buttons with custom permission, one for `change_list` and other for `change_form
 
         @button(permission='app.delete_mymodel)
         def mark(self, request, pk):
-            obj = self.get_object(request.pk)
+            obj = self.get_object(request, pk)
             obj.mark = True
             obj.save()
 
