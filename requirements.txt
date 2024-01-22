@@ -1,0 +1,5 @@
+markdown-include
+mdx_gh_links
+mkdocs
+mkdocs-material
+mkdocs-material
