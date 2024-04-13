@@ -1,4 +1,4 @@
-django-admin-extra-buttons
+ django-admin-extra-buttons
 ==========================
 
 
