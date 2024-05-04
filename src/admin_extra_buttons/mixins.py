@@ -97,6 +97,8 @@ class ExtraButtonsMixin(admin.ModelAdmin):
         opts = self.model._meta
         app_label = opts.app_label
         self.object = None
+        if pk:
+            self.object = self.get_object(request, pk)
 
         context = {
             **self.admin_site.each_context(request),
@@ -105,20 +107,19 @@ class ExtraButtonsMixin(admin.ModelAdmin):
             'add': False,
             'change': True,
             'save_as': False,
+            "original": self.object,
             'extra_buttons': self.extra_button_handlers,
-            'has_delete_permission': self.has_delete_permission(request, pk),
             'has_editable_inline_admin_formsets': False,
-            'has_view_permission': self.has_view_permission(request, pk),
-            'has_change_permission': self.has_change_permission(request, pk),
+            'has_delete_permission': self.has_delete_permission(request, self.object),
+            'has_view_permission': self.has_view_permission(request, self.object),
+            'has_change_permission': self.has_change_permission(request, self.object),
             'has_add_permission': self.has_add_permission(request),
             'app_label': app_label,
             'adminform': DummyAdminform(model_admin=self),
         }
         context.setdefault('title', '')
         context.update(**kwargs)
-        if pk:
-            self.object = self.get_object(request, pk)
-            context['original'] = self.object
+
         return context
 
     def get_extra_urls(self) -> list:

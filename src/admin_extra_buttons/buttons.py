@@ -50,7 +50,7 @@ class Button:
             attrs['id'] = f'btn-{self.handler.func.__name__}'
 
         css_class = attrs.get("class", "")
-
+        css_class += " aeb-button"
         if self.disable_on_click and "aeb-disable-on-click" not in css_class:
             css_class += " aeb-disable-on-click"
         if self.disable_on_edit and "aeb-disable_on_edit" not in css_class:

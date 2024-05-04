@@ -1,10 +1,13 @@
-include README.rst
+include README.md
 include CHANGES
 include LICENSE
 include MANIFEST.in
 include tox.ini
 include setup.py
 include setup.cfg
+
+global-include *.pyi
+global-include *.typed
 
 include tests/.coveragerc
 recursive-include src/requirements *.pip

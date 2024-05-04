@@ -1,3 +1,9 @@
+1.5.8
+-----
+* add common css class
+* fixes permissions check
+
+
 1.5.7
 -----
 * BUG FIX: fixes check() implementation
