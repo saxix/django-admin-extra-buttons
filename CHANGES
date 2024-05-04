@@ -1,7 +1,7 @@
 1.5.8 (dev)
 -----
 * add common css class
-
+* fixes permissions check
 
 1.5.7
 -----

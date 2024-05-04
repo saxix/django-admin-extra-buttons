@@ -48,26 +48,28 @@ from django.contrib import admin
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.decorators.csrf import csrf_exempt
 
+
 class MyModelModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
 
     @button(permission='demo.add_demomodel1',
+            visible=lambda self: self.context["request"].user.is_superuser,
             change_form=True,
             html_attrs={'style': 'background-color:#88FF88;color:black'})
     def refresh(self, request):
         self.message_user(request, 'refresh called')
         # Optional: returns HttpResponse
         return HttpResponseRedirectToReferrer(request)
-    
+
     @button(html_attrs={'style': 'background-color:#DC6C6C;color:black'})
     def confirm(self, request):
         def _action(request):
             pass
 
         return confirm_action(self, request, _action, "Confirm action",
-                          "Successfully executed", )
+                              "Successfully executed", )
 
-    @link(href=None, 
-          change_list=False, 
+    @link(href=None,
+          change_list=False,
           html_attrs={'target': '_new', 'style': 'background-color:var(--button-bg)'})
     def search_on_google(self, button):
         original = button.context['original']
@@ -87,7 +89,7 @@ class MyModelModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
         if request.method == "POST":
             return HttpResponse("POST")
         return HttpResponse("GET")
-            
+
 
 ```
 
