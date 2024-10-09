@@ -1,3 +1,9 @@
+1.6.0
+-----
+* removes constraint to use `button` as @link() argument
+* drop official support for Django < 3.x
+
+
 1.5.8
 -----
 * add common css class

@@ -110,17 +110,17 @@ class Admin1(ExtraButtonsMixin, admin.ModelAdmin):
 
 class Admin2(ExtraButtonsMixin, admin.ModelAdmin):
     @link(href="https://www.google.com/", change_form=False, html_attrs={'target': '_new'})
-    def google(self, button):
+    def google(self, btn):
         pass
 
     @link(href=None, change_list=False, html_attrs={'target': '_new', 'style': 'background-color:var(--button-bg)'})
-    def search_on_google(self, button):
-        original = button.context['original']
+    def search_on_google(self, btn):
+        original = btn.context['original']
         button.label = f"Search '{original.name}' on Google"
         button.href = f"https://www.google.com/?q={original.name}"
 
     @link(href="/", visible=lambda btn: 'BTN_SHOW2' in os.environ, change_list=True)
-    def custom_visibile(self, button):
+    def custom_visibile(self, btn):
         pass
 
 
