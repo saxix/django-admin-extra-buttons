@@ -3,6 +3,7 @@ import os
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -110,17 +111,17 @@ class Admin1(ExtraButtonsMixin, admin.ModelAdmin):
 
 class Admin2(ExtraButtonsMixin, admin.ModelAdmin):
     @link(href="https://www.google.com/", change_form=False, html_attrs={'target': '_new'})
-    def google(self, button):
+    def google(self, btn):
         pass
 
     @link(href=None, change_list=False, html_attrs={'target': '_new', 'style': 'background-color:var(--button-bg)'})
-    def search_on_google(self, button):
-        original = button.context['original']
+    def search_on_google(self, btn):
+        original = btn.context['original']
         button.label = f"Search '{original.name}' on Google"
         button.href = f"https://www.google.com/?q={original.name}"
 
     @link(href="/", visible=lambda btn: 'BTN_SHOW2' in os.environ, change_list=True)
-    def custom_visibile(self, button):
+    def custom_visibile(self, btn):
         pass
 
 
@@ -172,6 +173,18 @@ class Admin5(ExtraButtonsMixin, admin.ModelAdmin):
 
     @view()
     def test22(self, request, pk):
+        context = self.get_common_context(request, pk)
+        self.message_user(request, f"You have selected test22 on {context['original']}")
+        return TemplateResponse(request, "demo/test22.html", context)
+
+    @login_required
+    @view()
+    def test_login_required(self, request, pk):
+        context = self.get_common_context(request, pk)
+        self.message_user(request, f"You have selected test22 on {context['original']}")
+        return TemplateResponse(request, "demo/test22.html", context)
+    @view(http_auth_handler=True)
+    def test_auth(self, request, pk):
         context = self.get_common_context(request, pk)
         self.message_user(request, f"You have selected test22 on {context['original']}")
         return TemplateResponse(request, "demo/test22.html", context)

@@ -15,26 +15,13 @@ provides decorators to easily add custom buttons to Django Admin pages and/or ad
 It allows easy creation of wizards, actions and/or links to external resources 
 as well as api only views.
 
-Three decorators are available: 
+Four decorators are available: 
 
 - ``button()`` to mark a method as extra view and show related button
 - ``link()`` This is used for "external" link, where you don't need to invoke local views.
 - ``view()`` View only decorator, this adds a new url but do not render any button.
 - ``choice()`` Menu like button, can be used to group multiple @views().
 
-
-Install
--------
-
-    pip install django-admin-extra-buttons
-
-
-After installation add it to ``INSTALLED_APPS``
-
-    INSTALLED_APPS = (
-       ...
-       'admin_extra_buttons',
-    )
 
 How to use it
 -------------

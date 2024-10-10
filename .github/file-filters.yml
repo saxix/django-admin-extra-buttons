@@ -1,0 +1,30 @@
+# This is used by the action https://github.com/dorny/paths-filter
+dependencies: &dependencies
+  - 'pyproject.toml'
+
+python: &python
+  - added|modified: 'src/**'
+  - added|modified: 'tests/**'
+  - 'manage.py'
+
+changelog:
+  - added|modified: 'changes/**'
+  - 'CHANGELOG.md'
+
+mypy:
+  - *python
+  - 'mypy.ini'
+
+run_tests:
+  - *python
+  - *dependencies
+  - 'pytest.ini'
+  - '.github/workflows/test.yml'
+  - '.github/file-filters.yml'
+
+lint:
+  -  *python
+  - '.flake8'
+  - 'pyproject.toml'
+  - '.github/file-filters.yml'
+  - '.github/workflows/lint.yml'

@@ -31,4 +31,3 @@ that can be useful when create custom views that render templates. (\@see [Build
 
 message_error_to_user()
 : Shortcut to display message on Exception
-
