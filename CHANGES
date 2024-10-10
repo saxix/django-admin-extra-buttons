@@ -1,5 +1,7 @@
 1.6.0
 -----
+* moves to pyproject.toml (removes `setup.py`)
+* starts using `uv`
 * removes constraint to use `button` as @link() argument
 * drop official support for Django < 3.x
 

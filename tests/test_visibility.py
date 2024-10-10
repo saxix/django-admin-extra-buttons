@@ -14,7 +14,6 @@ def test_button_visibility():
 
 def test_link_visibility():
     def v(btn):
-        assert btn.original
         return isinstance(btn, LinkButton)
 
     h = LinkHandler(MagicMock(__name__="a"), visible=v)

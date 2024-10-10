@@ -16,3 +16,4 @@ pytest.xml
 dist/*
 docs/site
 stubs/
+uv.lock
