@@ -81,10 +81,6 @@ class Button:
         return self._enabled
 
     @property
-    def model_admin(self):
-        return self.handler.model_admin
-
-    @property
     def admin_site(self):
         return self.handler.model_admin.admin_site
 

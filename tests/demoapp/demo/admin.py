@@ -3,6 +3,7 @@ import os
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -172,6 +173,18 @@ class Admin5(ExtraButtonsMixin, admin.ModelAdmin):
 
     @view()
     def test22(self, request, pk):
+        context = self.get_common_context(request, pk)
+        self.message_user(request, f"You have selected test22 on {context['original']}")
+        return TemplateResponse(request, "demo/test22.html", context)
+
+    @login_required
+    @view()
+    def test_login_required(self, request, pk):
+        context = self.get_common_context(request, pk)
+        self.message_user(request, f"You have selected test22 on {context['original']}")
+        return TemplateResponse(request, "demo/test22.html", context)
+    @view(http_auth_handler=True)
+    def test_auth(self, request, pk):
         context = self.get_common_context(request, pk)
         self.message_user(request, f"You have selected test22 on {context['original']}")
         return TemplateResponse(request, "demo/test22.html", context)
