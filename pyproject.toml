@@ -49,4 +49,5 @@ dev-dependencies = [
     "flake8>=7.1.1",
     "black>=24.10.0",
     "pdbpp>=0.10.3",
+    "toml>=0.10.2",
 ]
