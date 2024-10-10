@@ -21,9 +21,9 @@
     <br><br><br><br><br>
     <form method="post">
         {% csrf_token %}
-        <input type="submit" class="btn btn-large btn-danger" value="Confirm">
+        <input type="submit" class="btn btn-large btn-danger" value="{% trans 'Confirm'  %}">
         <input type="button" class="btn btn-large btn-success"
                onclick="javascript:history.back()"
-               value="Go Back">
+               value="{% trans 'Go Back' %}">
     </form>
 {% endblock content %}
