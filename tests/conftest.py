@@ -36,19 +36,19 @@ def app(request):
 
 @pytest.fixture
 def demomodel2():
-    from demo.models import DemoModel1, DemoModel2, DemoModel5
+    from demo.models import DemoModel2
     return DemoModel2.objects.get_or_create(name='name1')[0]
 
 
 @pytest.fixture
 def demomodel1():
-    from demo.models import DemoModel1, DemoModel2, DemoModel5
+    from demo.models import DemoModel1
     return DemoModel1.objects.get_or_create(name='name1')[0]
 
 
 @pytest.fixture
 def demomodel5():
-    from demo.models import DemoModel1, DemoModel2, DemoModel5
+    from demo.models import DemoModel5
     return DemoModel5.objects.get_or_create(name='name1')[0]
 
 

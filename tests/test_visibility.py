@@ -1,6 +1,7 @@
-from admin_extra_buttons.handlers import ButtonHandler, ChoiceHandler, LinkHandler, ViewHandler
-from admin_extra_buttons.buttons import Button, LinkButton
 from unittest.mock import MagicMock
+
+from admin_extra_buttons.buttons import Button, LinkButton
+from admin_extra_buttons.handlers import ButtonHandler, LinkHandler
 
 
 def test_button_visibility():

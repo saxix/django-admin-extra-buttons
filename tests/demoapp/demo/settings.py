@@ -1,5 +1,3 @@
-import os
-
 DEBUG = True
 STATIC_URL = '/static/'
 
