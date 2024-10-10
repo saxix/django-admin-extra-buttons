@@ -20,8 +20,7 @@ classifiers=[
     ]
 
 dependencies = [
-    "django>4,<6",
-    "mdx-gh-links[docs]>=0.4",
+    "django>=4,<6",
 ]
 [project.urls]
 Homepage = "https://github.com/saxix/django-admin-extra-buttonst"
