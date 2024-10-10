@@ -1,26 +1,67 @@
-name: Documentation
+name: "Documentation"
+
 on:
-    push:
-        paths:
-            - 'docs/**'
-            - 'README.md'
-            - '.github/workflows/docs.yml'
+  push:
+    branches:
+      - develop
+      - master
+  schedule:
+    - cron: '37 23 * * 2'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-    build:
-        name: Deploy docs
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout main
-              uses: actions/checkout@v2
+  generate:
+    name: Generate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-            - name: Deploy docs
-              uses: mhausenblas/mkdocs-deploy-gh-pages@master
-                # Or use mhausenblas/mkdocs-deploy-gh-pages@nomaterial to build without the mkdocs-material theme
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#                  CUSTOM_DOMAIN: optionaldomain.com
-                  CONFIG_FILE: ./mkdocs.yml
-                  EXTRA_PACKAGES: build-base
-                  # GITHUB_DOMAIN: github.myenterprise.com
-                  REQUIREMENTS: docs/requirements.txt
+      - name: Restore cached venv
+        id: cache-venv-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            .cache-uv/
+            .venv/
+          key: ${{ matrix.python-version }}-${{matrix.django-version}}-venv
+
+      - uses: yezz123/setup-uv@v4
+      - name: Build Doc
+        run: |
+          uv sync --extra docs
+          PYTHONPATH=./src uv run --cache-dir .cache-uv/ mkdocs build -d ./docs-output
+
+      - name: Cache venv
+        if: steps.cache-venv-restore.outputs.cache-hit != 'true'
+        id: cache-venv-save
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            .cache-uv/
+            .venv/
+          key: ${{ matrix.python-version }}-${{matrix.django-version}}-venv
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./docs-output
+
+  # Deployment job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: generate
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
