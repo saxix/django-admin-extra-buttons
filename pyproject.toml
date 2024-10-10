@@ -49,6 +49,5 @@ dev-dependencies = [
     "flake8>=7.1.1",
     "black>=24.10.0",
     "pdbpp>=0.10.3",
-    "tox-uv>=1.13.0",
-    "django>=5,<6",
+    "tox-uv>=1.13.0"
 ]
