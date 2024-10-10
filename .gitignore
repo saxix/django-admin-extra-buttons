@@ -13,6 +13,7 @@ pytest.xml
 *.py[co]
 *.egg-info
 *.sqlite
-dist/*
+dist
 docs/site
 stubs/
+uv.lock

@@ -1,6 +1,4 @@
-import os
-
-DEBUG = os.environ.get('DEBUG', "False").lower() == "true"
+DEBUG = True
 STATIC_URL = '/static/'
 
 SITE_ID = 1
@@ -12,7 +10,7 @@ INSTALLED_APPS = ['django.contrib.auth',
                   'django.contrib.sessions',
                   'django.contrib.sites',
                   'django.contrib.messages',
-                  # 'django.contrib.staticfiles',
+                  'django.contrib.staticfiles',
                   'django.contrib.admin',
                   'admin_extra_buttons',
                   'demo']
@@ -37,19 +35,21 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': ['django.contrib.messages.context_processors.messages',
-                                   'django.contrib.auth.context_processors.auth',
-                                   "django.template.context_processors.request",
-                                   ]
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
         },
     },
 ]
 
+
 AUTHENTICATION_BACKENDS = [
     "demo.backends.AnyUserBackend",
 ]
-

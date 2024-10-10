@@ -1,6 +1,3 @@
-from unittest.mock import Mock
-
-from demo.admin import Admin1
 from demo.models import DemoModel1
 from django.contrib.admin import site
 
