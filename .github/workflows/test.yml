@@ -77,8 +77,9 @@ jobs:
       - name: Test
 #        if: needs.changes.outputs.run_tests
         run: |
-          uv add "django==${{ matrix.django-version }}.*"
-          uv run --cache-dir .cache-uv/ \
+              uv export -q --no-hashes  -o requirements.txt
+              pip install -r requirements.txt
+              pip install "django==${{ matrix.django-version }}.*"
               python -m pytest tests/ \
                 --junit-xml junit-${{ matrix.python-version }}-${{matrix.django-version}}.xml \
                 --cov --cov-report xml
