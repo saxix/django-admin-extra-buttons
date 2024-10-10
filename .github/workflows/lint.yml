@@ -1,0 +1,62 @@
+name: Lint
+
+on:
+  push:
+    branches:
+      - '**'        # matches every branch
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}-lint"
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  id-token: write
+  attestations: write
+
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    defaults:
+      run:
+        shell: bash
+    outputs:
+      lint: ${{steps.changes.outputs.lint }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.1.7
+      - id: changes
+        name: Check for file changes
+        uses: dorny/paths-filter@0bc4621a3135347011ad047f9ecf449bf72ce2bd # v3.0.0
+        with:
+          base: ${{ github.ref }}
+          token: ${{ github.token }}
+          filters: .github/file-filters.yml
+
+  lint:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    needs: [ changes ]
+    if: needs.changes.outputs.lint
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.1.7
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+          architecture: 'x64'
+      - uses: yezz123/setup-uv@v4
+      - name: lint
+        if: needs.changes.outputs.lint
+        run: |
+          uv run isort src/ --check-only
+          uv run flake8 src/

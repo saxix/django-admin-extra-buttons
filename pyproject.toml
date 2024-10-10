@@ -20,7 +20,7 @@ classifiers=[
     ]
 
 dependencies = [
-
+    "django>4,<6",
 ]
 [project.urls]
 Homepage = "https://github.com/saxix/django-admin-extra-buttonst"
@@ -41,7 +41,7 @@ dev-dependencies = [
     #    "black>=24.8.0",
     #    "celery[pytest]>=5.4.0",
     #    "django-webtest>=1.9.12",
-    #    "factory-boy>=3.3.1",
+        "factory-boy>=3.3.1",
     #    "flake8>=7.1.1",
     #    "flower>=2.0.1",
     #    "ipython>=8.18.1",
@@ -52,7 +52,7 @@ dev-dependencies = [
     #    "psycopg>=2.9.9",
     #    "pyquery>=2.0.1",
     #    "pytest-cov>=5.0.0",
-    #    "pytest-django>=4.9.0",
+        "pytest-django>=4.9.0",
     #    "pytest-echo>=1.7.3",
     "django-webtest>=1.9.12",
     #    "black>=24.8.0",
@@ -67,8 +67,8 @@ dev-dependencies = [
     #    "pdbpp>=0.10.3",
     #    "psycopg-binary>=3.2.2",
     #    "psycopg>=2.9.9",
-    #    "pyquery>=2.0.1",
-    #    "pytest-cov>=5.0.0",
+        "pyquery>=2.0.1",
+        "pytest-cov>=5.0.0",
     #    "pytest-django>=4.9.0",
     #    "pytest-echo>=1.7.3",
     "pytest>=8.3.3",

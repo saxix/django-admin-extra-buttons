@@ -1,38 +1,68 @@
-site_name: django-admin-extra-buttons
-site_url: https://github.com/saxix/django-admin-extra-buttons
-#site_description: ""
-#site_author: ""
-repo_url: https://github.com/saxix/django-admin-extra-buttons
-edit_uri: "/tree/develop/docs/source"
 dev_addr: 127.0.0.1:9000
-docs_dir: "docs"
-site_dir: "./~build/docs"
+docs_dir: docs/
+edit_uri: "/tree/develop/docs/source"
+repo_url: https://github.com/saxix/django-admin-extra-buttons
+site_description: ""
+site_dir: ./~build/docs
+site_name: Documentation
+site_url: https://github.com/saxix/django-admin-extra-buttons
+strict: false
 
-nav:
-  - Home: index.md
-  - API:
-    - '@button': api/button.md
-    - '@link': api/link.md
-    - '@view': api/view.md
-    - '@choice': api/choice.md
-    - ExtraButtonsMixin: api/mixin.md
-    - Handlers: api/handlers.md
-  - 'howto.md'
-
-#theme: readthedocs
-theme: material
 
 markdown_extensions:
-  - toc:
-      permalink: "#"
-  - markdown_include.include:
-      base_path: .
   - admonition
-  - attr_list
-  - def_list
   - mdx_gh_links:
       user: saxix
       repo: django-admin-extra-buttons
+  - markdown_include.include:
+      base_path: .
 
-extra_css:
-  - css/extra.css
+theme:
+  name: "material"
+  color_mode: auto
+#  highlightjs: true
+#  hljs_languages:
+#    - yaml
+#    - django
+  user_color_mode_toggle: true
+  features:
+    - content.action.edit
+    - content.code.annotate
+    - content.code.copy
+    - content.tooltips
+    - header.autohidex
+    - navigation.footer
+    - navigation.indexes
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.instant.progress
+  extra:
+    version:
+      provider: mike
+      alias: true
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      primary: light blue
+      media: "(prefers-color-scheme: light)"
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - scheme: slate
+      primary: light blue
+      media: "(prefers-color-scheme: dark)"
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+
+plugins:
+  - mkdocstrings:
+      default_handler: python
+  - awesome-pages
+  - search
+
+watch:
+  - docs/
+  - src/
