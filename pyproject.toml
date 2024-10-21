@@ -23,7 +23,7 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/saxix/django-admin-extra-buttonst"
+Homepage = "https://github.com/saxix/django-admin-extra-buttons"
 Documentation = "https://github.com/saxix/django-admin-extra-buttons"
 
 [project.optional-dependencies]
