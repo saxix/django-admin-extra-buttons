@@ -6,6 +6,7 @@ from django import forms
 from django.conf import settings
 from django.contrib import admin, messages
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
+from django.core.exceptions import ImproperlyConfigured
 from django.db import OperationalError, ProgrammingError
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
@@ -89,7 +90,7 @@ class ExtraButtonsMixin(admin.ModelAdmin):
         try:
             from admin_extra_buttons.utils import check_decorator_errors
             errors.extend(check_decorator_errors(self))
-        except (OSError, OperationalError, ProgrammingError):  # pragma: no cover
+        except (OSError, OperationalError, ProgrammingError, ImproperlyConfigured):  # pragma: no cover
             pass
         return errors
 

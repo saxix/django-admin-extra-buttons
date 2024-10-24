@@ -163,7 +163,7 @@ class Admin5(ExtraButtonsMixin, admin.ModelAdmin):
         self.message_user(request, "You have selected test2")
 
     @choice(change_list=False, change_form=True)
-    def menu2(self, button):
+    def menu2(self, btn):
         button.choices = [self.test21, self.test22]
 
     @view()
