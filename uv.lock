@@ -335,7 +335,7 @@ wheels = [
 
 [[package]]
 name = "django-admin-extra-buttons"
-version = "1.7.dev8+gf25b48e.d20250303"
+version = "1.7.dev16+gacebec0.d20250303"
 source = { editable = "." }
 dependencies = [
     { name = "django-stubs" },

@@ -59,7 +59,7 @@ def check_permission(
     if callable(permission):
         if not permission(request, obj, handler=handler):
             raise PermissionDenied
-    elif not request.user.has_perm(permission):  # type:ignore[union-attr]
+    elif not request.user.has_perm(permission):
         raise PermissionDenied
     return True
 
