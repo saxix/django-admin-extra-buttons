@@ -34,6 +34,16 @@ def test_basic_auth(django_app, staff_user):
     res = django_app.get(url, extra_environ=dict(HTTP_AUTHORIZATION=authorization))
     assert res.status_code == 200
 
+def test_auth_handler(django_app, staff_user):
+    url = reverse('admin:demo_demomodel3_api5')
+    res = django_app.get(url, expect_errors=True)
+    assert res.status_code == 403
+
+    credentials = f'{staff_user.username}:password'.encode()
+    authorization = 'Basic %s' % base64.b64encode(credentials).decode("ascii")
+    res = django_app.get(url, extra_environ=dict(HTTP_AUTHORIZATION=authorization))
+    assert res.status_code == 200
+
 
 def test_unknown_auth(django_app):
     url = reverse('admin:demo_demomodel3_api4')

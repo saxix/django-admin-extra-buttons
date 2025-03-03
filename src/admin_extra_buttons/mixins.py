@@ -11,7 +11,8 @@ from django.contrib import admin, messages
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
 from django.core.exceptions import ImproperlyConfigured
 from django.db import OperationalError, ProgrammingError
-from django.http import HttpRequest, HttpResponseRedirect
+from django.db.models import Model
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.urls import URLPattern, path, reverse
 from django.utils.safestring import SafeString
@@ -23,7 +24,6 @@ if TYPE_CHECKING:
 
     from django.contrib.admin import AdminSite
     from django.core.checks import CheckMessage
-    from django.db.models import Model
     from django.db.models.options import Options
     from django.template import RequestContext
 
@@ -43,7 +43,7 @@ class ActionFailedError(Exception):
 def confirm_action(  # noqa: PLR0913
     modeladmin: "ExtraButtonsMixin",
     request: HttpRequest,
-    action: "Callable[..., Any]",
+    action: "Callable[..., HttpResponse | None]",
     *,
     message: str,
     success_message: str = "",
@@ -54,8 +54,8 @@ def confirm_action(  # noqa: PLR0913
     template: str = "admin_extra_buttons/confirm.html",
     error_message: str | None = None,
     raise_exception: bool = False,
-) -> TemplateResponse | HttpResponseRedirect:
-    opts: Options = modeladmin.model._meta
+) -> HttpResponse | None:
+    opts: Options[Model] = modeladmin.model._meta
     if extra_context:
         title = extra_context.pop("title", title)
     context = modeladmin.get_common_context(
@@ -88,11 +88,11 @@ class DummyAdminform:
         self.prepopulated_fields: list[str] = []
         self.__dict__.update(**kwargs)
 
-    def __iter__(self) -> "Iterator":  # pragma: no cover
+    def __iter__(self) -> "Iterator[Any]":  # pragma: no cover
         yield
 
 
-class ExtraButtonsMixin(admin.ModelAdmin):
+class ExtraButtonsMixin(admin.ModelAdmin[Model]):
     if IS_GRAPPELLI_INSTALLED:  # pragma: no cover
         change_list_template = "admin_extra_buttons/grappelli/change_list.html"
         change_form_template = "admin_extra_buttons/grappelli/change_form.html"
@@ -146,7 +146,7 @@ class ExtraButtonsMixin(admin.ModelAdmin):
 
         return context
 
-    def get_extra_urls(self) -> list:
+    def get_extra_urls(self) -> list[URLPattern]:
         self.extra_button_handlers.clear()
         handlers: dict[str, BaseExtraHandler] = {}
         extra_urls: list[URLPattern] = []
@@ -164,7 +164,7 @@ class ExtraButtonsMixin(admin.ModelAdmin):
                 for deco in handler.decorators[::-1]:
                     f = deco(f)
                 extra_urls.append(path(handler.url_pattern, f, name=handler.url_name))
-            if isinstance(handler, ButtonHandler | LinkHandler | ChoiceHandler):
+            if isinstance(handler, (ButtonHandler, LinkHandler, ChoiceHandler)):
                 self.extra_button_handlers[handler.func.__name__] = handler
         return extra_urls
 

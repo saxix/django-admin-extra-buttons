@@ -8,26 +8,29 @@ from django.http.response import HttpResponseBase
 from django.utils.functional import cached_property
 
 from .buttons import ButtonWidget, ChoiceButton, LinkButton
-from .utils import (
-    HttpResponseRedirectToReferrer,
-    check_permission,
-    handle_basic_auth,
-    labelize,
-)
+from .utils import HttpResponseRedirectToReferrer, check_permission, handle_basic_auth, labelize
 
 if TYPE_CHECKING:
-    from .types import HandlerFunction, PermissionHandler
+    from collections.abc import Callable
+
+    from django.contrib.auth.models import AbstractBaseUser, AnonymousUser
+    from django.http import HttpRequest
+    from django.template import RequestContext
+
+    from .mixins import ExtraButtonsMixin
+    from .types import HandlerFunction, PermissionHandler, VisibleButton
 
 
 class BaseExtraHandler:
-    def __init__(self, func, **kwargs) -> None:
-        self.func = func
+    def __init__(self, func: HandlerFunction, **kwargs: Any) -> None:
+        self.func: HandlerFunction = func
+        self.url_name: str = ""
         self.func.extra_buttons_handler = self
         self.config = kwargs
-        self.model_admin = kwargs.get("model_admin")
+        self.model_admin: "ExtraButtonsMixin" = kwargs.get("model_admin")  # type:ignore[assignment]
         self.decorators = kwargs.get("decorators", [])
         self.login_required = kwargs.get("login_required", True)
-        self._pattern = kwargs.get("pattern", "")
+        self._pattern = kwargs.get("pattern", "") or ""
         self.permission: str | PermissionHandler | None = kwargs.get("permission")
         self._sig: inspect.Signature = inspect.signature(self.func)
 
@@ -42,7 +45,7 @@ class BaseExtraHandler:
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} {self.name}>"
 
-    def get_instance(self, model_admin):
+    def get_instance(self, model_admin: "ExtraButtonsMixin") -> "BaseExtraHandler":
         """return a 'clone' of current Handler"""
         return self.__class__(self.func, model_admin=model_admin, **self.config)
 
@@ -50,7 +53,9 @@ class BaseExtraHandler:
     def name(self) -> str:
         return self.func.__name__
 
-    def __call__(self, model_admin, request, *args, **kwargs):
+    def __call__(
+        self, model_admin: "ExtraButtonsMixin", request: HttpRequest, *args: Any, **kwargs: Any
+    ) -> HttpResponseBase:
         obj = None
         self.model_admin = model_admin
         if not self.single_object_invocation:
@@ -72,29 +77,24 @@ class BaseExtraHandler:
 class ViewHandler(BaseExtraHandler):
     def __init__(
         self,
-        func,
-        login_required=True,
-        http_basic_auth=False,
-        http_auth_handler=None,
-        **kwargs,
+        func: "HandlerFunction",
+        http_basic_auth: bool = False,
+        http_auth_handler: Callable[[HttpRequest], AbstractBaseUser | AnonymousUser | None] | None = None,
+        **kwargs: Any,
     ) -> None:
-        self.login_required = login_required
         if http_auth_handler:
             if http_basic_auth:
                 raise ValueError("'http_basic_auth' and 'http_auth_handler' are mutually exclusive")
             self.http_auth_handler = http_auth_handler
+            self.http_basic_auth = True
         else:
             self.http_basic_auth = http_basic_auth
             self.http_auth_handler = handle_basic_auth
-        super().__init__(
-            func,
-            http_auth_handler=http_auth_handler,
-            http_basic_auth=http_basic_auth,
-            login_required=login_required,
-            **kwargs,
-        )
+        super().__init__(func, **kwargs)
 
-    def __call__(self, model_admin, request, *args, **kwargs):
+    def __call__(
+        self, model_admin: "ExtraButtonsMixin", request: HttpRequest, *args: Any, **kwargs: Any
+    ) -> HttpResponseBase:
         self.model_admin = model_admin
         if self.login_required and self.http_basic_auth and not request.user.is_authenticated:
             self.http_auth_handler(request)
@@ -112,6 +112,8 @@ class ViewHandler(BaseExtraHandler):
 
 
 class ButtonMixin:
+    button_class: "type[VisibleButton]" = ButtonWidget
+
     def __init__(
         self,
         func: "HandlerFunction",
@@ -122,12 +124,14 @@ class ButtonMixin:
         enabled: bool = True,
         **kwargs: Any,
     ) -> None:
+        self.config = kwargs
         self.change_form = change_form
         self.change_list = change_list
         self.visible = visible
         self.enabled = enabled
         self.html_attrs = html_attrs or {}
-        super().__init__(
+
+        super().__init__(  # type:ignore[call-arg]
             func,
             change_form=change_form,
             change_list=change_list,
@@ -137,9 +141,8 @@ class ButtonMixin:
             **kwargs,
         )
 
-    def get_button_params(self, context, **extra):
+    def get_button_params(self, context: "RequestContext", **extra: Any) -> dict[str, Any]:
         return {
-            "label": self.config.get("label", labelize(self.name)),
             "handler": self,
             "html_attrs": self.html_attrs,
             "change_list": self.change_list,
@@ -147,12 +150,10 @@ class ButtonMixin:
             "visible": self.visible,
             "enabled": self.enabled,
             "context": context,
-            "login_required": self.login_required,
-            "permission": self.permission,
             **extra,
         }
 
-    def get_button(self, context):
+    def get_button(self, context: "RequestContext") -> "ButtonWidget":
         return self.button_class(**self.get_button_params(context))
 
 
@@ -161,16 +162,24 @@ class ButtonHandler(ButtonMixin, ViewHandler):
 
     button_class = ButtonWidget
 
+    def get_button_params(self, context: RequestContext, **extra: Any) -> dict[str, Any]:
+        return super().get_button_params(
+            context,
+            label=self.config.get("label", labelize(self.name)),
+            login_required=self.login_required,
+            **extra,
+        )
+
 
 class LinkHandler(ButtonMixin, BaseExtraHandler):
-    button_class = LinkButton
+    button_class: "type[VisibleButton]" = LinkButton
     url_pattern = None
 
-    def __init__(self, func, **kwargs) -> None:
+    def __init__(self, func: HandlerFunction, **kwargs: Any) -> None:
         self.href = kwargs.pop("href", None)
         super().__init__(func, href=self.href, **kwargs)
 
-    def get_button_params(self, context, **extra):
+    def get_button_params(self, context: RequestContext, **extra: Any) -> dict[str, Any]:
         return super().get_button_params(
             context,
             href=self.href,
@@ -178,7 +187,7 @@ class LinkHandler(ButtonMixin, BaseExtraHandler):
             **extra,
         )
 
-    def get_button(self, context):
+    def get_button(self, context: "RequestContext") -> "ButtonWidget":
         params = self.get_button_params(context)
         button = self.button_class(**params)
         self.func(self.model_admin, button)
@@ -186,15 +195,15 @@ class LinkHandler(ButtonMixin, BaseExtraHandler):
 
 
 class ChoiceHandler(LinkHandler):
-    button_class = ChoiceButton
+    button_class: "type[VisibleButton]" = ChoiceButton
 
-    def __init__(self, func, **kwargs) -> None:
+    def __init__(self, func: "HandlerFunction", **kwargs: Any) -> None:
         self.href = kwargs.pop("href", None)
         self.choices = kwargs.pop("choices", None)
         self.selected_choice = None
         super().__init__(func, href=self.href, choices=self.choices, **kwargs)
 
-    def get_button_params(self, context, **extra):
+    def get_button_params(self, context: RequestContext, **extra: Any) -> dict[str, Any]:
         return super().get_button_params(
             context,
             choices=self.choices,

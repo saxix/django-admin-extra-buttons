@@ -10,6 +10,7 @@ from django.urls import reverse
 
 from admin_extra_buttons.api import ExtraButtonsMixin, button, choice, confirm_action, link, view
 from admin_extra_buttons.buttons import ChoiceButton
+from admin_extra_buttons.utils import handle_basic_auth
 
 from .models import DemoModel1, DemoModel2, DemoModel3, DemoModel4, DemoModel5
 from .upload import UploadMixin
@@ -143,6 +144,10 @@ class Admin3(ExtraButtonsMixin, admin.ModelAdmin):
     def api4(self, request):
         return HttpResponse("Basic Authentication allowed")
 
+    @view(http_auth_handler=handle_basic_auth)
+    def api5(self, request):
+        return HttpResponse("Basic Authentication allowed")
+
 
 class Admin4(UploadMixin, admin.ModelAdmin):
     upload_handler = lambda *args: [1, 2, 3]  # noqa
@@ -184,11 +189,18 @@ class Admin5(ExtraButtonsMixin, admin.ModelAdmin):
         context = self.get_common_context(request, pk)
         self.message_user(request, f"You have selected test22 on {context['original']}")
         return TemplateResponse(request, "demo/test22.html", context)
-    @view(http_auth_handler=True)
-    def test_auth(self, request, pk):
-        context = self.get_common_context(request, pk)
-        self.message_user(request, f"You have selected test22 on {context['original']}")
-        return TemplateResponse(request, "demo/test22.html", context)
+
+    # @view(http_auth_handler=True)
+    # def test_auth(self, request, pk):
+    #     context = self.get_common_context(request, pk)
+    #     self.message_user(request, f"You have selected test22 on {context['original']}")
+    #     return TemplateResponse(request, "demo/test22.html", context)
+    #
+    # @view(http_auth_handler=handle_basic_auth)
+    # def test_auth_custom_handler(self, request, pk):
+    #     context = self.get_common_context(request, pk)
+    #     self.message_user(request, f"You have selected test22 on {context['original']}")
+    #     return TemplateResponse(request, "demo/test22.html", context)
 
     def get_action_buttons(self, context):
         return [h for h in self.extra_button_handlers.values() if h.name in ['menu2', ]]

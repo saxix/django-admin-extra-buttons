@@ -14,7 +14,8 @@ if TYPE_CHECKING:
     from django.contrib.admin import AdminSite
     from django.db.models import Model
     from django.http import HttpRequest
-    from django.template import RequestContext, Template
+    from django.template import RequestContext
+    from django.template.backends.base import _EngineTemplate
 
     from admin_extra_buttons.handlers import BaseExtraHandler
 
@@ -28,8 +29,8 @@ class ButtonWidget:
         handler: "BaseExtraHandler",
         context: "RequestContext",
         label: str | None = None,
-        visible: bool = True,
-        enabled: "bool|Callable[[ButtonWidget], Any]" = True,
+        visible: "bool|Callable[[ButtonWidget], bool]" = True,
+        enabled: "bool|Callable[[ButtonWidget], bool]" = True,
         change_form: bool | None = None,
         change_list: bool | None = None,
         template: str | None = None,
@@ -53,8 +54,8 @@ class ButtonWidget:
         return f"<{self.__class__.__name__} '{self.label}'>"
 
     def __str__(self) -> str:
-        tpl: Any = get_template(self.template)
-        return tpl.render(self.context.flatten())
+        tpl: _EngineTemplate = get_template(self.template)
+        return tpl.render(self.context.flatten())  # type:ignore[arg-type]
 
     def get_change_form_flag(self, arg: Any | None) -> bool:
         if arg is None:  # pragma: no branch
@@ -68,7 +69,7 @@ class ButtonWidget:
 
     @property
     def html_attrs(self) -> dict[str, str]:
-        attrs = self.config.get("html_attrs", {})
+        attrs = self.config.get("html_attrs", {}) or {}
         if "id" not in attrs:
             attrs["id"] = f"btn-{self.handler.func.__name__}"
 
@@ -120,7 +121,7 @@ class ButtonWidget:
     def request(self) -> "HttpRequest":
         if not self.context:  # pragma: no cover
             raise ValueError("Button not initialised.")
-        return self.context["request"]
+        return self.context["request"]  # type:ignore[no-any-return]
 
     @property
     def original(self) -> Model | None:
