@@ -1,17 +1,26 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
 from .handlers import ButtonHandler, ChoiceHandler, LinkHandler, ViewHandler
 
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
-def button(**kwargs):
-    def decorator(func):
+    from .handlers import HandlerFunction
+
+
+def button(**kwargs: Any) -> "Callable[[HandlerFunction], ButtonHandler]":
+    def decorator(func: "HandlerFunction") -> ButtonHandler:
         return ButtonHandler(func, **kwargs)
 
     return decorator
 
 
-def link(**kwargs):
-    def decorator(func):
+def link(**kwargs: Any) -> "Callable[[HandlerFunction], LinkHandler]":
+    def decorator(func: "HandlerFunction") -> LinkHandler:
         handler = LinkHandler(func, **kwargs)
-        if len(handler.func_args) != 2:  # pragma: no cover
+        if not handler.single_object_invocation:  # pragma: no cover
             msg = f"'{func.__name__}' is decorated with @link() so it must accept one single argument of 'button'"
             raise TypeError(msg)
         return handler
@@ -19,15 +28,15 @@ def link(**kwargs):
     return decorator
 
 
-def view(**kwargs):
-    def decorator(func):
+def view(**kwargs: Any) -> "Callable[[HandlerFunction], ViewHandler]":
+    def decorator(func: "HandlerFunction") -> ViewHandler:
         return ViewHandler(func, **kwargs)
 
     return decorator
 
 
-def choice(**kwargs):
-    def decorator(func):
+def choice(**kwargs: Any) -> "Callable[[HandlerFunction], ChoiceHandler]":
+    def decorator(func: "HandlerFunction") -> ChoiceHandler:
         return ChoiceHandler(func, **kwargs)
 
     return decorator

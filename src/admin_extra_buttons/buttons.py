@@ -102,7 +102,7 @@ class ButtonWidget:
 
     @property
     def admin_site(self) -> AdminSite:
-        return getattr(self.handler.model_admin, "admin_site")
+        return self.handler.model_admin.admin_site
 
     @property
     def visible(self) -> bool:
