@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: release
-      url: https://pypi.org/project/pytest-echo/${{ github.ref_name }}
+      url: https://pypi.org/project/django-admin-extra-buttons/${{ github.ref_name }}
     permissions:
       id-token: write
     steps:
