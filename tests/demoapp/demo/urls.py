@@ -5,5 +5,5 @@ from django.urls import path
 admin.autodiscover()
 
 urlpatterns = [
-    path(r'admin/', admin.site.urls),
+    path(r"admin/", admin.site.urls),
 ] + staticfiles_urlpatterns()

@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 
 
 class AnyUserBackend(ModelBackend):
-
     def user_can_authenticate(self, a):
         return True
 

@@ -4,12 +4,11 @@ from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect, HttpRequest
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 
 from admin_extra_buttons.api import ExtraButtonsMixin, button, choice, confirm_action, link, view
-from admin_extra_buttons.buttons import ChoiceButton
 from admin_extra_buttons.utils import handle_basic_auth
 
 from .models import DemoModel1, DemoModel2, DemoModel3, DemoModel4, DemoModel5
@@ -17,77 +16,79 @@ from .upload import UploadMixin
 
 
 class TestFilter(SimpleListFilter):
-    parameter_name = 'filter'
+    parameter_name = "filter"
     title = "Dummy filter for testing"
 
     def lookups(self, request, model_admin):
         return (
-            ('on', "On"),
-            ('off', "Off"),
+            ("on", "On"),
+            ("off", "Off"),
         )
 
     def queryset(self, request, queryset):
         return queryset
 
 
+# start docs here
 class Admin1(ExtraButtonsMixin, admin.ModelAdmin):
     list_filter = [TestFilter]
 
-    @button(permission='demo.add_demomodel1',
-            change_form=True,
-            change_list=False,
-            html_attrs={'class': 'aeb-green'})
-    # html_attrs={'style': 'background-color:#88FF88;color:black'})
+    @button(permission="demo.add_demomodel1", change_form=True, change_list=False, html_attrs={"class": "aeb-green"})
     def refresh(self, request):
-        self.message_user(request, 'refresh called')
+        self.message_user(request, "refresh called")
 
-    @button(label='Refresh', permission=lambda request, object, **kw: False)
+    @button(label="Refresh", permission=lambda request, object, **kw: False)
     def refresh_callable(self, request):
         opts = self.model._meta
-        self.message_user(request, 'refresh called')
-        return HttpResponseRedirect(reverse(admin_urlname(opts, 'changelist')))
+        self.message_user(request, "refresh called")
+        return HttpResponseRedirect(reverse(admin_urlname(opts, "changelist")))
 
-    @button(pattern='a/b/')
+    @button(pattern="a/b/")
     def custom_path(self, request):
         opts = self.model._meta
         self.message_user(request, "You invoked `custom_path` linked to 'a/b/' url ")
-        return HttpResponseRedirect(reverse(admin_urlname(opts, 'changelist')))
+        return HttpResponseRedirect(reverse(admin_urlname(opts, "changelist")))
 
-    @button(html_attrs={'style': 'background-color:#EDD372;color:black'})
+    @button(html_attrs={"style": "background-color:#EDD372;color:black"})
     def no_response(self, request):
-        self.message_user(request, 'No Response provided.')
+        self.message_user(request, "No Response provided.")
 
-    @button(html_attrs={'style': 'background-color:#DC6C6C;color:black'})
+    @button(html_attrs={"style": "background-color:#DC6C6C;color:black"})
     def confirm(self, request):
         def _action(request: HttpRequest) -> None:
             pass
 
-        return confirm_action(self, request, _action, message="Confirm action",
-                              success_message="Successfully executed", )
+        return confirm_action(
+            self,
+            request,
+            _action,
+            message="Confirm action",
+            success_message="Successfully executed",
+        )
 
-    @button(permission='demo.delete_demomodel1')
+    @button(permission="demo.delete_demomodel1")
     def update(self, request, pk):
         opts = self.model._meta
-        self.message_user(request, 'action called')
-        return HttpResponseRedirect(reverse(admin_urlname(opts, 'changelist')))
+        self.message_user(request, "action called")
+        return HttpResponseRedirect(reverse(admin_urlname(opts, "changelist")))
 
     @button()
     def no_response_single(self, request, object_id):
-        self.message_user(request, 'No_response_obj.')
+        self.message_user(request, "No_response_obj.")
 
     @button(permission=lambda request, obj, **kw: False)
     def update_callable_permission(self, request, object_id):
         opts = self.model._meta
-        self.message_user(request, 'action called')
-        return HttpResponseRedirect(reverse(admin_urlname(opts, 'changelist')))
+        self.message_user(request, "action called")
+        return HttpResponseRedirect(reverse(admin_urlname(opts, "changelist")))
 
-    @button(pattern='a/b/<path:object_id>')
+    @button(pattern="a/b/<path:object_id>")
     def custom_update(self, request, object_id):
         opts = self.model._meta
-        self.message_user(request, 'action called')
-        return HttpResponseRedirect(reverse(admin_urlname(opts, 'changelist')))
+        self.message_user(request, "action called")
+        return HttpResponseRedirect(reverse(admin_urlname(opts, "changelist")))
 
-    @button(visible=lambda btn: 'BTN_SHOW' in os.environ)
+    @button(visible=lambda btn: "BTN_SHOW" in os.environ)
     def custom_visibile(self, request):
         pass
 
@@ -95,7 +96,7 @@ class Admin1(ExtraButtonsMixin, admin.ModelAdmin):
     def disabled(self, request):
         pass
 
-    @button(enabled=lambda btn: 'BTN_ENABLED' in os.environ)
+    @button(enabled=lambda btn: "BTN_ENABLED" in os.environ)
     def enabled(self, request):
         pass
 
@@ -107,22 +108,22 @@ class Admin1(ExtraButtonsMixin, admin.ModelAdmin):
     def error_message(self, request):
         try:
             1 / 0
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.message_error_to_user(request, e)
 
 
 class Admin2(ExtraButtonsMixin, admin.ModelAdmin):
-    @link(href="https://www.google.com/", change_form=False, html_attrs={'target': '_new'})
+    @link(href="https://www.google.com/", change_form=False, html_attrs={"target": "_new"})
     def google(self, btn):
         pass
 
-    @link(href=None, change_list=False, html_attrs={'target': '_new', 'style': 'background-color:var(--button-bg)'})
+    @link(href=None, change_list=False, html_attrs={"target": "_new", "style": "background-color:var(--button-bg)"})
     def search_on_google(self, btn):
-        original = btn.context['original']
+        original = btn.context["original"]
         button.label = f"Search '{original.name}' on Google"
         button.href = f"https://www.google.com/?q={original.name}"
 
-    @link(href="/", visible=lambda btn: 'BTN_SHOW2' in os.environ, change_list=True)
+    @link(href="/", visible=lambda btn: "BTN_SHOW2" in os.environ, change_list=True)
     def custom_visibile(self, btn):
         pass
 
@@ -190,20 +191,15 @@ class Admin5(ExtraButtonsMixin, admin.ModelAdmin):
         self.message_user(request, f"You have selected test22 on {context['original']}")
         return TemplateResponse(request, "demo/test22.html", context)
 
-    # @view(http_auth_handler=True)
-    # def test_auth(self, request, pk):
-    #     context = self.get_common_context(request, pk)
-    #     self.message_user(request, f"You have selected test22 on {context['original']}")
-    #     return TemplateResponse(request, "demo/test22.html", context)
-    #
-    # @view(http_auth_handler=handle_basic_auth)
-    # def test_auth_custom_handler(self, request, pk):
-    #     context = self.get_common_context(request, pk)
-    #     self.message_user(request, f"You have selected test22 on {context['original']}")
-    #     return TemplateResponse(request, "demo/test22.html", context)
-
     def get_action_buttons(self, context):
-        return [h for h in self.extra_button_handlers.values() if h.name in ['menu2', ]]
+        return [
+            h
+            for h in self.extra_button_handlers.values()
+            if h.name
+            in [
+                "menu2",
+            ]
+        ]
 
 
 admin.site.register(DemoModel1, Admin1)

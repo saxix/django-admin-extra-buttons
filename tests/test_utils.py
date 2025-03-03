@@ -7,16 +7,16 @@ from admin_extra_buttons.utils import check_decorator_errors, check_permission
 
 
 def test_check_permission(rf, staff_user, admin_user):
-    request = rf.get('/')
+    request = rf.get("/")
     request.user = staff_user
     with pytest.raises(PermissionDenied):
-        check_permission(None, 'demo_add_demomodel1', request)
+        check_permission(None, "demo_add_demomodel1", request)
 
     with pytest.raises(PermissionDenied):
         check_permission(None, lambda r, o, **kw: False, request)
 
     request.user = admin_user
-    assert check_permission(None, 'demo_add_demomodel1', request)
+    assert check_permission(None, "demo_add_demomodel1", request)
     assert check_permission(None, lambda r, o, **kw: True, request)
 
 
