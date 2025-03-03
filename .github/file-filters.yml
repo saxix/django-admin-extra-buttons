@@ -24,10 +24,8 @@ run_tests:
 
 lint:
   -  *python
-  - '.flake8'
   - 'pyproject.toml'
   - '.github/file-filters.yml'
-  - '.github/workflows/lint.yml'
 
 docs:
   - added|modified: 'docs/**'
