@@ -11,14 +11,15 @@ from admin_extra_buttons.utils import check_permission, get_preserved_filters, l
 if TYPE_CHECKING:
     from collections.abc import Callable, Generator
 
+    from django.contrib.admin import AdminSite
     from django.db.models import Model
     from django.http import HttpRequest
-    from django.template import RequestContext
+    from django.template import RequestContext, Template
 
     from admin_extra_buttons.handlers import BaseExtraHandler
 
 
-class Button:
+class ButtonWidget:
     default_change_form_arguments = 2
     default_template = "admin_extra_buttons/includes/button.html"
 
@@ -100,8 +101,8 @@ class Button:
         return self._enabled
 
     @property
-    def admin_site(self):
-        return self.handler.model_admin.admin_site
+    def admin_site(self) -> AdminSite:
+        return getattr(self.handler.model_admin, "admin_site")
 
     @property
     def visible(self) -> bool:
@@ -157,7 +158,7 @@ class Button:
         return f"{url_}?{filters}"
 
 
-class LinkButton(Button):
+class LinkButton(ButtonWidget):
     @property
     def url(self) -> str:
         return self.href

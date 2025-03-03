@@ -7,7 +7,7 @@ from django.core.exceptions import PermissionDenied
 from django.http.response import HttpResponseBase
 from django.utils.functional import cached_property
 
-from .buttons import Button, ChoiceButton, LinkButton
+from .buttons import ButtonWidget, ChoiceButton, LinkButton
 from .utils import (
     HttpResponseRedirectToReferrer,
     check_permission,
@@ -159,7 +159,7 @@ class ButtonMixin:
 class ButtonHandler(ButtonMixin, ViewHandler):
     """View handler for `@button` decorated views"""
 
-    button_class = Button
+    button_class = ButtonWidget
 
 
 class LinkHandler(ButtonMixin, BaseExtraHandler):
