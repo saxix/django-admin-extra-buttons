@@ -10,7 +10,7 @@
 [![Supported Python versions](https://img.shields.io/pypi/pyversions/django-admin-extra-buttons.svg)](https://pypi.org/project/django-admin-extra-buttons/)
 
 
-![my image](./images/screenshot.png)
+![my image](https://saxix.github.io/django-admin-extra-buttons/images/screenshot.png)
 
 This is a full rewriting of the original `django-admin-extra-url`. It
 provides decorators to easily add custom buttons to Django Admin pages and/or add views to any ModelAdmin
