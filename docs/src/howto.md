@@ -11,22 +11,29 @@ This example shows how to create a button that display a form to upload a file a
 {% load i18n static admin_list admin_urls %}
 
 {% block action-content %}
-  <form method="post" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Upload</button>
-  </form>
+</form>
 
-{% endblock 
- {% endraw %}   
+{% endblock
+{% endraw %}
 ```
 
 **admin.py**
 
 ```python
+from django import forms
+from admin_extra_buttons.api import ExtraButtonsMixin, button
+from django.shortcuts import redirect
+from django.template.response import TemplateResponse
+from django.contrib import admin
+from django.contrib.admin.templatetags.admin_urls import admin_urlname
 
 class UploadForm(forms.Form):
-    docfile = forms.FileField( label='Select a file')
+    docfile = forms.FileField(label='Select a file')
+
 
 class MyModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
 
@@ -40,10 +47,9 @@ class MyModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
                 # process file
                 ...
                 ...
-                return redirect(admin_urlname(context['opts'], 'changelist') )
+                return redirect(admin_urlname(context['opts'], 'changelist'))
         else:
             form = UploadForm()
         context['form'] = form
         return TemplateResponse(request, 'admin_extra_buttons/upload.html', context)
-
 ```
