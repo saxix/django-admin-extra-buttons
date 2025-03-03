@@ -30,3 +30,4 @@ lint:
 docs:
   - added|modified: 'docs/**'
   - 'mkdocs.yml'
+  - '.github/workflows/docs.yml'
