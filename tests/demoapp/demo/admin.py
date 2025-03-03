@@ -4,11 +4,12 @@ from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpRequest
 from django.template.response import TemplateResponse
 from django.urls import reverse
 
 from admin_extra_buttons.api import ExtraButtonsMixin, button, choice, confirm_action, link, view
+from admin_extra_buttons.buttons import ChoiceButton
 
 from .models import DemoModel1, DemoModel2, DemoModel3, DemoModel4, DemoModel5
 from .upload import UploadMixin
@@ -57,11 +58,11 @@ class Admin1(ExtraButtonsMixin, admin.ModelAdmin):
 
     @button(html_attrs={'style': 'background-color:#DC6C6C;color:black'})
     def confirm(self, request):
-        def _action(request):
+        def _action(request: HttpRequest) -> None:
             pass
 
-        return confirm_action(self, request, _action, "Confirm action",
-                              "Successfully executed", )
+        return confirm_action(self, request, _action, message="Confirm action",
+                              success_message="Successfully executed", )
 
     @button(permission='demo.delete_demomodel1')
     def update(self, request, pk):

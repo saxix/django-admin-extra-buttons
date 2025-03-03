@@ -1,4 +1,4 @@
-{% extends "admin_extra_buttons/action_page.html" %}{% load i18n static admin_list admin_urls %}
+{% extends "admin_extra_buttons/action_page.html" %}{% load admin_list admin_urls i18n static %}
 
 {% block action-content %}
     <div>
@@ -13,4 +13,4 @@
         <input type="submit">
     </form>
 
-{% endblock %}
+{% endblock action-content %}

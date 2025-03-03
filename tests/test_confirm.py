@@ -24,8 +24,8 @@ def test_confirm_action(rf, staff_user):
     request.user = staff_user
     confirm_action(site._registry[DemoModel1], request,
                    lambda r: True,
-                   "Confirm action",
-                   "Successfully executed",
+                   message="Confirm action",
+                   success_message="Successfully executed",
                    description="",
                    title="Custom Title",
                    pk=None,

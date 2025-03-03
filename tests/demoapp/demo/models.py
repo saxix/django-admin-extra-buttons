@@ -51,4 +51,3 @@ class DemoModel5(models.Model):
     class Meta:
         verbose_name = 'Choice Example'
         verbose_name_plural = 'Choice Examples'
-

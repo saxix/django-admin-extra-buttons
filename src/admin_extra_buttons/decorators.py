@@ -12,9 +12,8 @@ def link(**kwargs):
     def decorator(func):
         handler = LinkHandler(func, **kwargs)
         if len(handler.func_args) != 2:  # pragma: no cover
-            raise TypeError(
-                "'%s' is decorated with @link() so it must "
-                "accept one single argument of 'button'" % func.__name__)
+            msg = f"'{func.__name__}' is decorated with @link() so it must accept one single argument of 'button'"
+            raise TypeError(msg)
         return handler
 
     return decorator

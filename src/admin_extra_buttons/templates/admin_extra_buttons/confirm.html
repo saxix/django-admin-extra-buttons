@@ -1,17 +1,17 @@
-{% extends 'admin/base_site.html' %}{% load i18n static admin_list admin_urls %}
+{% extends 'admin/base_site.html' %}{% load admin_list admin_urls i18n static %}
 {% block breadcrumbs %}
     <div class="breadcrumbs">
-        <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+        <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
         &rsaquo;
         <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_label|capfirst|escape }}</a>
         &rsaquo;
-        {% trans 'Confirmation' as confirmation %}
+        {% translate 'Confirmation' as confirmation %}
         {{ title|default_if_none:confirmation }}
     </div>
-{% endblock %}
+{% endblock breadcrumbs %}
 
 {% block content %}
-    <h1>{% trans 'Warning' %}</h1>
+    <h1>{% translate 'Warning' %}</h1>
     <h2>{{ message }}</h2>
     {% if description %}
     <br>
