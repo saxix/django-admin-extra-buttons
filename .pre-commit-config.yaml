@@ -28,7 +28,7 @@ repos:
         rev: "1.3.2"
         hooks:
             -   id: djade
-                args: [ --target-version, "5.1" ]  # Replace with Django version
+                args: [ --check, --target-version, "5.1" ] 
     -   repo: meta
         hooks:
             -   id: check-hooks-apply

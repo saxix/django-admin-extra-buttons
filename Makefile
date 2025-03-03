@@ -19,7 +19,7 @@ clean:
 	# cleaning
 	@rm -fr dist '~build' coverage.xml pytest.xml .*.sqlite .pytest_cache .coverage src/django_admin_extra_buttons.egg-info
 	@find . -name __pycache__ -o -name .eggs | xargs rm -rf
-	@find . -name "*.py?" -o -name ".DS_Store" -o -name "*.orig" -o -name "*.min.min.js" -o -name "*.min.min.css" -prune | xargs rm -rf
+	@find . -name "*.py[co]" -o -name ".DS_Store" -o -name "*.orig" -o -name "*.min.min.js" -o -name "*.min.min.css" -prune | xargs rm -rf
 
 fullclean:
 	@rm -rf .tox .cache
