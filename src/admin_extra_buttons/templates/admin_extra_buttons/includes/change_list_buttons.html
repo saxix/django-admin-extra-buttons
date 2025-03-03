@@ -1,8 +1,7 @@
-{% load extra_buttons i18n static admin_list admin_urls %}
+{% load admin_list admin_urls extra_buttons i18n static %}
 {% get_changelist_buttons cl.model_admin as buttons %}
 {% for button in buttons %}
     {% if button.can_render and button.change_list %}
         {{ button }}
     {% endif %}
 {% endfor %}
-

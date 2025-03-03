@@ -8,6 +8,9 @@
 !.flake8
 !.bumpversion.cfg
 !.readthedocs.yaml
+!.pre-commit-config.yaml
+!docs/**/.pages
+src/admin_extra_buttons/version.py
 coverage.xml
 pytest.xml
 *.py[co]
@@ -16,4 +19,3 @@ pytest.xml
 dist
 docs/site
 stubs/
-uv.lock

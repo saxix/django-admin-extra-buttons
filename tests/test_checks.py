@@ -6,6 +6,7 @@ from admin_extra_buttons.utils import check_decorator_errors
 
 def test_permissions(db):
     from django.contrib.admin import site
+
     m = site._registry[DemoModel1]
     assert check_decorator_errors(m) == []
 

@@ -1,3 +1,9 @@
+2.0
+---
+* add typing
+* BACKWARD INCOMPATIBLE: confirm_action() now accept keyword named argument only
+
+
 1.6.0
 -----
 * moves to pyproject.toml (removes `setup.py`)
