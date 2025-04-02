@@ -73,9 +73,7 @@ docs = [
   "mkdocstrings>=0.28.1",
   "mkdocstrings-python>=1.16.1",
 ]
-dj = [
-  "django",
-]
+
 type-check = [
   "mypy<1.15",
 ]

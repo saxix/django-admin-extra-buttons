@@ -40,11 +40,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        django: [ "5.1", "4.2", "3.2" ]
-        python: [ "3.13", "3.12", "3.11", "3.10", "3.9" ]
+        django: [ "51", "42", "32" ]
+        python: [ "313", "312", "311", "310", "39" ]
         exclude:
-          - python: 3.9
-            django: 5.1
+          - python: 39
+            django: 51
     env:
       CELERY_BROKER_URL: redis://redis:6379/0
       CELERY_ALWAYS_EAGER: true
@@ -75,12 +75,8 @@ jobs:
       - name: Setup test suite
         run: tox run -vv --notest --skip-missing-interpreters false
 
-      - name: Run test suite ${{ matrix.django }}-${{ matrix.python }}
-        run: tox run --skip-pkg-install
-        env:
-          PYTEST_ADDOPTS: "-vv --durations=20"
-          DIFF_AGAINST: HEAD
-          DJANGO: ${{ matrix.django }}
+      - name: Run test suite d${{ matrix.django }}-py${{ matrix.python }}
+        run: tox run --skip-pkg-install -e d${{ matrix.django }}-py${{ matrix.python }}
 
       - name: UUpload test results to Codecov
         uses: codecov/test-results-action@v1

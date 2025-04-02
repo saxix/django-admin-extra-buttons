@@ -335,7 +335,7 @@ wheels = [
 
 [[package]]
 name = "django-admin-extra-buttons"
-version = "1.7.dev7+gd2eba75.d20250303"
+version = "1.7.dev16+g5953ac7.d20250402"
 source = { editable = "." }
 dependencies = [
     { name = "django-stubs" },
@@ -355,10 +355,6 @@ dev = [
     { name = "ruff" },
     { name = "toml" },
     { name = "tox" },
-]
-dj = [
-    { name = "django", version = "4.2.19", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
-    { name = "django", version = "5.1.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
 ]
 docs = [
     { name = "markdown-include" },
@@ -399,7 +395,6 @@ dev = [
     { name = "toml", specifier = ">=0.10.2" },
     { name = "tox", specifier = ">=4.20" },
 ]
-dj = [{ name = "django" }]
 docs = [
     { name = "markdown-include", specifier = ">=0.8.1" },
     { name = "mdx-gh-links", specifier = ">=0.4" },
