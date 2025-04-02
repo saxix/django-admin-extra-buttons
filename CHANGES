@@ -1,6 +1,7 @@
 2.0
 ---
 * add typing
+* Fixes default button link
 * BACKWARD INCOMPATIBLE: confirm_action() now accept keyword named argument only
 
 

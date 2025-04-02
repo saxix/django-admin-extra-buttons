@@ -7,6 +7,7 @@ if __name__ == '__main__':
 
     sys.path.append(os.path.join(here, 'demoapp'))
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'demo.settings')
+    os.environ["BTN_ENABLED"] = "1"
 
     from django.core.management import execute_from_command_line
     execute_from_command_line(sys.argv)

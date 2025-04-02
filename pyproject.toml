@@ -131,6 +131,9 @@ lint.per-file-ignores."docs/conf.py" = [
   "ERA001", #
   "INP001", #
 ]
+lint.per-file-ignores."src/**/version.py" = [
+  "ALL",
+]
 lint.per-file-ignores."tests/**/*.py" = [
   "A",
   "ANN",

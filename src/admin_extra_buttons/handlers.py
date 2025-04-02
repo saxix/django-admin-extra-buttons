@@ -190,6 +190,7 @@ class LinkHandler(ButtonMixin, BaseExtraHandler):
     def get_button(self, context: "RequestContext") -> "ButtonWidget":
         params = self.get_button_params(context)
         button = self.button_class(**params)
+        button.label = self.func.__name__
         self.func(self.model_admin, button)
         return button
 

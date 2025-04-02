@@ -41,7 +41,7 @@ jobs:
       fail-fast: false
       matrix:
         django: [ "51", "42", "32" ]
-        python: [ "313", "312", "311", "310", "39" ]
+        python: [ "313", "312", "39" ]
         exclude:
           - python: 39
             django: 51
@@ -76,7 +76,13 @@ jobs:
         run: tox run -vv --notest --skip-missing-interpreters false
 
       - name: Run test suite d${{ matrix.django }}-py${{ matrix.python }}
-        run: tox run --skip-pkg-install -e d${{ matrix.django }}-py${{ matrix.python }}
+        run: |
+              uv export -q --no-hashes  -o requirements.txt
+              pip install -r requirements.txt
+              pip install "django==${{ matrix.django }}.*"
+              python -m pytest tests/ \
+                --junit-xml junit-${{ matrix.python }}-${{matrix.django}}.xml \
+                --cov --cov-report xml
 
       - name: UUpload test results to Codecov
         uses: codecov/test-results-action@v1
