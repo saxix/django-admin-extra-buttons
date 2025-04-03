@@ -43,7 +43,7 @@ urls.Homepage = "https://github.com/saxix/django-admin-extra-buttons"
 
 dev = [
   "covdefaults>=2.3",
-  "django-webtest>=1.9.12",
+  "django-webtest>=1.9.13",
   "factory-boy>=3.3.1",
   "pdbpp>=0.10.3",
   "pyquery>=2.0.1",

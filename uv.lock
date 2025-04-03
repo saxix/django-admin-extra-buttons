@@ -335,7 +335,7 @@ wheels = [
 
 [[package]]
 name = "django-admin-extra-buttons"
-version = "1.7.dev21+gd0320d9.d20250403"
+version = "1.7.dev22+g7212265.d20250403"
 source = { editable = "." }
 dependencies = [
     { name = "django-stubs" },
@@ -387,7 +387,7 @@ requires-dist = [{ name = "django-stubs", specifier = ">=5.1.3" }]
 [package.metadata.requires-dev]
 dev = [
     { name = "covdefaults", specifier = ">=2.3" },
-    { name = "django-webtest", specifier = ">=1.9.12" },
+    { name = "django-webtest", specifier = ">=1.9.13" },
     { name = "factory-boy", specifier = ">=3.3.1" },
     { name = "pdbpp", specifier = ">=0.10.3" },
     { name = "pyquery", specifier = ">=2.0.1" },
@@ -453,14 +453,14 @@ wheels = [
 
 [[package]]
 name = "django-webtest"
-version = "1.9.12"
+version = "1.9.13"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "webtest" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/47/e3/e087630e62bcf29ed1c3560ae98b12c45e0ac07b4899ab3b8ef6a1967dde/django_webtest-1.9.12.tar.gz", hash = "sha256:5012c30665e7a6e585a1544eda75045d07d5b3f5ccccd4d0fe144c4555884095", size = 28848 }
+sdist = { url = "https://files.pythonhosted.org/packages/93/1f/5bbd6fc47dc82230f03f16eb1ddd6f3aa8865f38b52c4f90964a3001d2c7/django_webtest-1.9.13.tar.gz", hash = "sha256:97b2db843588128332326e4fc0a37bd825cf4d68f1ab0188c8cc00a9710e8279", size = 28901 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/97/0b/c7e6c3a59ea001ca51a966477eafd2746e63b6ff2fce7dcf3c3b3c0ad765/django_webtest-1.9.12-py3-none-any.whl", hash = "sha256:de5c988c20eef7abbb3d0508494d9e576af08087d0fb6109b1d54f15ef4d78fa", size = 16583 },
+    { url = "https://files.pythonhosted.org/packages/45/57/760a41e283f356a6aedb3b71b91a3ca9991b758482f01d31be9a5129ecd1/django_webtest-1.9.13-py3-none-any.whl", hash = "sha256:1903d35f429cbff54bd89d41ddc42376529d56e3c35bfe7cb83827b17fbf962d", size = 16638 },
 ]
 
 [[package]]
