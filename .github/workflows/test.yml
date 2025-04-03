@@ -40,7 +40,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        django: [ "51", "42" ]
+        django: [ "52", "42", "32" ]
         python: [ "3.13", "3.12" ]
         exclude:
           - python: 39
