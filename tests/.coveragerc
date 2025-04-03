@@ -3,7 +3,7 @@ branch = True
 source = admin_extra_buttons
 include =
 
-omit = admin_extra_buttons/__init__.py
+omit = src/admin_extra_buttons/__init__.py
 
 [report]
 # Regexes for lines to exclude from consideration

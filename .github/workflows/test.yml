@@ -40,8 +40,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        django: [ "5.1", "4.2", "3.2" ]
-        python: [ "3.13", "3.12", "3.9" ]
+        django: [ "51", "42" ]
+        python: [ "3.13", "3.12" ]
         exclude:
           - python: 39
             django: 51
@@ -73,32 +73,27 @@ jobs:
         run: uv python install --python-preference only-managed ${{ matrix.python }}
 
       - name: Setup test suite
-        run: tox run -vv --notest --skip-missing-interpreters false
+        run: tox run -vv --notest --skip-missing-interpreters false -e d${{ matrix.django }}-py$(echo ${{ matrix.python }} | sed 's/\.//')
 
       - name: Run test suite d${{ matrix.django }}-py${{ matrix.python }}
-        run: |
-              uv export -q --no-hashes  -o requirements.txt
-              uv pip install -r requirements.txt
-              uv pip install "django==${{ matrix.django }}.*"
-              uv run  pytest tests/ \
-                --junit-xml junit-${{ matrix.python }}-${{matrix.django}}.xml \
-                --cov --cov-report xml
+        run: tox -e d${{ matrix.django }}-py$(echo ${{ matrix.python }} | sed 's/\.//')
 
-      - name: UUpload test results to Codecov
-        uses: codecov/test-results-action@v1
+      - name: Upload pytest test results
+        uses: actions/upload-artifact@v4
         with:
-          env_vars: OS
-          flags: ${{ matrix.django }} ${{ matrix.python }}
-          token: ${{ secrets.CODECOV_TOKEN }}
-          verbose: true
+          name: pytest-results-${{ matrix.python }}-${{matrix.django}}
+          path: junit-${{ matrix.python }}-${{matrix.django}}.xml
+        if: ${{ always() }}
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v4
+        if: matrix.python == 3.12
+        continue-on-error: true
         with:
           env_vars: OS,PYTHON
           fail_ci_if_error: true
-          files: ./coverage1.xml,./coverage2.xml,!./cache
           flags: unittests
-          name: codecov-umbrella
+          files: ./coverage.xml
+          verbose: false
           token: ${{ secrets.CODECOV_TOKEN }}
-          verbose: true
+          name: codecov-${{env.GITHUB_REF_NAME}}

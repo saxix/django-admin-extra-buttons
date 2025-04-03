@@ -174,7 +174,7 @@ max_supported_python = "3.13"
 [tool.pytest.ini_options]
 django_find_project = false
 norecursedirs = [ "demoapp", ".tox" ]
-addopts = "--doctest-modules --echo-attr=django.conf.settings.DATABASES.default.ENGINE --tb=short --reuse-db --capture=no --doctest-glob=adminactions/*.py"
+addopts = "--doctest-modules --echo-attr=django.conf.settings.DATABASES.default.ENGINE --tb=short --reuse-db --capture=no --doctest-glob=admin_extra_buttons/*.py"
 python_files = "tests/test_*.py tests/**/test_*.py src/*.py"
 markers = [
   "functional: mark a test as functional",
@@ -188,14 +188,12 @@ testpaths = [
 
 [tool.coverage]
 run.source = [
-  "adminactions",
+  "admin_extra_buttons",
 ]
 run.dynamic_context = "test_function"
 run.branch = true
 run.parallel = true
-run.omit = [
-  "**/create_extra_permissions.py",
-]
+
 run.plugins = [
   "covdefaults",
 ]
