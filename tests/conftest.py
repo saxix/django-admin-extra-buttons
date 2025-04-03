@@ -26,12 +26,13 @@ def setup(settings):
 
 
 @pytest.fixture(scope="function")
-def app(request):
-    wtm = django_webtest.WebTestMixin()
-    wtm.csrf_checks = False
-    wtm._patch_settings()
-    request.addfinalizer(wtm._unpatch_settings)
-    return django_webtest.DjangoTestApp()
+def app(django_app_factory):
+    return django_app_factory(csrf_checks=False)
+    # wtm = django_webtest.WebTestMixin()
+    # wtm.csrf_checks = False
+    # wtm._patch_settings()
+    # request.addfinalizer(wtm._unpatch_settings)
+    # return django_webtest.DjangoTestApp()
 
 
 @pytest.fixture

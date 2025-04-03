@@ -26,8 +26,8 @@ fullclean:
 	$(MAKE) clean
 
 lint:
-	@flake8 src/
-	@isort -c src/
+	pre-commit run --all-files
+
 
 release:
 	tox
