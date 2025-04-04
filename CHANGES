@@ -1,3 +1,9 @@
+2.1
+-----
+* fixes issue with @choice() not diplaying label
+* add ability to fully hide @choice
+
+
 2.0
 ---
 * add typing

@@ -6,7 +6,7 @@ from django.urls import reverse
 def test_choice1(app, demomodel5, admin_user):
     url = reverse("admin:demo_demomodel5_changelist")
     res = app.get(url, user=admin_user)
-    choice = res.pyquery("select[name=menu1]")
+    choice = res.pyquery("select[name=_menu1]")
     option = choice.find("option")[1]
 
     res = app.get(option.attrib["value"], user=admin_user, auto_follow=True, extra_environ={"HTTP_REFERER": url})

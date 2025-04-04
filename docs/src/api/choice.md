@@ -5,7 +5,7 @@ This decorator allows "grouping" different `@view()` decorated methods under the
 
 Examples:
 ```python
-
+from django.contrib import admin
 from admin_extra_buttons.api import ExtraButtonsMixin, choice, view
 
 class MyModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
@@ -86,3 +86,7 @@ class MyModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
         self.message_user(request, "You have selected Feature #3")
 
 ```
+
+### See also
+
+[Customise @choice() options](../howto.md#customise-choice-options)

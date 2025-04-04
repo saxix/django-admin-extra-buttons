@@ -177,12 +177,14 @@ class LinkHandler(ButtonMixin, BaseExtraHandler):
 
     def __init__(self, func: HandlerFunction, **kwargs: Any) -> None:
         self.href = kwargs.pop("href", None)
+        self.label = kwargs.get("label")
         super().__init__(func, href=self.href, **kwargs)
 
     def get_button_params(self, context: RequestContext, **extra: Any) -> dict[str, Any]:
         return super().get_button_params(
             context,
             href=self.href,
+            label=self.label,
             url_pattern=self.url_pattern,
             **extra,
         )
@@ -190,7 +192,8 @@ class LinkHandler(ButtonMixin, BaseExtraHandler):
     def get_button(self, context: "RequestContext") -> "ButtonWidget":
         params = self.get_button_params(context)
         button = self.button_class(**params)
-        button.label = self.func.__name__
+        if not button.label:
+            button.label = self.func.__name__
         self.func(self.model_admin, button)
         return button
 
@@ -201,6 +204,7 @@ class ChoiceHandler(LinkHandler):
     def __init__(self, func: "HandlerFunction", **kwargs: Any) -> None:
         self.href = kwargs.pop("href", None)
         self.choices = kwargs.pop("choices", None)
+        self.label = kwargs.get("label")
         self.selected_choice = None
         super().__init__(func, href=self.href, choices=self.choices, **kwargs)
 

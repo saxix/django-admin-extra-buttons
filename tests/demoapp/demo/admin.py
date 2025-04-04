@@ -9,6 +9,7 @@ from django.template.response import TemplateResponse
 from django.urls import reverse
 
 from admin_extra_buttons.api import ExtraButtonsMixin, button, choice, confirm_action, link, view
+from admin_extra_buttons.buttons import LinkButton
 from admin_extra_buttons.utils import handle_basic_auth
 
 from .models import DemoModel1, DemoModel2, DemoModel3, DemoModel4, DemoModel5
@@ -157,9 +158,18 @@ class Admin4(UploadMixin, admin.ModelAdmin):
 class Admin5(ExtraButtonsMixin, admin.ModelAdmin):
     list_filter = [TestFilter]
 
-    @choice(change_list=True, label="Menu #1")
-    def menu1(self, button):
+    @choice(change_list=True)
+    def _menu1(self, button):
         button.choices = [self.test1, self.test2, self.test21]
+        button.label = "Menu #1"
+
+    @choice(change_list=False, change_form=True, label="Menu Advanced")
+    def _menu_adv(self, button: LinkButton):
+        obj: DemoModel5 = button.original
+        if obj.name == "hidden":
+            button.visible = False
+        if obj.name == "test21":
+            button.choices = [self.test21]
 
     @view()
     def test1(self, request):

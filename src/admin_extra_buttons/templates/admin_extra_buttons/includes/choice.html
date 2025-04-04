@@ -1,4 +1,5 @@
 {% spaceless %}
+    {%  if button.visible %}
     <li>
         <select {% include "admin_extra_buttons/includes/attrs.html" with button=button %}
             onchange="window.location = this.options[this.selectedIndex].value">
@@ -7,4 +8,6 @@
                 <option {% if choice.selected %}selected="selected"{% endif %}
                         value="{{ choice.url }}">{{ choice.label }}</option>{% endfor %}
         </select>
-    </li>{% endspaceless %}
+    </li>
+    {% endif  %}
+{% endspaceless %}
