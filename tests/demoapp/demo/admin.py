@@ -165,10 +165,11 @@ class Admin5(ExtraButtonsMixin, admin.ModelAdmin):
 
     @choice(change_list=False, change_form=True, label="Menu Advanced")
     def _menu_adv(self, button: LinkButton):
+        button.visible = True
         obj: DemoModel5 = button.original
         if obj.name == "hidden":
             button.visible = False
-        if obj.name == "test21":
+        elif obj.name == "test21":
             button.choices = [self.test21]
 
     @view()

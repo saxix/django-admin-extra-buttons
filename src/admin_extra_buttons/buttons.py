@@ -208,7 +208,6 @@ class ChoiceButton(LinkButton):
                     "url": url,
                     "selected": self.request.path == url,
                 }
-        yield {}
 
     def can_render(self) -> bool:  # noqa: PLR6301
         return True

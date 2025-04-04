@@ -23,3 +23,26 @@ def test_choice2(app, demomodel5, admin_user):
     res = app.get(option.attrib["value"], user=admin_user, auto_follow=True, extra_environ={"HTTP_REFERER": url})
     assert res.request.path == f"/admin/demo/demomodel5/{demomodel5.pk}/test22/"
     assert str(res.context["messages"]._loaded_messages[0].message) == f"You have selected test22 on {demomodel5}"
+
+
+@pytest.mark.django_db
+def test_choice_adv(app, demomodel5, admin_user):
+    url = reverse("admin:demo_demomodel5_change", args=[demomodel5.pk])
+    res = app.get(url, user=admin_user)
+
+    choice = res.pyquery("select[name=_menu_adv]")
+    assert len(choice.find("option")) == 1
+
+    demomodel5.name = "hidden"
+    demomodel5.save()
+    res = app.get(url, user=admin_user)
+    choice = res.pyquery("select[name=_menu_adv]")
+    assert not choice
+
+
+    demomodel5.name = "test21"
+    demomodel5.save()
+    res = app.get(url, user=admin_user)
+    choice = res.pyquery("select[name=_menu_adv]")
+    option = choice.find("option")[1]
+    assert option.text == "Test21"
