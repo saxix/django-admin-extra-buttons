@@ -123,8 +123,8 @@ watch:
     - src/
 hooks:
     - docs/_hooks/hooks.py
-    - docs/_hooks/sax.py
-    - docs/_hooks/shortcodes.py
+    - docs/_hooks/version.py
+#    - docs/_hooks/shortcodes.py
 
 extra:
     interwiki:

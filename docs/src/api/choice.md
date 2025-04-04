@@ -42,7 +42,7 @@ label: `decorated method name`
 : button label
 
 visible: `True`
-: bool or callable show/hide button
+: bool or callable show/hide button <!-- ver:add 2.1 -->
 
 
 ### Attributes
