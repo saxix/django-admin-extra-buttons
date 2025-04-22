@@ -39,7 +39,6 @@ def test_choice_adv(app, demomodel5, admin_user):
     choice = res.pyquery("select[name=_menu_adv]")
     assert not choice
 
-
     demomodel5.name = "test21"
     demomodel5.save()
     res = app.get(url, user=admin_user)

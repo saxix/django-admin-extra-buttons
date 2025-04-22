@@ -23,6 +23,8 @@ markdown_extensions:
 #    - pymdownx.blocks.caption
 #    - pymdownx.details
 #    - pymdownx.snippets
+    - pymdownx.details
+    - pymdownx.magiclink
     - pymdownx.superfences:
         custom_fences:
           - name: mermaid
