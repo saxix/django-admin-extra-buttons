@@ -48,10 +48,9 @@ jobs:
     if: needs.changes.outputs.lint
     steps:
       - uses: actions/checkout@v4
-      - run: git checkout HEAD^
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.13'
       - run: pip install tox
       - name: Static Code checks
         run: tox -e lint
@@ -62,9 +61,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: '3.13.3'
+          python-version: '3.13'
       - run: pip install tox
       - name: Check Python Package structure
         run: tox -e pkg_meta
