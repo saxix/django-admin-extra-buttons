@@ -2,6 +2,8 @@
 ~*
 /build
 !tests/.coveragerc
+
+!.git
 !.gitignore
 !.github
 !.isort.cfg
