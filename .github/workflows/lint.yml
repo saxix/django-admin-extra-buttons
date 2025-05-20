@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - '**'        # matches every branch
+    tags-ignore: [ "**" ]
 
 concurrency:
   group: "${{ github.workflow }}-${{ github.ref }}-lint"
@@ -16,7 +17,8 @@ defaults:
 permissions:
   id-token: write
   attestations: write
-
+  contents: read
+  pull-requests: read
 
 jobs:
   changes:
@@ -29,40 +31,55 @@ jobs:
       lint: ${{steps.changes.outputs.lint }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4
       - id: changes
         name: Check for file changes
-        uses: dorny/paths-filter@0bc4621a3135347011ad047f9ecf449bf72ce2bd # v3.0.0
+        uses: dorny/paths-filter@v3 # v3.0.0
         with:
           base: ${{ github.ref }}
           token: ${{ github.token }}
           filters: .github/file-filters.yml
 
   lint:
+    needs: changes
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-    needs: [ changes ]
-    if: needs.changes.outputs.lint
+    if: github.event.pull_request.draft == false && needs.changes.outputs.lint
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4.1.7
+      - uses: actions/checkout@v4
+      - run: git checkout HEAD^
+#      - uses: actions/setup-python@v5
+#        with:
+#          python-version: '3.12'
+      - run: pip install tox
+      - name: Static Code checks
+        run: tox -e lint
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+  package:
+#    needs: changes
+#    if: github.event.pull_request.draft == false && needs.changes.outputs.lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
         with:
-          python-version: 3.12
-          architecture: 'x64'
-      - uses: yezz123/setup-uv@v4
+          python-version: '3.13.3'
+      - run: pip install tox
+      - name: Check Python Package structure
+        run: tox -e pkg_meta
 
-      - name: Install deps
-        run: uv sync --all-groups
-
-      - name: lint
-        if: needs.changes.outputs.lint
-        run: uv run tox -e lint
-
-      - name: pkg_meta
-        if: needs.changes.outputs.lint
-        run: uv run tox -e pkg_meta
+  mypy:
+    needs: changes
+    if: github.event.pull_request.draft == false && needs.changes.outputs.lint
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        django: [ "52", "42", "32" ]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: pip install tox
+      - name: Type Checking
+        run: tox -e d${{ matrix.django }}-type

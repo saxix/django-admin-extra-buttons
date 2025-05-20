@@ -101,3 +101,4 @@ max_supported_python = "3.13"
 
 [tool.uv]
 package = true
+required-version = ">=0.7.2"
