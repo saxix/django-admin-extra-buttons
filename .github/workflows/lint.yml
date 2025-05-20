@@ -29,6 +29,8 @@ jobs:
         shell: bash
     outputs:
       lint: ${{steps.changes.outputs.lint }}
+      mypy: ${{steps.changes.outputs.mypy }}
+      package: ${{steps.changes.outputs.package }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -43,20 +45,20 @@ jobs:
   lint:
     needs: changes
     runs-on: ubuntu-latest
-    if: github.event.pull_request.draft == false && needs.changes.outputs.lint
+    if: needs.changes.outputs.lint
     steps:
       - uses: actions/checkout@v4
       - run: git checkout HEAD^
-#      - uses: actions/setup-python@v5
-#        with:
-#          python-version: '3.12'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - run: pip install tox
       - name: Static Code checks
         run: tox -e lint
 
   package:
-#    needs: changes
-#    if: github.event.pull_request.draft == false && needs.changes.outputs.lint
+    needs: changes
+    if: needs.changes.outputs.package
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -69,7 +71,7 @@ jobs:
 
   mypy:
     needs: changes
-    if: github.event.pull_request.draft == false && needs.changes.outputs.lint
+    if: needs.changes.outputs.mypy
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

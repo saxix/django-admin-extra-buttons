@@ -8,6 +8,10 @@ python: &python
   - added|modified: 'tests/**'
   - 'manage.py'
 
+package:
+  - *python
+  - *dependencies
+
 changelog:
   - added|modified: 'changes/**'
   - 'CHANGELOG.md'
