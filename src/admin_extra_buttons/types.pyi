@@ -1,12 +1,12 @@
 from typing import Any, Protocol, TypeAlias, overload
 
-from django.contrib.admin import ModelAdmin
 from django.db.models import Model
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 from django.template import RequestContext
 
 from .buttons import ButtonWidget, ChoiceButton, LinkButton
 from .handlers import BaseExtraHandler, ButtonHandler, ChoiceHandler, LinkHandler
+from .mixins import ExtraButtonsMixin
 
 VisibleButton: TypeAlias = ButtonWidget | LinkButton | ChoiceButton
 
@@ -23,14 +23,17 @@ class WidgetProtocol(Protocol):
     def get_button_params(self, context: RequestContext, **extra: Any) -> dict[str, Any]: ...
     def get_button(self, context: RequestContext) -> ButtonWidget: ...
 
-class HandlerFunction(Protocol):
+class HandlerFunction:
     extra_buttons_handler: BaseExtraHandler
     __name__: str
+
     @overload
-    def __call__(
-        self, m: ModelAdmin[Any], request: HttpRequest, obj: Model | None = None, *args: Any, **kwargs: Any
-    ) -> bool: ...
+    def __call__(self, model_admin: ExtraButtonsMixin, request: HttpRequest, pk: str) -> HttpResponse: ...
     @overload
-    def __call__(self, m: ModelAdmin[Any], button: VisibleButton) -> bool: ...
+    def __call__(self, model_admin: ExtraButtonsMixin, request: HttpRequest) -> HttpResponse: ...
+    @overload
+    def __call__(self, model_admin: ExtraButtonsMixin, button: VisibleButton) -> None: ...
+
+LinkHandlerFunction: TypeAlias = HandlerFunction
 
 HandlerWithButton: TypeAlias = ButtonHandler | LinkHandler | ChoiceHandler

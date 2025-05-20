@@ -7,7 +7,7 @@ from .handlers import ButtonHandler, ChoiceHandler, LinkHandler, ViewHandler
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from .types import HandlerFunction
+    from .types import HandlerFunction, LinkHandlerFunction
 
 
 def button(**kwargs: Any) -> "Callable[[HandlerFunction], ButtonHandler]":
@@ -17,8 +17,8 @@ def button(**kwargs: Any) -> "Callable[[HandlerFunction], ButtonHandler]":
     return decorator
 
 
-def link(**kwargs: Any) -> "Callable[[HandlerFunction], LinkHandler]":
-    def decorator(func: "HandlerFunction") -> LinkHandler:
+def link(**kwargs: Any) -> "Callable[[LinkHandlerFunction], LinkHandler]":
+    def decorator(func: "LinkHandlerFunction") -> LinkHandler:
         handler = LinkHandler(func=func, **kwargs)
         if not handler.single_object_invocation:  # pragma: no cover
             msg = f"'{func.__name__}' is decorated with @link() so it must accept one single argument of 'button'"

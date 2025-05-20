@@ -86,12 +86,13 @@ jobs:
         if: ${{ always() }}
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         if: matrix.python == 3.12
         continue-on-error: true
         with:
           env_vars: OS,PYTHON
           fail_ci_if_error: true
+          slug: saxix/django-smart-admin
           flags: unittests
           files: ./coverage.xml
           verbose: false

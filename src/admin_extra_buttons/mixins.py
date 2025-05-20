@@ -93,12 +93,8 @@ class DummyAdminform:
 
 
 class ExtraButtonsMixin(admin.ModelAdmin[Model]):
-    if IS_GRAPPELLI_INSTALLED:  # pragma: no cover
-        change_list_template = "admin_extra_buttons/grappelli/change_list.html"
-        change_form_template = "admin_extra_buttons/grappelli/change_form.html"
-    else:
-        change_list_template = "admin_extra_buttons/change_list.html"
-        change_form_template = "admin_extra_buttons/change_form.html"
+    change_list_template = "admin_extra_buttons/change_list.html"
+    change_form_template = "admin_extra_buttons/change_form.html"
 
     def __init__(self, model: type[Model], admin_site: AdminSite) -> None:
         self.extra_button_handlers: "dict[str, HandlerWithButton]" = {}

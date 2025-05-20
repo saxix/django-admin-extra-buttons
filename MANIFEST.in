@@ -6,3 +6,6 @@ include MANIFEST.in
 recursive-include docs *
 recursive-include src/admin_extra_buttons *
 recursive-include tests *
+
+exclude ~*
+recursive-exclude . ~*

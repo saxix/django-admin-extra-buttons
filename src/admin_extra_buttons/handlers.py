@@ -24,8 +24,8 @@ if TYPE_CHECKING:
 class BaseExtraHandler:
     def __init__(self, func: HandlerFunction, **kwargs: Any) -> None:
         self.func: HandlerFunction = func
-        self.url_name: str = ""
         self.func.extra_buttons_handler = self
+        self.url_name: str = ""
         self.config = kwargs
         self.model_admin: "ExtraButtonsMixin" = kwargs.get("model_admin")  # type:ignore[assignment]
         self.decorators = kwargs.get("decorators", [])
