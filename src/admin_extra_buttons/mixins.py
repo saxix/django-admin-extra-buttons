@@ -1,194 +1,128 @@
-from __future__ import annotations
+"""
+Django admin extra buttons mixins.
 
+Usage:
+    from admin_extra_buttons.mixins import ExtraButtonsMixin
+    from admin_extra_buttons.decorators import button
+
+    @admin.register(MyModel)
+    class MyModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
+        @button(html_attrs={"title": "My Button"}, change_list=True)
+        def my_button(self, request):
+            # Your button logic here
+            ...
+"""
 import inspect
-import logging
-from functools import partial
 from typing import TYPE_CHECKING, Any
 
-from django import forms
-from django.conf import settings
-from django.contrib import admin, messages
-from django.contrib.admin.templatetags.admin_urls import admin_urlname
-from django.core.exceptions import ImproperlyConfigured
-from django.db import OperationalError, ProgrammingError
+from django.contrib import admin
 from django.db.models import Model
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
-from django.template.response import TemplateResponse
-from django.urls import URLPattern, path, reverse
-from django.utils.safestring import SafeString
+from django.urls import URLPattern, path
 
-from .handlers import BaseExtraHandler, ButtonHandler, ChoiceHandler, LinkHandler, ViewHandler
+from .handlers import ButtonHandler
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Iterator
-
     from django.contrib.admin import AdminSite
-    from django.core.checks import CheckMessage
-    from django.db.models.options import Options
-    from django.template import RequestContext
-
-    from .types import HandlerWithButton
-
-logger = logging.getLogger(__name__)
-
-IS_GRAPPELLI_INSTALLED = "grappelli" in settings.INSTALLED_APPS
-
-NOTSET = object()
 
 
-class ActionFailedError(Exception):
-    pass
+class BaseButtonsMixin:
+    """
+    Base mixin providing the core logic for discovering buttons and creating URLs.
+    This class is not meant to be used directly.
+    """
 
-
-def confirm_action(  # noqa: PLR0913
-    modeladmin: "ExtraButtonsMixin",
-    request: HttpRequest,
-    action: "Callable[..., HttpResponse | None]",
-    *,
-    message: str,
-    success_message: str = "",
-    description: str = "",
-    pk: str | None = None,
-    extra_context: dict[str, Any] | None = None,
-    title: str | None = None,
-    template: str = "admin_extra_buttons/confirm.html",
-    error_message: str | None = None,
-    raise_exception: bool = False,
-) -> HttpResponse | None:
-    opts: Options[Model] = modeladmin.model._meta
-    if extra_context:
-        title = extra_context.pop("title", title)
-    context = modeladmin.get_common_context(
-        request, message=message, description=description, title=title, pk=pk, **(extra_context or {})
-    )
-    if request.method == "POST":
-        ret = None
-        try:
-            ret = action(request)
-            if success_message:
-                modeladmin.message_user(request, success_message, messages.SUCCESS)
-        except Exception as e:  # pragma: no cover
-            if raise_exception:
-                raise
-            if error_message:
-                modeladmin.message_user(request, error_message or str(e), messages.ERROR)
-        if ret:
-            return ret
-        return HttpResponseRedirect(reverse(admin_urlname(opts, SafeString("changelist"))))
-
-    return TemplateResponse(request, template, context)
-
-
-class ExtraUrlConfigError(RuntimeError):
-    pass
-
-
-class DummyAdminform:
-    def __init__(self, **kwargs: Any) -> None:
-        self.prepopulated_fields: list[str] = []
-        self.__dict__.update(**kwargs)
-
-    def __iter__(self) -> "Iterator[Any]":  # pragma: no cover
-        yield
-
-
-class ExtraButtonsMixin(admin.ModelAdmin[Model]):
-    change_list_template = "admin_extra_buttons/change_list.html"
-    change_form_template = "admin_extra_buttons/change_form.html"
-
-    def __init__(self, model: type[Model], admin_site: AdminSite) -> None:
-        self.extra_button_handlers: "dict[str, HandlerWithButton]" = {}
+    def __init__(self, model: type[Model], admin_site: "AdminSite") -> None:
+        self.extra_button_handlers: dict[str, ButtonHandler] = {}
         super().__init__(model, admin_site)
 
-    def message_error_to_user(self, request: HttpRequest, exception: Exception) -> None:
-        self.message_user(request, f"{exception.__class__.__name__}: {exception}", messages.ERROR)
-
-    def check(self, **kwargs: Any) -> list[CheckMessage]:
-        errors = super().check(**kwargs)
-        try:
-            from admin_extra_buttons.utils import check_decorator_errors  # noqa: PLC0415
-
-            errors.extend(check_decorator_errors(self))
-        except (OSError, OperationalError, ProgrammingError, ImproperlyConfigured):  # pragma: no cover
-            pass
-        return errors
-
-    def get_common_context(self, request: HttpRequest, pk: str | None = None, **kwargs: Any) -> dict[str, Any]:
-        opts = self.model._meta
-        app_label = opts.app_label
-        self.object = None
-        if pk:
-            self.object = self.get_object(request, pk)
-
-        context = {
-            **self.admin_site.each_context(request),
-            **kwargs,
-            "opts": opts,
-            "add": False,
-            "change": True,
-            "save_as": False,
-            "original": self.object,
-            "extra_buttons": self.extra_button_handlers,
-            "has_editable_inline_admin_formsets": False,
-            "has_delete_permission": self.has_delete_permission(request, self.object),
-            "has_view_permission": self.has_view_permission(request, self.object),
-            "has_change_permission": self.has_change_permission(request, self.object),
-            "has_add_permission": self.has_add_permission(request),
-            "app_label": app_label,
-            "adminform": DummyAdminform(model_admin=self),
-        }
-        context.setdefault("title", "")
-        context.update(**kwargs)
-
-        return context
-
     def get_extra_urls(self) -> list[URLPattern]:
+        """Discover ButtonHandler methods and create corresponding URL patterns."""
         self.extra_button_handlers.clear()
-        handlers: dict[str, BaseExtraHandler] = {}
-        extra_urls: list[URLPattern] = []
+        handlers: dict[str, ButtonHandler] = {}
         opts = self.model._meta
+
+        # Introspect the MRO to find all ButtonHandler instances
         for cls in inspect.getmro(self.__class__):
             for method_name, method in cls.__dict__.items():
-                if callable(method) and isinstance(method, BaseExtraHandler):
-                    handlers[method_name] = method.get_instance(self)
+                if isinstance(method, ButtonHandler):
+                    handler = method.get_instance(self)
+                    handler.method_name = method_name
+                    handlers[method_name] = handler
 
-        handler: BaseExtraHandler
-        for handler in handlers.values():
-            handler.url_name = f"{opts.app_label}_{opts.model_name}_{handler.func.__name__}"
-            if isinstance(handler, ViewHandler) and handler.url_pattern:
-                f = partial(getattr(self, handler.func.__name__), self)
-                for deco in handler.decorators[::-1]:
-                    f = deco(f)
-                extra_urls.append(path(handler.url_pattern, f, name=handler.url_name))
-            if isinstance(handler, (ButtonHandler, LinkHandler, ChoiceHandler)):
-                self.extra_button_handlers[handler.func.__name__] = handler
+        extra_urls: list[URLPattern] = []
+        for method_name, handler in handlers.items():
+            handler.url_name = f"{opts.app_label}_{opts.model_name}_{method_name}"
+            self.extra_button_handlers[method_name] = handler
+
+            # The view is the handler instance itself, which is callable
+            view = self.admin_site.admin_view(handler)
+            url_pattern = f"{method_name}/"
+            extra_urls.append(path(url_pattern, view, name=handler.url_name))
         return extra_urls
 
     def get_urls(self) -> list[URLPattern]:
-        urls = self.get_extra_urls()
-        urls.extend(super().get_urls())
-        return urls
+        """Append the extra button URLs to the admin URLs."""
+        return self.get_extra_urls() + super().get_urls()
 
-    def get_changeform_buttons(self, context: RequestContext) -> list[HandlerWithButton]:  # noqa: ARG002,
-        return [h for h in self.extra_button_handlers.values() if h.change_form in {True, None}]
+    def get_changelist_buttons(self) -> list[ButtonHandler]:
+        """Get buttons to be displayed on the changelist page."""
+        return [
+            handler
+            for handler in self.extra_button_handlers.values()
+            if handler.change_list is not False  # Show if True or None
+        ]
 
-    def get_changelist_buttons(self, context: RequestContext) -> list[HandlerWithButton]:  # noqa: ARG002,
-        return [h for h in self.extra_button_handlers.values() if h.change_list in {True, None}]
+    def get_changeform_buttons(self) -> list[ButtonHandler]:
+        """Get buttons to be displayed on the change form page."""
+        return [
+            handler
+            for handler in self.extra_button_handlers.values()
+            if handler.change_form is not False  # Show if True or None
+        ]
 
-    def get_action_buttons(self, context: RequestContext) -> list[HandlerWithButton]:  # noqa: ARG002, PLR6301
-        return []
 
-    @property
-    def media(self) -> forms.Media:
-        extra = "" if settings.DEBUG else ".min"
-        base = super().media
-        return base + forms.Media(
-            js=[
-                f"admin/js/vendor/jquery/jquery{extra}.js",
-                "admin/js/jquery.init.js",
-                f"admin_extra_buttons{extra}.js",
-            ],
-            css={
-                "screen": ("admin_extra_buttons.css",),
-            },
-        )
+class LightweightButtonsMixin(BaseButtonsMixin):
+    """
+    Adds buttons to the admin by passing them to the template context.
+
+    This mixin requires you to extend the admin templates to include
+    the rendering logic for the buttons.
+    """
+
+    def changelist_view(self, request: Any, extra_context: dict | None = None) -> Any:
+        """Add changelist buttons to the template context."""
+        extra_context = extra_context or {}
+        extra_context["custom_buttons"] = self.get_changelist_buttons()
+        return super().changelist_view(request, extra_context)
+
+    def change_view(
+        self,
+        request: Any,
+        object_id: Any,
+        form_url: str = "",
+        extra_context: dict | None = None,
+    ) -> Any:
+        """Add change form buttons to the template context."""
+        extra_context = extra_context or {}
+        extra_context["custom_buttons"] = self.get_changeform_buttons()
+        return super().change_view(request, object_id, form_url, extra_context)
+
+
+class ExtraButtonsMixin(LightweightButtonsMixin):
+    """
+    A "batteries-included" mixin that automatically adds buttons.
+
+    This mixin overrides the admin templates to provide a zero-configuration
+    setup. It inherits all logic from LightweightButtonsMixin and simply
+    points to its own templates.
+    """
+
+    change_list_template = "admin_extra_buttons/change_list.html"
+    change_form_template = "admin_extra_buttons/change_form.html"
+
+
+__all__ = [
+    "ExtraButtonsMixin",
+    "LightweightButtonsMixin",
+    "BaseButtonsMixin",
+]

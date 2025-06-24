@@ -1,20 +1,47 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Callable
 
 from .handlers import ButtonHandler, ChoiceHandler, LinkHandler, ViewHandler
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
-
     from .types import HandlerFunction, LinkHandlerFunction
 
 
-def button(**kwargs: Any) -> "Callable[[HandlerFunction], ButtonHandler]":
-    def decorator(func: "HandlerFunction") -> ButtonHandler:
-        return ButtonHandler(func=func, **kwargs)
+def button(
+    html_attrs: dict[str, Any] | None = None,
+    change_list: bool | None = None,
+    change_form: bool | None = None,
+) -> Callable[[Callable], ButtonHandler]:
+    """
+    Decorator that turns a ModelAdmin method into an admin button.
+
+    Args:
+        html_attrs: A dict of HTML attributes for the button's <a> tag.
+        change_list: If True, show the button on the changelist page.
+        change_form: If True, show the button on the change form page.
+    """
+
+    def decorator(func: Callable) -> ButtonHandler:
+        return ButtonHandler(
+            func=func,
+            html_attrs=html_attrs,
+            change_list=change_list,
+            change_form=change_form,
+        )
 
     return decorator
+
+
+def simple_button(
+    html_attrs: dict | None = None,
+    change_list: bool | None = None,
+    change_form: bool | None = None,
+) -> Callable[[Callable], ButtonHandler]:
+    """An alias for the @button decorator for convenience."""
+    return button(
+        html_attrs=html_attrs, change_list=change_list, change_form=change_form
+    )
 
 
 def link(**kwargs: Any) -> "Callable[[LinkHandlerFunction], LinkHandler]":
@@ -40,3 +67,6 @@ def choice(**kwargs: Any) -> "Callable[[HandlerFunction], ChoiceHandler]":
         return ChoiceHandler(func=func, **kwargs)
 
     return decorator
+
+
+__all__ = ["button", "simple_button"]

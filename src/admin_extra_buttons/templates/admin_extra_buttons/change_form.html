@@ -1,5 +1,15 @@
-{% extends "admin/change_form.html" %}{% load admin_list admin_urls i18n static %}
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls static %}
+
 {% block object-tools-items %}
-    {{ block.super }}
-    {% include "admin_extra_buttons/includes/change_form_buttons.html" %}
-{% endblock object-tools-items %}
+  {{ block.super }}
+  {% for button in custom_buttons %}
+    <li>
+      <a href="{% url button.url_name %}"
+         class="{{ button.html_attrs.class|default:'historylink' }}"
+         title="{{ button.html_attrs.title|default:button.func.__name__ }}">
+          {{ button.html_attrs.title|default:button.func.__name__ }}
+      </a>
+    </li>
+  {% endfor %}
+{% endblock %}

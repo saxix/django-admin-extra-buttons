@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import copy
 import inspect
 from typing import TYPE_CHECKING, Any
 
 from django.core.exceptions import PermissionDenied
 from django.http.response import HttpResponseBase
 from django.utils.functional import cached_property
+from django.contrib import admin
 
 from .buttons import ButtonWidget, ChoiceButton, LinkButton
 from .utils import HttpResponseRedirectToReferrer, check_permission, handle_basic_auth, labelize
@@ -19,6 +21,56 @@ if TYPE_CHECKING:
 
     from .mixins import ExtraButtonsMixin
     from .types import HandlerFunction, PermissionHandler, VisibleButton
+
+
+class ButtonHandler:
+    """
+    A descriptor and handler for admin buttons.
+
+    It stores button configuration and creates a unique instance for each
+    ModelAdmin instance to which it is attached.
+    """
+
+    def __init__(
+        self,
+        func: Callable,
+        html_attrs: dict[str, Any] | None = None,
+        change_list: bool | None = None,
+        change_form: bool | None = None,
+    ):
+        self.func = func
+        self.html_attrs = html_attrs or {}
+        self.change_list = change_list
+        self.change_form = change_form
+
+        # These will be populated by the mixin
+        self.model_admin: admin.ModelAdmin | None = None
+        self.method_name: str = ""
+        self.url_name: str = ""
+
+        # Compatibility with original function attributes
+        for attr in ["__name__", "__doc__", "__module__", "__qualname__"]:
+            if hasattr(func, attr):
+                setattr(self, attr, getattr(func, attr))
+
+    def get_instance(self, model_admin: admin.ModelAdmin) -> "ButtonHandler":
+        """
+        Return a new instance of the handler bound to the ModelAdmin instance.
+        """
+        instance = copy.copy(self)
+        instance.model_admin = model_admin
+        return instance
+
+    def __call__(self, request: Any, *args: Any, **kwargs: Any) -> Any:
+        """
+        Call the original decorated function, passing the model_admin instance.
+        """
+        if not self.model_admin:
+            # This should not happen in the context of a ModelAdmin
+            raise TypeError(
+                "Button handler is not bound to a ModelAdmin instance."
+            )
+        return self.func(self.model_admin, request, *args, **kwargs)
 
 
 class BaseExtraHandler:
@@ -157,20 +209,6 @@ class ButtonMixin:
         return self.button_class(**self.get_button_params(context))
 
 
-class ButtonHandler(ButtonMixin, ViewHandler):
-    """View handler for `@button` decorated views"""
-
-    button_class = ButtonWidget
-
-    def get_button_params(self, context: RequestContext, **extra: Any) -> dict[str, Any]:
-        return super().get_button_params(
-            context,
-            label=self.config.get("label", labelize(self.name)),
-            login_required=self.login_required,
-            **extra,
-        )
-
-
 class LinkHandler(ButtonMixin, BaseExtraHandler):
     button_class: "type[VisibleButton]" = LinkButton
     url_pattern = None
@@ -214,3 +252,6 @@ class ChoiceHandler(LinkHandler):
             choices=self.choices,
             **extra,
         )
+
+
+__all__ = ["ButtonHandler"]
