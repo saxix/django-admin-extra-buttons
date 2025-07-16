@@ -33,58 +33,56 @@ class MyModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
 
 !!! Note
 
-    AEB try to understand if a button should appear in the `change_form` and/or in the `change_list` page.
-    If the decorated method has only one argument (es. `def scan(self, request)`), the button will only be visible
-    on the `change_list` page, if it contains more that one argumente (es. `def scan(self, request, pk)`)
+    AEB can guess if the button should appear in the `change_form` and/or in the `change_list` page:
+    if the decorated method has only one argument (es. `def scan(self, request)`), the button will only be visible
+    on the `change_list` page ; while if it contains more that one argument (es. `def scan(self, request, pk)`)
     the button will be visible in the `change_form` page.
 
 ## Options
 
-change_form: `None`
-: set to `True` do show the button on the `change_form` page
-  If set to `None` (default), use method signature to display the button
+`change_form` (defaults to `None`):
+    Set to `True` do show the button on the `change_form` page.
+    If set to `None` (default), use method signature to display the button.
 
-change_list: `None`
-: set to `True` do show the button on the `change_list` page
-    If set to `None` (default), use method signature to display the button
+`change_list` (defaults to `None`):
+    Set to `True` do show the button on the `change_list` page.
+    If set to `None` (default), use method signature to display the button.
 
-disable_on_click: `True`
-: automatically disable button on click() to prevent unintentional double processing
+`disable_on_click` (defaults to `True`):
+    Automatically disable button on `click` to prevent unintentional double processing.
 
-disable_on_edit: `True`
-: automatically disable button when any FORM in page is modified
+`disable_on_edit` (defaults to `True`):
+    Automatically disable button when any FORM in page is modified.
 
-enabled: `True`
-: bool or callable to set enable status
+`enabled` (defaults to `True`):
+    bool or callable to set enable status. The callable takes the `ButtonWidget` instance as a unique argument ; this argument gives access to the `request`, the template `context`, and the `original` object the is being edited in the admin.
 
-html_attrs: `{}`
-: Dictionary of html tags to use in button rendering.
+`html_attrs` (defaults to `{}`):
+    Dictionary of html tags to use in button rendering.
 
-label: `decorated method name`
-: button label
+`label` (defaults to `decorated method name`):
+    button label.
 
-visible: `True`
-: bool or callable show/hide button
+`pattern` (defaults to `<function_name>/<path:arg1>/<path:arg2>/....`):
+    url pattern to use for the url generation.
 
+`visible` (defaults to `True`):
+    bool or callable show/hide button. The callable takes the `ButtonWidget` instance as a unique argument ; this argument gives access to the `request`, the template `context`, and the `original` object the is being edited in the admin.
+
+`permission` (defaults to `None`):
+    Django permission code needed to access the view and display the button, or a callable that takes the `request` and the edited `object` as arguments and that must return a `bool`.
 
 !!! Note
 
     `id` is automacally set if not provided,
     `class` is updated/set based on `disable_on_click` and `disable_on_edit` values
 
-label: `decorated method name`
-: button label
-
-pattern: `<function_name>/<path:arg1>/<path:arg2>/....`
-: url pattern to use for the url genaration.
-
-permission: `None`
-:   Django permission code needed to access the view and display the button
-
 ## Examples
 
 ### Simple
+
 Simplest usage. Display a button and create a view on `admin/mymodel/scan`.
+
 ```python
 
 @register(MyModel)
@@ -96,12 +94,13 @@ class MyModelAdmin(ExtrButtonsMixi, admin.ModelAdmin):
 
 ```
 ### Check Permissions
+
 Buttons with custom permission, one for `change_list` and other for `change_form`
 
 ```python
 
 @register(MyModel)
-class MyModelAdmin(ExtrButtonsMixi, admin.ModelAdmin):
+class MyModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
 
     @button(permission=lambda request, obj: request.user.is_superuser)
     def delete_all(self, request):
@@ -116,30 +115,27 @@ class MyModelAdmin(ExtrButtonsMixi, admin.ModelAdmin):
 ```
 
 ### Fully featured
-Buttons with custom permission, one for `change_list` and other for `change_form`
+
+Two complex buttons, one for `change_list` with custom permission, and one for `change_form` with custom visibility.
 
 ```python
 
 @register(MyModel)
-class MyModelAdmin(ExtrButtonsMixi, admin.ModelAdmin):
+class MyModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
 
     @button(permission=lambda request, obj: request.user.is_superuser,
             html_attrs={'style': 'background-color:var(--button-bg)'},
             label=_('Delete All Records'),
-            change_form=True
             )
     def delete_all(self, request):
         pass
 
-    @button(permission=lambda request, obj: request.user.is_superuser,
+    @button(visible=lambda btn: "special_context_key" in btn.context,
             html_attrs={'style': 'background-color:var(--button-bg)'},
             enabled=lambda btn: btn.original.status == SUCCESS,
-            label=_('Delete All Records'),
-            change_form=True
+            label=_('Do something special on this one'),
             )
     def toggle(self, request, pk):
         pass
-
-
 
 ```
