@@ -1,4 +1,4 @@
-from typing import Any, Protocol, TypeAlias, overload
+from typing import Any, Protocol, TypeAlias
 
 from django.db.models import Model
 from django.http import HttpRequest, HttpResponse
@@ -23,16 +23,20 @@ class WidgetProtocol(Protocol):
     def get_button_params(self, context: RequestContext, **extra: Any) -> dict[str, Any]: ...
     def get_button(self, context: RequestContext) -> ButtonWidget: ...
 
-class HandlerFunction:
-    extra_buttons_handler: BaseExtraHandler
+class BaseHandlerFunction(Protocol):
     __name__: str
+    extra_buttons_handler: BaseExtraHandler
 
-    @overload
+class HandlerFunctionRequestAndPk(BaseHandlerFunction, Protocol):
     def __call__(self, model_admin: ExtraButtonsMixin, request: HttpRequest, pk: str) -> HttpResponse: ...
-    @overload
+
+class HandlerFunctionRequest(BaseHandlerFunction, Protocol):
     def __call__(self, model_admin: ExtraButtonsMixin, request: HttpRequest) -> HttpResponse: ...
-    @overload
+
+class HandlerFunctionButton(BaseHandlerFunction, Protocol):
     def __call__(self, model_admin: ExtraButtonsMixin, button: VisibleButton) -> None: ...
+
+HandlerFunction = Union[HandlerFunctionRequestAndPk, HandlerFunctionRequest, HandlerFunctionButton]
 
 LinkHandlerFunction: TypeAlias = HandlerFunction
 
