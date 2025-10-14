@@ -70,7 +70,7 @@ class MyModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
     bool or callable show/hide button. The callable takes the `ButtonWidget` instance as a unique argument ; this argument gives access to the `request`, the template `context`, and the `original` object the is being edited in the admin.
 
 `permission` (defaults to `None`):
-    Django permission code needed to access the view and display the button, or a callable that takes the `request` and the edited `object` as arguments and that must return a `bool`.
+    Django permission code needed to access the view and display the button, or a callable that takes the `request`, edited `object`, and `handler` as arguments and that must return a `bool`.
 
 !!! Note
 
@@ -123,7 +123,7 @@ Two complex buttons, one for `change_list` with custom permission, and one for `
 @register(MyModel)
 class MyModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
 
-    @button(permission=lambda request, obj: request.user.is_superuser,
+    @button(permission=lambda request, obj, handler: request.user.is_superuser,
             html_attrs={'style': 'background-color:var(--button-bg)'},
             label=_('Delete All Records'),
             )
