@@ -1,4 +1,4 @@
-from typing import Any, Protocol, TypeAlias
+from typing import Any, Callable, Protocol, TypeAlias
 
 from django.db.models import Model
 from django.http import HttpRequest, HttpResponse
@@ -27,17 +27,31 @@ class BaseHandlerFunction(Protocol):
     __name__: str
     extra_buttons_handler: BaseExtraHandler
 
-class HandlerFunctionRequestAndPk(BaseHandlerFunction, Protocol):
-    def __call__(self, model_admin: ExtraButtonsMixin, request: HttpRequest, pk: str) -> HttpResponse: ...
+"""
+# xxx1 = Callable[[ExtraButtonsMixin, HttpRequest], HttpResponse | None]
+# xxx2 = Callable[[ExtraButtonsMixin, HttpRequest, str], HttpResponse | None]
+#
+# aaa = xxx1 | xxx2
+#
+# bbb = Callable[[ExtraButtonsMixin, VisibleButton], HttpResponse | None]
+#
+# zzz = aaa | bbb
+#
+# ViewHandlerFunction = aaa
+# ButtonHandlerFunction = aaa
+# ChoiceHandlerFunction = bbb
+# LinkHandlerFunction = bbb
+"""
 
-class HandlerFunctionRequest(BaseHandlerFunction, Protocol):
-    def __call__(self, model_admin: ExtraButtonsMixin, request: HttpRequest) -> HttpResponse: ...
+Callback1: TypeAlias = Callable[[ExtraButtonsMixin, HttpRequest], HttpResponse | None]
+Callback2: TypeAlias = Callable[[ExtraButtonsMixin, HttpRequest, str], HttpResponse | None]
 
-class HandlerFunctionButton(BaseHandlerFunction, Protocol):
-    def __call__(self, model_admin: ExtraButtonsMixin, button: VisibleButton) -> None: ...
+ViewHandlerFunction: TypeAlias = Callback1 | Callback2
+ButtonHandlerFunction = ViewHandlerFunction
 
-HandlerFunction = Union[HandlerFunctionRequestAndPk, HandlerFunctionRequest, HandlerFunctionButton]
+ChoiceHandlerFunction: TypeAlias = Callable[[ExtraButtonsMixin, VisibleButton], HttpResponse | None]
+LinkHandlerFunction: TypeAlias = Callable[[ExtraButtonsMixin, VisibleButton], HttpResponse | None]
 
-LinkHandlerFunction: TypeAlias = HandlerFunction
+GenericHandler: TypeAlias = ButtonHandlerFunction | ViewHandlerFunction | ChoiceHandlerFunction | LinkHandlerFunction
 
 HandlerWithButton: TypeAlias = ButtonHandler | LinkHandler | ChoiceHandler

@@ -10,8 +10,7 @@ from django.conf import settings
 from django.contrib import admin, messages
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
 from django.core.exceptions import ImproperlyConfigured
-from django.db import OperationalError, ProgrammingError
-from django.db.models import Model
+from django.db import OperationalError, ProgrammingError, models
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.urls import URLPattern, path, reverse
@@ -24,10 +23,12 @@ if TYPE_CHECKING:
 
     from django.contrib.admin import AdminSite
     from django.core.checks import CheckMessage
+    from django.db.models import Model
     from django.db.models.options import Options
     from django.template import RequestContext
 
     from .types import HandlerWithButton
+
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +55,7 @@ def confirm_action(  # noqa: PLR0913
     template: str = "admin_extra_buttons/confirm.html",
     error_message: str | None = None,
     raise_exception: bool = False,
-) -> HttpResponse | None:
+) -> HttpResponse:
     opts: Options[Model] = modeladmin.model._meta
     if extra_context:
         title = extra_context.pop("title", title)
@@ -92,7 +93,7 @@ class DummyAdminform:
         yield
 
 
-class ExtraButtonsMixin(admin.ModelAdmin[Model]):
+class ExtraButtonsMixin(admin.ModelAdmin[models.Model]):
     change_list_template = "admin_extra_buttons/change_list.html"
     change_form_template = "admin_extra_buttons/change_form.html"
 

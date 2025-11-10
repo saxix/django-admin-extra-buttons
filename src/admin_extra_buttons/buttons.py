@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from django.core.exceptions import PermissionDenied
 from django.template.loader import get_template
@@ -17,7 +17,9 @@ if TYPE_CHECKING:
     from django.template import RequestContext
     from django.template.backends.base import _EngineTemplate
 
-    from admin_extra_buttons.handlers import BaseExtraHandler
+    from admin_extra_buttons.handlers import BaseExtraHandler, ChoiceHandler
+
+    _M_co = TypeVar("_M_co", bound=Model, covariant=True)
 
 
 class ButtonWidget:
@@ -124,7 +126,7 @@ class ButtonWidget:
         return self.context["request"]  # type:ignore[no-any-return]
 
     @property
-    def original(self) -> Model | None:
+    def original(self) -> _M_co | None:
         if not self.context:  # pragma: no cover
             raise ValueError("Button not initialised.")
         return self.context.get("original", None)
@@ -180,7 +182,7 @@ class ChoiceButton(LinkButton):
 
     def __init__(  # noqa: PLR0917, PLR0913
         self,
-        handler: "BaseExtraHandler",
+        handler: "ChoiceHandler",
         context: "RequestContext",
         label: str | None = None,
         visible: bool = True,
@@ -195,7 +197,7 @@ class ChoiceButton(LinkButton):
 
     def get_choices(self) -> Generator[dict[str, Any], None, None]:
         for handler_config in self.choices:
-            handler = handler_config.func.extra_buttons_handler
+            handler = handler_config.func.extra_buttons_handler  # type: ignore[union-attr]
             if self.change_list and handler.single_object_invocation:
                 url = reverse(f"admin:{handler.url_name}")
             elif not handler.single_object_invocation and self.change_form and self.original:

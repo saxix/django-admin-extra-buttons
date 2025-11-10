@@ -7,11 +7,16 @@ from .handlers import ButtonHandler, ChoiceHandler, LinkHandler, ViewHandler
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from .types import HandlerFunction, LinkHandlerFunction
+    from .types import (
+        ButtonHandlerFunction,
+        ChoiceHandlerFunction,
+        LinkHandlerFunction,
+        ViewHandlerFunction,
+    )
 
 
-def button(**kwargs: Any) -> "Callable[[HandlerFunction], ButtonHandler]":
-    def decorator(func: "HandlerFunction") -> ButtonHandler:
+def button(**kwargs: Any) -> "Callable[[ButtonHandlerFunction], ButtonHandler]":
+    def decorator(func: "ButtonHandlerFunction") -> ButtonHandler:
         return ButtonHandler(func=func, **kwargs)
 
     return decorator
@@ -28,15 +33,15 @@ def link(**kwargs: Any) -> "Callable[[LinkHandlerFunction], LinkHandler]":
     return decorator
 
 
-def view(**kwargs: Any) -> "Callable[[HandlerFunction], ViewHandler]":
-    def decorator(func: "HandlerFunction") -> ViewHandler:
+def view(**kwargs: Any) -> "Callable[[ViewHandlerFunction], ViewHandler]":
+    def decorator(func: "ViewHandlerFunction") -> ViewHandler:
         return ViewHandler(func=func, **kwargs)
 
     return decorator
 
 
-def choice(**kwargs: Any) -> "Callable[[HandlerFunction], ChoiceHandler]":
-    def decorator(func: "HandlerFunction") -> ChoiceHandler:
+def choice(**kwargs: Any) -> "Callable[[ChoiceHandlerFunction], ChoiceHandler]":
+    def decorator(func: "ChoiceHandlerFunction") -> ChoiceHandler:
         return ChoiceHandler(func=func, **kwargs)
 
     return decorator
