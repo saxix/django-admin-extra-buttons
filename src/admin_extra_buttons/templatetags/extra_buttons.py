@@ -22,14 +22,20 @@ def default_if_empty(v: str, default: str) -> str:
 
 @register.simple_tag(takes_context=True)
 def get_action_buttons(context: "RequestContext", model_admin: ExtraButtonsMixin) -> "list[VisibleButton]":
-    return [handler.get_button(context) for handler in model_admin.get_action_buttons(context)]
+    if hasattr(model_admin, "get_action_buttons"):
+        return [handler.get_button(context) for handler in model_admin.get_action_buttons(context)]
+    return []
 
 
 @register.simple_tag(takes_context=True)
 def get_changeform_buttons(context: "RequestContext", model_admin: ExtraButtonsMixin) -> "list[VisibleButton]":
-    return [handler.get_button(context) for handler in model_admin.get_changeform_buttons(context)]
+    if hasattr(model_admin, "get_changeform_buttons"):
+        return [handler.get_button(context) for handler in model_admin.get_changeform_buttons(context)]
+    return []
 
 
 @register.simple_tag(takes_context=True)
 def get_changelist_buttons(context: "RequestContext", model_admin: ExtraButtonsMixin) -> "list[VisibleButton]":
-    return [handler.get_button(context) for handler in model_admin.get_changelist_buttons(context)]
+    if hasattr(model_admin, "get_changelist_buttons"):
+        return [handler.get_button(context) for handler in model_admin.get_changelist_buttons(context)]
+    return []

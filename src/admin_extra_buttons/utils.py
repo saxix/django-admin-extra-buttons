@@ -99,9 +99,9 @@ def check_decorator_errors(model_admin: "ExtraButtonsMixin") -> list[checks.Warn
                         if perm_name not in standard_permissions:
                             errors.append(
                                 checks.Warning(
-                                    f'"{target.__name__}.{node.name}" '
+                                    f"'{target.__name__}.{node.name}' "
                                     f"is checking for a non existing permission "
-                                    f'"{perm_name}"',
+                                    f"'{perm_name!r}",
                                     id="admin_extra_buttons.PERM",
                                 )
                             )
