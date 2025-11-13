@@ -231,6 +231,11 @@ class LinkHandler(ButtonMixin, BaseExtraHandler):
         self.func(self.model_admin, button)
         return button
 
+    def _invoke_handler(
+        self, model_admin: ExtraButtonsMixin, request: HttpRequest, *args: Any, **kwargs: Any
+    ) -> HttpResponseBase | None:
+        raise NotImplementedError("")
+
 
 class ChoiceHandler(LinkHandler):
     button_class: "type[VisibleButton]" = ChoiceButton
@@ -248,3 +253,8 @@ class ChoiceHandler(LinkHandler):
             choices=self.choices,
             **extra,
         )
+
+    def _invoke_handler(
+        self, model_admin: ExtraButtonsMixin, request: HttpRequest, *args: Any, **kwargs: Any
+    ) -> HttpResponseBase | None:
+        raise NotImplementedError("")
