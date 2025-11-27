@@ -103,6 +103,10 @@ class ButtonWidget:
 
         return self._enabled
 
+    @enabled.setter
+    def enabled(self, value: bool) -> None:
+        self._enabled = value
+
     @property
     def admin_site(self) -> AdminSite:
         return self.handler.model_admin.admin_site
@@ -196,12 +200,13 @@ class ChoiceButton(LinkButton):
         super().__init__(handler, context, label, visible, enabled, change_form, change_list, template, **config)
 
     def get_choices(self) -> Generator[dict[str, Any], None, None]:
+        namespace = self.admin_site.name
         for handler_config in self.choices:
             handler = handler_config.func.extra_buttons_handler  # type: ignore[union-attr]
             if self.change_list and handler.single_object_invocation:
-                url = reverse(f"admin:{handler.url_name}")
+                url = reverse(f"{namespace}:{handler.url_name}")
             elif not handler.single_object_invocation and self.change_form and self.original:
-                url = reverse(f"admin:{handler.url_name}", args=[self.context["original"].pk])
+                url = reverse(f"{namespace}:{handler.url_name}", args=[self.context["original"].pk])
             else:
                 url = None
             if url:
@@ -211,8 +216,12 @@ class ChoiceButton(LinkButton):
                     "selected": self.request.path == url,
                 }
 
-    def can_render(self) -> bool:  # noqa: PLR6301
-        return True
+    @property
+    def has_choices(self) -> bool:
+        return next(self.get_choices(), None) is not None
+
+    def can_render(self) -> bool:
+        return self.visible and self.authorized() and self.has_choices
 
     @property
     def html_attrs(self) -> dict[str, str]:
