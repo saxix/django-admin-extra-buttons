@@ -9,20 +9,17 @@ requires = [
 name = "django-admin-extra-buttons"
 description = "Django mixin to easily add buttons to any ModelAdmin"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.12"
 classifiers = [
   "Environment :: Web Environment",
   "Framework :: Django",
-  "Framework :: Django :: 3.2",
   "Framework :: Django :: 4.2",
   "Framework :: Django :: 5.2",
+  "Framework :: Django :: 6.0",
   "Intended Audience :: Developers",
   "License :: OSI Approved :: BSD License",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.9",
-  "Programming Language :: Python :: 3.10",
-  "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Topic :: Software Development :: Libraries :: Application Frameworks",
@@ -34,14 +31,13 @@ dynamic = [
 dependencies = [
   "django-stubs",
 ]
-
 urls.Documentation = "https://saxix.github.io/django-admin-extra-buttons/"
 urls.Homepage = "https://github.com/saxix/django-admin-extra-buttons"
 
 [dependency-groups]
-
 dev = [
   "covdefaults>=2.3",
+  "django-stubs",
   "django-webtest>=1.9.13",
   "factory-boy>=3.3.1",
   "pdbpp>=0.10.3",
@@ -55,7 +51,6 @@ dev = [
   "toml>=0.10.2",
   "tox>=4.20",
 ]
-
 docs = [
   "markdown-include>=0.8.1",
   "mdx-gh-links>=0.4",
@@ -73,32 +68,26 @@ docs = [
   "mkdocstrings>=0.28.1",
   "mkdocstrings-python>=1.16.1",
 ]
-
 dj = [
   "django",
 ]
-
 type-check = [
   "mypy",
 ]
 
 [tool.hatch]
 build.hooks.vcs.version-file = "src/admin_extra_buttons/version.py"
+build.targets.sdist.ignore-vcs = true
+build.targets.sdist.include = [
+  "src/admin_extra_buttons/**/*.*",
+]
+build.targets.wheel.packages = [ "src/admin_extra_buttons" ]
 version.source = "vcs"
 raw-options = { root = "../.." }
 
-[tool.hatch.build.targets.sdist]
-ignore-vcs = true
-include = [
-  "src/admin_extra_buttons/**/*.*",
-]
-
-[tool.hatch.build.targets.wheel]
-packages = [ "src/admin_extra_buttons" ]
+[tool.uv]
+required-version = ">=0.7.2"
+package = true
 
 [tool.pyproject-fmt]
 max_supported_python = "3.13"
-
-[tool.uv]
-package = true
-required-version = ">=0.7.2"

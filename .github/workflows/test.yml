@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v4
       - id: changes
         name: Check for file changes
-        uses: dorny/paths-filter@0bc4621a3135347011ad047f9ecf449bf72ce2bd # v3.0.0
+        uses: dorny/paths-filter@v4
         with:
           base: ${{ github.ref }}
           token: ${{ github.token }}
@@ -40,11 +40,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        django: [ "52", "42", "32" ]
-        python: [ "3.13", "3.12" ]
+        python: [ "3.12", "3.13", "3.14" ]
+        django: [ "60", "52", "42" ]
         exclude:
-          - python: 39
-            django: 51
+          - python: "3.14"
+            django: "42"
     env:
       CELERY_BROKER_URL: redis://redis:6379/0
       CELERY_ALWAYS_EAGER: true
@@ -79,20 +79,19 @@ jobs:
         run: tox -e d${{ matrix.django }}-py$(echo ${{ matrix.python }} | sed 's/\.//')
 
       - name: Upload pytest test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: pytest-results-${{ matrix.python }}-${{matrix.django}}
           path: junit-${{ matrix.python }}-${{matrix.django}}.xml
         if: ${{ always() }}
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
-        if: matrix.python == 3.12
+        uses: codecov/codecov-action@v6
+        if: matrix.python == 3.13
         continue-on-error: true
         with:
           env_vars: OS,PYTHON
           fail_ci_if_error: true
-          slug: saxix/django-smart-admin
           flags: unittests
           files: ./coverage.xml
           verbose: false

@@ -10,7 +10,7 @@ from django.conf import settings
 from django.contrib import admin, messages
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
 from django.core.exceptions import ImproperlyConfigured
-from django.db import OperationalError, ProgrammingError, models
+from django.db import OperationalError, ProgrammingError
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.urls import URLPattern, path, reverse
@@ -93,7 +93,7 @@ class DummyAdminform:
         yield
 
 
-class ExtraButtonsMixin(admin.ModelAdmin[models.Model]):
+class ExtraButtonsMixin(admin.ModelAdmin):
     change_list_template = "admin_extra_buttons/change_list.html"
     change_form_template = "admin_extra_buttons/change_form.html"
 

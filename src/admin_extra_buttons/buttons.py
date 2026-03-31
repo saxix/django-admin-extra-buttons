@@ -195,7 +195,7 @@ class ChoiceButton(LinkButton):
         self.choices: list[BaseExtraHandler] = []
         super().__init__(handler, context, label, visible, enabled, change_form, change_list, template, **config)
 
-    def get_choices(self) -> Generator[dict[str, Any], None, None]:
+    def get_choices(self) -> Generator[dict[str, Any]]:
         for handler_config in self.choices:
             handler = handler_config.func.extra_buttons_handler  # type: ignore[union-attr]
             if self.change_list and handler.single_object_invocation:

@@ -17,8 +17,7 @@ defaults:
 permissions:
   id-token: write
   attestations: write
-  contents: read
-  pull-requests: read
+
 
 jobs:
   changes:
@@ -29,58 +28,42 @@ jobs:
         shell: bash
     outputs:
       lint: ${{steps.changes.outputs.lint }}
-      mypy: ${{steps.changes.outputs.mypy }}
-      package: ${{steps.changes.outputs.package }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       - id: changes
         name: Check for file changes
-        uses: dorny/paths-filter@v3 # v3.0.0
+        uses: dorny/paths-filter@v4
         with:
           base: ${{ github.ref }}
           token: ${{ github.token }}
           filters: .github/file-filters.yml
 
   lint:
-    needs: changes
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    needs: [ changes ]
     if: needs.changes.outputs.lint
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.13'
-      - run: pip install tox
-      - name: Static Code checks
-        run: tox -e lint
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  package:
-    needs: changes
-    if: needs.changes.outputs.package
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
-      - run: pip install tox
-      - name: Check Python Package structure
-        run: tox -e pkg_meta
+          python-version: 3.14
+          architecture: 'x64'
+      - uses: yezz123/setup-uv@v4
 
-  mypy:
-    needs: changes
-    if: needs.changes.outputs.mypy
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        django: [ "52", "42", "32" ]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.13'
-      - run: pip install tox
-      - name: Type Checking
-        run: tox -e d${{ matrix.django }}-type
+      - name: Install deps
+        run: uv sync --all-groups
+
+      - name: lint
+        if: needs.changes.outputs.lint
+        run: uv run tox -e lint
+
+      - name: pkg_meta
+        if: needs.changes.outputs.lint
+        run: uv run tox -e pkg_meta

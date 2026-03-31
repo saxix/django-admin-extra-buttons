@@ -1,4 +1,5 @@
-from typing import Any, Callable, Protocol, TypeAlias
+from collections.abc import Callable
+from typing import Any, Protocol
 
 from django.db.models import Model
 from django.http import HttpRequest, HttpResponse
@@ -8,7 +9,7 @@ from .buttons import ButtonWidget, ChoiceButton, LinkButton
 from .handlers import BaseExtraHandler, ButtonHandler, ChoiceHandler, LinkHandler
 from .mixins import ExtraButtonsMixin
 
-VisibleButton: TypeAlias = ButtonWidget | LinkButton | ChoiceButton
+type VisibleButton = ButtonWidget | LinkButton | ChoiceButton
 
 class PermissionHandler(Protocol):
     def __call__(
@@ -43,15 +44,15 @@ class BaseHandlerFunction(Protocol):
 # LinkHandlerFunction = bbb
 """
 
-Callback1: TypeAlias = Callable[[ExtraButtonsMixin, HttpRequest], HttpResponse | None]
-Callback2: TypeAlias = Callable[[ExtraButtonsMixin, HttpRequest, str], HttpResponse | None]
+type Callback1 = Callable[[ExtraButtonsMixin, HttpRequest], HttpResponse | None]
+type Callback2 = Callable[[ExtraButtonsMixin, HttpRequest, str], HttpResponse | None]
 
-ViewHandlerFunction: TypeAlias = Callback1 | Callback2
+type ViewHandlerFunction = Callback1 | Callback2
 ButtonHandlerFunction = ViewHandlerFunction
 
-ChoiceHandlerFunction: TypeAlias = Callable[[ExtraButtonsMixin, VisibleButton], HttpResponse | None]
-LinkHandlerFunction: TypeAlias = Callable[[ExtraButtonsMixin, VisibleButton], HttpResponse | None]
+type ChoiceHandlerFunction = Callable[[ExtraButtonsMixin, VisibleButton], HttpResponse | None]
+type LinkHandlerFunction = Callable[[ExtraButtonsMixin, VisibleButton], HttpResponse | None]
 
-GenericHandler: TypeAlias = ButtonHandlerFunction | ViewHandlerFunction | ChoiceHandlerFunction | LinkHandlerFunction
+type GenericHandler = ButtonHandlerFunction | ViewHandlerFunction | ChoiceHandlerFunction | LinkHandlerFunction
 
-HandlerWithButton: TypeAlias = ButtonHandler | LinkHandler | ChoiceHandler
+type HandlerWithButton = ButtonHandler | LinkHandler | ChoiceHandler
