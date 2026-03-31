@@ -2,11 +2,10 @@ from typing import TYPE_CHECKING
 
 from django import template
 
-from admin_extra_buttons.mixins import ExtraButtonsMixin
-
 if TYPE_CHECKING:
     from django.template import RequestContext
 
+    from admin_extra_buttons.mixins import ExtraButtonsMixin
     from admin_extra_buttons.types import VisibleButton
 
 
@@ -21,21 +20,21 @@ def default_if_empty(v: str, default: str) -> str:
 
 
 @register.simple_tag(takes_context=True)
-def get_action_buttons(context: "RequestContext", model_admin: ExtraButtonsMixin) -> "list[VisibleButton]":
+def get_action_buttons(context: "RequestContext", model_admin: "ExtraButtonsMixin") -> "list[VisibleButton]":
     if hasattr(model_admin, "get_action_buttons"):
         return [handler.get_button(context) for handler in model_admin.get_action_buttons(context)]
     return []
 
 
 @register.simple_tag(takes_context=True)
-def get_changeform_buttons(context: "RequestContext", model_admin: ExtraButtonsMixin) -> "list[VisibleButton]":
+def get_changeform_buttons(context: "RequestContext", model_admin: "ExtraButtonsMixin") -> "list[VisibleButton]":
     if hasattr(model_admin, "get_changeform_buttons"):
         return [handler.get_button(context) for handler in model_admin.get_changeform_buttons(context)]
     return []
 
 
 @register.simple_tag(takes_context=True)
-def get_changelist_buttons(context: "RequestContext", model_admin: ExtraButtonsMixin) -> "list[VisibleButton]":
+def get_changelist_buttons(context: "RequestContext", model_admin: "ExtraButtonsMixin") -> "list[VisibleButton]":
     if hasattr(model_admin, "get_changelist_buttons"):
         return [handler.get_button(context) for handler in model_admin.get_changelist_buttons(context)]
     return []

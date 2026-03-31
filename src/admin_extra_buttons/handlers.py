@@ -84,7 +84,7 @@ class BaseExtraHandler:
     def _invoke_handler(
         self, model_admin: ExtraButtonsMixin, request: HttpRequest, *args: Any, **kwargs: Any
     ) -> HttpResponseBase | None:
-        raise NotImplementedError("")
+        raise NotImplementedError
 
 
 class ButtonMixin:
