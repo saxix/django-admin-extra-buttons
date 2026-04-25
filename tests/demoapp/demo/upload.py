@@ -1,4 +1,4 @@
-from typing import Callable, Any
+from typing import Any, Callable
 
 from django.contrib import messages
 from django.contrib.admin.templatetags.admin_urls import admin_urlname

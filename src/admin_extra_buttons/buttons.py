@@ -22,7 +22,7 @@ if TYPE_CHECKING:
     _M_co = TypeVar("_M_co", bound=Model, covariant=True)
 
 
-class ButtonWidget:
+class StandardButton:
     default_change_form_arguments = 2
     default_template = "admin_extra_buttons/includes/button.html"
 
@@ -31,8 +31,8 @@ class ButtonWidget:
         handler: "BaseExtraHandler",
         context: "RequestContext",
         label: str | None = None,
-        visible: "bool|Callable[[ButtonWidget], bool]" = True,
-        enabled: "bool|Callable[[ButtonWidget], bool]" = True,
+        visible: "bool|Callable[[StandardButton], bool]" = True,
+        enabled: "bool|Callable[[StandardButton], bool]" = True,
         change_form: bool | None = None,
         change_list: bool | None = None,
         template: str | None = None,
@@ -161,7 +161,7 @@ class ButtonWidget:
         return f"{url_}?{filters}"
 
 
-class LinkButton(ButtonWidget):
+class LinkButton(StandardButton):
     @property
     def url(self) -> str:
         return self.href

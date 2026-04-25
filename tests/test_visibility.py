@@ -1,15 +1,15 @@
 from unittest.mock import MagicMock
 
-from admin_extra_buttons.buttons import ButtonWidget, LinkButton
+from admin_extra_buttons.buttons import LinkButton, StandardButton
 from admin_extra_buttons.handlers import ButtonHandler, LinkHandler
 
 
 def test_button_visibility():
     def v(btn):
-        return isinstance(btn, ButtonWidget)
+        return isinstance(btn, StandardButton)
 
     h = ButtonHandler(MagicMock(__name__="a"), visible=v)
-    btn: ButtonWidget = h.get_button({"a": 1})
+    btn: StandardButton = h.get_button({"a": 1})
     assert bool(btn.visible)
 
 

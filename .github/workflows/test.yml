@@ -20,7 +20,7 @@ jobs:
       run_tests: ${{ steps.changes.outputs.run_tests }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - id: changes
         name: Check for file changes
         uses: dorny/paths-filter@v4
@@ -49,12 +49,12 @@ jobs:
       CELERY_BROKER_URL: redis://redis:6379/0
       CELERY_ALWAYS_EAGER: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Install the latest version of uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v7
         with:
           version: "latest"
           enable-cache: true
@@ -92,6 +92,7 @@ jobs:
         with:
           env_vars: OS,PYTHON
           fail_ci_if_error: true
+          slug: saxix/django-admin-extra-buttons
           flags: unittests
           files: ./coverage.xml
           verbose: false

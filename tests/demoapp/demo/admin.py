@@ -12,7 +12,7 @@ from django.urls import reverse
 from django.utils.safestring import SafeString
 
 from admin_extra_buttons.api import ExtraButtonsMixin, button, choice, confirm_action, link, view
-from admin_extra_buttons.buttons import ChoiceButton, LinkButton
+from admin_extra_buttons.buttons import ChoiceButton, LinkButton, StandardButton
 from admin_extra_buttons.utils import handle_basic_auth
 
 from .models import DemoModel1, DemoModel2, DemoModel3, DemoModel4, DemoModel5
@@ -26,7 +26,7 @@ class TestFilter(SimpleListFilter):
     parameter_name = "filter"
     title = "Dummy filter for testing"
 
-    def lookups(self, request: HttpRequest, model_admin: admin.ModelAdmin) -> tuple[tuple[str, str], ...]:
+    def lookups(self, request: HttpRequest, model_admin: admin.ModelAdmin[Model]) -> tuple[tuple[str, str], ...]:
         return (
             ("on", "On"),
             ("off", "Off"),
@@ -37,7 +37,7 @@ class TestFilter(SimpleListFilter):
 
 
 # start docs here
-class Admin1(ExtraButtonsMixin, admin.ModelAdmin):
+class Admin1(ExtraButtonsMixin, admin.ModelAdmin[DemoModel1]):
     list_filter = [TestFilter]
 
     @button(permission="demo.add_demomodel1", change_form=True, change_list=False, html_attrs={"class": "aeb-green"})
@@ -110,8 +110,8 @@ class Admin1(ExtraButtonsMixin, admin.ModelAdmin):
     def enabled(self: ExtraButtonsMixin, request: HttpRequest) -> None:
         pass
 
-    @link(href="https://www.google.com/", visible=lambda btn: True)
-    def invisible(self: ExtraButtonsMixin, btn: "VisibleButton") -> None:
+    @link(href="https://www.google.com/", visible=lambda btn: True, permissions=["auth.view_user"])
+    def invisible(self: ExtraButtonsMixin, btn: "StandardButton") -> None:
         btn.visible = False
 
     @button()
@@ -122,7 +122,7 @@ class Admin1(ExtraButtonsMixin, admin.ModelAdmin):
             self.message_error_to_user(request, e)
 
 
-class Admin2(ExtraButtonsMixin, admin.ModelAdmin):
+class Admin2(ExtraButtonsMixin, admin.ModelAdmin[DemoModel2]):
     @link(href="https://www.google.com/", change_form=False, html_attrs={"target": "_new"})
     def google(self: ExtraButtonsMixin, btn: "VisibleButton") -> None:
         pass
@@ -133,46 +133,47 @@ class Admin2(ExtraButtonsMixin, admin.ModelAdmin):
         btn.label = f"Search '{original.name}' on Google"
         btn.href = f"https://www.google.com/?q={original.name}"
 
+
     @link(href="/", visible=lambda btn: "BTN_SHOW2" in os.environ, change_list=True)
-    def custom_visibile(self: ExtraButtonsMixin, btn: "VisibleButton") -> None:
+    def custom_visibile(self: ExtraButtonsMixin, btn:"VisibleButton") -> None:
         pass
 
 
-class Admin3(ExtraButtonsMixin, admin.ModelAdmin):
+class Admin3(ExtraButtonsMixin, admin.ModelAdmin[DemoModel3]):
     @view()
-    def api1(self: ExtraButtonsMixin, request: HttpRequest) -> HttpResponse:
+    def api1(self: ExtraButtonsMixin, request:HttpRequest) -> HttpResponse:
         return HttpResponse("OK")
 
-    @view()
+    @view(permissions=["demo.view_demomodel3"])
     def api2(self: ExtraButtonsMixin, request: HttpRequest, pk: str) -> HttpResponse:
         return HttpResponse(pk)
 
     @view(login_required=False)
-    def api3(self: ExtraButtonsMixin, request: HttpRequest) -> HttpResponse:
+    def api3(self: ExtraButtonsMixin, request:HttpRequest) -> HttpResponse:
         return HttpResponse("Anonymous access allowed")
 
     @view(http_basic_auth=True)
-    def api4(self: ExtraButtonsMixin, request: HttpRequest) -> HttpResponse:
+    def api4(self: ExtraButtonsMixin, request:HttpRequest) -> HttpResponse:
         return HttpResponse("Basic Authentication allowed")
 
     @view(http_auth_handler=handle_basic_auth)
-    def api5(self: ExtraButtonsMixin, request: HttpRequest) -> HttpResponse:
+    def api5(self: ExtraButtonsMixin, request:HttpRequest) -> HttpResponse:
         return HttpResponse("Basic Authentication allowed")
 
 
-class Admin4(UploadMixin, admin.ModelAdmin):
+class Admin4(UploadMixin, admin.ModelAdmin[DemoModel4]):
     upload_handler = lambda *args: [1, 2, 3]
 
 
-class Admin5(ExtraButtonsMixin, admin.ModelAdmin):
+class Admin5(ExtraButtonsMixin, admin.ModelAdmin[DemoModel5]):
     list_filter = [TestFilter]
 
-    @choice(change_list=True)  # type: ignore[arg-type]
+    @choice(change_list=True, permission=["auth.view_user"])
     def _menu1(self, btn: "ChoiceButton") -> None:
         btn.choices = [self.test1, self.test2, self.test21]
         btn.label = "Menu #1"
 
-    @choice(change_list=False, change_form=True, label="Menu Advanced")  # type: ignore[arg-type]
+    @choice(change_list=False, change_form=True, label="Menu Advanced")
     def _menu_adv(self, btn: ChoiceButton) -> None:
         btn.visible = True
         obj: DemoModel5 = btn.original  # type: ignore[assignment]
@@ -181,32 +182,32 @@ class Admin5(ExtraButtonsMixin, admin.ModelAdmin):
         elif obj.name == "test21":
             btn.choices = [self.test21]
 
-    @view()
-    def test1(self: ExtraButtonsMixin, request: "HttpRequest") -> None:
+    @view(permission=["auth.view_user"])
+    def test1(self: ExtraButtonsMixin, request: HttpRequest) -> None:
         self.message_user(request, "You have selected test1")
 
     @view()
-    def test2(self: ExtraButtonsMixin, request: "HttpRequest") -> None:
+    def test2(self: ExtraButtonsMixin, request: HttpRequest) -> None:
         self.message_user(request, "You have selected test2")
 
-    @choice(change_list=False, change_form=True)  # type: ignore[arg-type]
+    @choice(change_list=False, change_form=True)
     def menu2(self, button: "ChoiceButton") -> None:
         button.choices = [self.test21, self.test22]
 
     @view()
-    def test21(self: ExtraButtonsMixin, request: "HttpRequest", pk: str) -> None:
+    def test21(self: ExtraButtonsMixin, request: HttpRequest, pk: str) -> None:
         context = self.get_common_context(request, pk)
         self.message_user(request, f"You have selected test21 on {context['original']}")
 
     @view()
-    def test22(self: ExtraButtonsMixin, request: "HttpRequest", pk: str) -> TemplateResponse:
+    def test22(self: ExtraButtonsMixin, request: HttpRequest, pk: str) -> TemplateResponse:
         context = self.get_common_context(request, pk)
         self.message_user(request, f"You have selected test22 on {context['original']}")
         return TemplateResponse(request, "demo/test22.html", context)
 
     @login_required
     @view()
-    def test_login_required(self: ExtraButtonsMixin, request: "HttpRequest", pk: str) -> TemplateResponse:
+    def test_login_required(self: ExtraButtonsMixin, request: HttpRequest, pk: str) -> TemplateResponse:
         context = self.get_common_context(request, pk)
         self.message_user(request, f"You have selected test22 on {context['original']}")
         return TemplateResponse(request, "demo/test22.html", context)

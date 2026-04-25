@@ -7,7 +7,7 @@ from django.core.exceptions import PermissionDenied
 from django.http.response import HttpResponseBase
 from django.utils.functional import cached_property
 
-from .buttons import ButtonWidget, ChoiceButton, LinkButton
+from .buttons import ChoiceButton, LinkButton, StandardButton
 from .utils import HttpResponseRedirectToReferrer, check_permission, handle_basic_auth, labelize
 
 if TYPE_CHECKING:
@@ -88,7 +88,7 @@ class BaseExtraHandler:
 
 
 class ButtonMixin:
-    button_class: "type[VisibleButton]" = ButtonWidget
+    button_class: "type[VisibleButton]" = StandardButton
 
     def __init__(
         self,
@@ -129,16 +129,16 @@ class ButtonMixin:
             **extra,
         }
 
-    def get_button(self, context: "RequestContext") -> "ButtonWidget":
+    def get_button(self, context: "RequestContext") -> "StandardButton":
         return self.button_class(**self.get_button_params(context))
 
 
 class ViewHandler(BaseExtraHandler):
-    func: ViewHandlerFunction
+    func: ViewHandlerFunction[Any]
 
     def __init__(
         self,
-        func: ViewHandlerFunction,
+        func: ViewHandlerFunction[Any],
         http_basic_auth: bool = False,
         http_auth_handler: Callable[[HttpRequest], AbstractBaseUser | AnonymousUser | None] | None = None,
         **kwargs: Any,
@@ -180,12 +180,12 @@ class ViewHandler(BaseExtraHandler):
 class ButtonHandler(ButtonMixin, ViewHandler):
     """View handler for `@button` decorated views"""
 
-    button_class = ButtonWidget
-    func: ButtonHandlerFunction
+    button_class = StandardButton
+    func: ButtonHandlerFunction[Any]
 
     def __init__(
         self,
-        func: ButtonHandlerFunction,
+        func: ButtonHandlerFunction[Any],
         **kwargs: Any,
     ) -> None:
         super().__init__(func, **kwargs)
@@ -208,10 +208,10 @@ class LinkHandler(ButtonMixin, BaseExtraHandler):
     button_class: "type[VisibleButton]" = LinkButton
     url_pattern = None
 
-    def __init__(self, func: LinkHandlerFunction, **kwargs: Any) -> None:
+    def __init__(self, func: LinkHandlerFunction[Any, Any], **kwargs: Any) -> None:
         self.href = kwargs.pop("href", None)
         self.label = kwargs.get("label")
-        self.func: LinkHandlerFunction = func
+        self.func: LinkHandlerFunction[Any, Any] = func
         super().__init__(func, href=self.href, **kwargs)
 
     def get_button_params(self, context: RequestContext, **extra: Any) -> dict[str, Any]:
@@ -223,7 +223,7 @@ class LinkHandler(ButtonMixin, BaseExtraHandler):
             **extra,
         )
 
-    def get_button(self, context: "RequestContext") -> "ButtonWidget":
+    def get_button(self, context: "RequestContext") -> "StandardButton":
         params = self.get_button_params(context)
         button = self.button_class(**params)
         if not button.label:
@@ -231,11 +231,16 @@ class LinkHandler(ButtonMixin, BaseExtraHandler):
         self.func(self.model_admin, button)
         return button
 
+    def _invoke_handler(
+        self, model_admin: ExtraButtonsMixin, request: HttpRequest, *args: Any, **kwargs: Any
+    ) -> HttpResponseBase | None:
+        pass
+
 
 class ChoiceHandler(LinkHandler):
     button_class: "type[VisibleButton]" = ChoiceButton
 
-    def __init__(self, func: "LinkHandlerFunction", **kwargs: Any) -> None:
+    def __init__(self, func: LinkHandlerFunction[Any, Any], **kwargs: Any) -> None:
         self.href = kwargs.pop("href", None)
         self.choices = kwargs.pop("choices", None)
         self.label = kwargs.get("label")
@@ -248,3 +253,8 @@ class ChoiceHandler(LinkHandler):
             choices=self.choices,
             **extra,
         )
+
+    def _invoke_handler(
+        self, model_admin: ExtraButtonsMixin, request: HttpRequest, *args: Any, **kwargs: Any
+    ) -> HttpResponseBase | None:
+        pass
