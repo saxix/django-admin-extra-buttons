@@ -21,23 +21,31 @@ from .upload import UploadMixin
 if TYPE_CHECKING:
     from admin_extra_buttons.types import HandlerWithButton, VisibleButton
 
+    _Base1 = admin.ModelAdmin[DemoModel1]
+    _Base2 = admin.ModelAdmin[DemoModel2]
+    _Base3 = admin.ModelAdmin[DemoModel3]
+    _Base4 = admin.ModelAdmin[DemoModel4]
+    _Base5 = admin.ModelAdmin[DemoModel5]
+else:
+    _Base1 = _Base2 = _Base3 = _Base4 = _Base5 = admin.ModelAdmin
+
 
 class TestFilter(SimpleListFilter):
     parameter_name = "filter"
     title = "Dummy filter for testing"
 
-    def lookups(self, request: HttpRequest, model_admin: admin.ModelAdmin[Model]) -> tuple[tuple[str, str], ...]:
+    def lookups(self, request: HttpRequest, model_admin: "admin.ModelAdmin[Model]") -> tuple[tuple[str, str], ...]:
         return (
             ("on", "On"),
             ("off", "Off"),
         )
 
-    def queryset(self, request: HttpRequest, queryset: QuerySet[Model]) -> QuerySet[Model]:
+    def queryset(self, request: HttpRequest, queryset: "QuerySet[Model]") -> "QuerySet[Model]":
         return queryset
 
 
 # start docs here
-class Admin1(ExtraButtonsMixin, admin.ModelAdmin[DemoModel1]):
+class Admin1(ExtraButtonsMixin, _Base1):
     list_filter = [TestFilter]
 
     @button(permission="demo.add_demomodel1", change_form=True, change_list=False, html_attrs={"class": "aeb-green"})
@@ -122,7 +130,7 @@ class Admin1(ExtraButtonsMixin, admin.ModelAdmin[DemoModel1]):
             self.message_error_to_user(request, e)
 
 
-class Admin2(ExtraButtonsMixin, admin.ModelAdmin[DemoModel2]):
+class Admin2(ExtraButtonsMixin, _Base2):
     @link(href="https://www.google.com/", change_form=False, html_attrs={"target": "_new"})
     def google(self: ExtraButtonsMixin, btn: "VisibleButton") -> None:
         pass
@@ -139,7 +147,7 @@ class Admin2(ExtraButtonsMixin, admin.ModelAdmin[DemoModel2]):
         pass
 
 
-class Admin3(ExtraButtonsMixin, admin.ModelAdmin[DemoModel3]):
+class Admin3(ExtraButtonsMixin, _Base3):
     @view()
     def api1(self: ExtraButtonsMixin, request:HttpRequest) -> HttpResponse:
         return HttpResponse("OK")
@@ -161,11 +169,11 @@ class Admin3(ExtraButtonsMixin, admin.ModelAdmin[DemoModel3]):
         return HttpResponse("Basic Authentication allowed")
 
 
-class Admin4(UploadMixin, admin.ModelAdmin[DemoModel4]):
+class Admin4(UploadMixin, _Base4):
     upload_handler = lambda *args: [1, 2, 3]
 
 
-class Admin5(ExtraButtonsMixin, admin.ModelAdmin[DemoModel5]):
+class Admin5(ExtraButtonsMixin, _Base5):
     list_filter = [TestFilter]
 
     @choice(change_list=True, permission=["auth.view_user"])

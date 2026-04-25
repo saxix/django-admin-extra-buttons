@@ -93,7 +93,13 @@ class DummyAdminform:
         yield
 
 
-class ExtraButtonsMixin(admin.ModelAdmin):
+if TYPE_CHECKING:
+    _Base = admin.ModelAdmin[Any]
+else:
+    _Base = admin.ModelAdmin
+
+
+class ExtraButtonsMixin(_Base):
     change_list_template = "admin_extra_buttons/change_list.html"
     change_form_template = "admin_extra_buttons/change_form.html"
 
