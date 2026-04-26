@@ -1,10 +1,11 @@
 import os
+from typing import TYPE_CHECKING, Any
 
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.safestring import SafeString
@@ -15,49 +16,62 @@ from admin_extra_buttons.utils import handle_basic_auth
 from .models import DemoModel1, DemoModel2, DemoModel3, DemoModel4, DemoModel5
 from .upload import UploadMixin
 
+if TYPE_CHECKING:
+    from django.db.models import Model, QuerySet
+
+    from admin_extra_buttons.buttons import ChoiceButton
+    from admin_extra_buttons.types import ChoiceHandlerFunction, HandlerWithButton, VisibleButton
+
+    _Base1 = admin.ModelAdmin[DemoModel1]
+    _Base2 = admin.ModelAdmin[DemoModel2]
+    _Base3 = admin.ModelAdmin[DemoModel3]
+    _Base4 = admin.ModelAdmin[DemoModel4]
+    _Base5 = admin.ModelAdmin[DemoModel5]
+else:
+    _Base1 = _Base2 = _Base3 = _Base4 = _Base5 = admin.ModelAdmin
 
 
 class TestFilter(SimpleListFilter):
     parameter_name = "filter"
     title = "Dummy filter for testing"
 
-    def lookups(self, request, model_admin):
+    def lookups(self, request: HttpRequest, model_admin: "admin.ModelAdmin[Any]") -> tuple[tuple[str, str], ...]:
         return (
             ("on", "On"),
             ("off", "Off"),
         )
 
-    def queryset(self, request, queryset):
+    def queryset(self, request: HttpRequest, queryset: "QuerySet[Model]") -> "QuerySet[Model]":
         return queryset
 
 
 # start docs here
-class Admin1(ExtraButtonsMixin):
+class Admin1(ExtraButtonsMixin, _Base1):
     list_filter = [TestFilter]
 
     @button(permission="demo.add_demomodel1", change_form=True, change_list=False, html_attrs={"class": "aeb-green"})
-    def refresh(self, request):
+    def refresh(self, request: HttpRequest) -> None:
         self.message_user(request, "refresh called")
 
     @button(label="Refresh", permission=lambda request, object, **kw: False)
-    def refresh_callable(self, request):
+    def refresh_callable(self, request: HttpRequest) -> HttpResponseRedirect:
         opts = self.model._meta
         self.message_user(request, "refresh called")
         return HttpResponseRedirect(reverse(admin_urlname(opts, SafeString("changelist"))))
 
     @button(pattern="a/b/")
-    def custom_path(self, request):
+    def custom_path(self, request: HttpRequest) -> HttpResponseRedirect:
         opts = self.model._meta
         self.message_user(request, "You invoked `custom_path` linked to 'a/b/' url ")
         return HttpResponseRedirect(reverse(admin_urlname(opts, SafeString("changelist"))))
 
     @button(html_attrs={"style": "background-color:#EDD372;color:black"})
-    def no_response(self, request):
+    def no_response(self, request: HttpRequest) -> None:
         self.message_user(request, "No Response provided.")
 
     @button(html_attrs={"style": "background-color:#DC6C6C;color:black"})
-    def confirm(self, request):
-        def _action(request):
+    def confirm(self, request: HttpRequest) -> HttpResponse:
+        def _action(request: HttpRequest) -> None:
             pass
 
         return confirm_action(
@@ -69,143 +83,142 @@ class Admin1(ExtraButtonsMixin):
         )
 
     @button(permission="demo.delete_demomodel1")
-    def update(self, request, pk):
+    def update(self, request: HttpRequest, pk: str) -> HttpResponseRedirect:
         opts = self.model._meta
         self.message_user(request, "action called")
         return HttpResponseRedirect(reverse(admin_urlname(opts, SafeString("changelist"))))
 
     @button()
-    def no_response_single(self, request, object_id):
+    def no_response_single(self, request: HttpRequest, object_id: str) -> None:
         self.message_user(request, "No_response_obj.")
 
     @button(permission=lambda request, obj, **kw: False)
-    def update_callable_permission(self, request, object_id):
+    def update_callable_permission(self, request: HttpRequest, object_id: str) -> HttpResponseRedirect:
         opts = self.model._meta
         self.message_user(request, "action called")
         return HttpResponseRedirect(reverse(admin_urlname(opts, SafeString("changelist"))))
 
     @button(pattern="a/b/<path:object_id>")
-    def custom_update(self, request, object_id):
+    def custom_update(self, request: HttpRequest, object_id: str) -> HttpResponseRedirect:
         opts = self.model._meta
         self.message_user(request, "action called")
         return HttpResponseRedirect(reverse(admin_urlname(opts, SafeString("changelist"))))
 
     @button(visible=lambda btn: "BTN_SHOW" in os.environ)
-    def custom_visibile(self, request):
+    def custom_visibile(self, request: HttpRequest) -> None:
         pass
 
     #
     @button(enabled=False)
-    def disabled(self, request):
+    def disabled(self, request: HttpRequest) -> None:
         pass
 
     @button(enabled=lambda btn: "BTN_ENABLED" in os.environ)
-    def enabled(self, request):
+    def enabled(self, request: HttpRequest) -> None:
         pass
 
     @link(href="https://www.google.com/", visible=lambda btn: True, permissions=["auth.view_user"])
-    def invisible(self, btn):
+    def invisible(self, btn: "VisibleButton") -> None:
         btn.visible = False
 
     @button()
-    def error_message(self, request):
+    def error_message(self, request: HttpRequest) -> None:
         try:
             1 / 0
         except Exception as e:
             self.message_error_to_user(request, e)
 
 
-class Admin2(ExtraButtonsMixin):
+class Admin2(ExtraButtonsMixin, _Base2):
     @link(href="https://www.google.com/", change_form=False, html_attrs={"target": "_new"})
-    def google(self, btn):
+    def google(self, btn: "VisibleButton") -> None:
         pass
 
     @link(href=None, change_list=False, html_attrs={"target": "_new", "style": "background-color:var(--button-bg)"})
-    def search_on_google(self, btn):
+    def search_on_google(self, btn: "VisibleButton") -> None:
         original = btn.context["original"]
         btn.label = f"Search '{original.name}' on Google"
         btn.href = f"https://www.google.com/?q={original.name}"
 
-
     @link(href="/", visible=lambda btn: "BTN_SHOW2" in os.environ, change_list=True)
-    def custom_visibile(self, btn):
+    def custom_visibile(self, btn: "VisibleButton") -> None:
         pass
 
 
-class Admin3(ExtraButtonsMixin):
+class Admin3(ExtraButtonsMixin, _Base3):
     @view()
-    def api1(self, request):
+    def api1(self, request: HttpRequest) -> HttpResponse:
         return HttpResponse("OK")
 
     @view(permissions=["demo.view_demomodel3"])
-    def api2(self, request, pk):
+    def api2(self, request: HttpRequest, pk: str) -> HttpResponse:
         return HttpResponse(pk)
 
     @view(login_required=False)
-    def api3(self, request):
+    def api3(self, request: HttpRequest) -> HttpResponse:
         return HttpResponse("Anonymous access allowed")
 
     @view(http_basic_auth=True)
-    def api4(self, request):
+    def api4(self, request: HttpRequest) -> HttpResponse:
         return HttpResponse("Basic Authentication allowed")
 
     @view(http_auth_handler=handle_basic_auth)
-    def api5(self, request):
+    def api5(self, request: HttpRequest) -> HttpResponse:
         return HttpResponse("Basic Authentication allowed")
 
 
-class Admin4(UploadMixin):
-    upload_handler = lambda *args: [1, 2, 3]
+class Admin4(UploadMixin, _Base4):
+    upload_handler = lambda *args: [1, 2, 3]  # type: ignore[assignment]
 
 
-class Admin5(ExtraButtonsMixin):
+class Admin5(ExtraButtonsMixin, _Base5):
     list_filter = [TestFilter]
 
     @choice(change_list=True, permission=["auth.view_user"])
-    def _menu1(self, btn):
+    def _menu1(self, btn: "ChoiceButton") -> None:
         btn.choices = [self.test1, self.test2, self.test21]
         btn.label = "Menu #1"
 
     @choice(change_list=False, change_form=True, label="Menu Advanced")
-    def _menu_adv(self, btn):
+    def _menu_adv(self, btn: "ChoiceButton") -> None:
         btn.visible = True
-        obj = btn.original
+        obj: DemoModel5 = btn.original  # type: ignore[assignment]
         if obj.name == "hidden":
             btn.visible = False
         elif obj.name == "test21":
             btn.choices = [self.test21]
 
     @view(permission=["auth.view_user"])
-    def test1(self, request):
+    def test1(self, request: HttpRequest) -> None:
         self.message_user(request, "You have selected test1")
 
     @view()
-    def test2(self, request):
+    def test2(self, request: HttpRequest) -> None:
         self.message_user(request, "You have selected test2")
 
     @choice(change_list=False, change_form=True)
-    def menu2(self, button):
+    def menu2(self, button: "ChoiceButton") -> None:
         button.choices = [self.test21, self.test22]
 
     @view()
-    def test21(self, request, pk):
+    def test21(self, request: HttpRequest, pk: str) -> None:
         context = self.get_common_context(request, pk)
         self.message_user(request, f"You have selected test21 on {context['original']}")
 
     @view()
-    def test22(self, request, pk):
+    def test22(self, request: HttpRequest, pk: str) -> TemplateResponse:
         context = self.get_common_context(request, pk)
         self.message_user(request, f"You have selected test22 on {context['original']}")
         return TemplateResponse(request, "demo/test22.html", context)
 
     @login_required
     @view()
-    def test_login_required(self, request, pk):
+    def test_login_required(self, request: HttpRequest, pk: str) -> TemplateResponse:
         context = self.get_common_context(request, pk)
         self.message_user(request, f"You have selected test22 on {context['original']}")
         return TemplateResponse(request, "demo/test22.html", context)
 
-    def get_action_buttons(self, context):
+    def get_action_buttons(self, context: Any) -> list["HandlerWithButton"]:
         return [
             h
             for h in self.extra_button_handlers.values()
