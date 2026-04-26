@@ -3,7 +3,7 @@ from __future__ import annotations
 import inspect
 import logging
 from functools import partial
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from django import forms
 from django.conf import settings
@@ -87,31 +87,34 @@ class ExtraUrlConfigError(RuntimeError):
 class DummyAdminform:
     def __init__(self, **kwargs: Any) -> None:
         self.prepopulated_fields: list[str] = []
-        self.__dict__.update(**kwargs)
+        for k, v in kwargs.items():
+            setattr(self, k, v)
 
     def __iter__(self) -> "Iterator[Any]":  # pragma: no cover
         yield
 
+    def __copy__(self) -> "DummyAdminform":
+        # Create a new instance without calling __init__ to avoid potential side effects
+        # then update its dict
+        cls = self.__class__
+        result = cls.__new__(cls)
+        result.__dict__.update(self.__dict__)
+        return result
 
-if TYPE_CHECKING:
-    _Base = admin.ModelAdmin[Any]
-else:
-    _Base = admin.ModelAdmin
 
-
-class ExtraButtonsMixin(_Base):
+class ExtraButtonsMixin(admin.ModelAdmin):  # type: ignore[type-arg]
     change_list_template = "admin_extra_buttons/change_list.html"
     change_form_template = "admin_extra_buttons/change_form.html"
 
     def __init__(self, model: type[Model], admin_site: AdminSite) -> None:
         self.extra_button_handlers: "dict[str, HandlerWithButton]" = {}
-        super().__init__(model, admin_site)
+        admin.ModelAdmin.__init__(self, model, admin_site)
 
     def message_error_to_user(self, request: HttpRequest, exception: Exception) -> None:
         self.message_user(request, f"{exception.__class__.__name__}: {exception}", messages.ERROR)
 
     def check(self, **kwargs: Any) -> list[CheckMessage]:
-        errors = super().check(**kwargs)
+        errors = admin.ModelAdmin.check(self, **kwargs)
         try:
             from admin_extra_buttons.utils import check_decorator_errors  # noqa: PLC0415
 
@@ -173,7 +176,7 @@ class ExtraButtonsMixin(_Base):
 
     def get_urls(self) -> list[URLPattern]:
         urls = self.get_extra_urls()
-        urls.extend(super().get_urls())
+        urls.extend(admin.ModelAdmin.get_urls(self))
         return urls
 
     def get_changeform_buttons(self, context: RequestContext) -> list[HandlerWithButton]:  # noqa: ARG002,
@@ -188,8 +191,8 @@ class ExtraButtonsMixin(_Base):
     @property
     def media(self) -> forms.Media:
         extra = "" if settings.DEBUG else ".min"
-        base = super().media
-        return base + forms.Media(
+        base = admin.ModelAdmin.media.fget(self)  # type: ignore[attr-defined]
+        return cast("forms.Media", base) + forms.Media(
             js=[
                 f"admin/js/vendor/jquery/jquery{extra}.js",
                 "admin/js/jquery.init.js",

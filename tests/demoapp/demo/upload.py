@@ -1,5 +1,3 @@
-from typing import Any, Callable
-
 from django.contrib import messages
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
 from django.http import HttpResponseRedirect
@@ -10,7 +8,7 @@ from admin_extra_buttons.api import ExtraButtonsMixin, button
 
 
 class UploadMixin(ExtraButtonsMixin):
-    upload_handler: Callable[..., list[int]] = None
+    upload_handler = None
     upload_form_template = "admin_extra_buttons/upload.html"
 
     def get_upload_form_template(self, request):

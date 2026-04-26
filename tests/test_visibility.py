@@ -9,7 +9,7 @@ def test_button_visibility():
         return isinstance(btn, StandardButton)
 
     h = ButtonHandler(MagicMock(__name__="a"), visible=v)
-    btn: StandardButton = h.get_button({"a": 1})
+    btn = h.get_button({"a": 1})
     assert bool(btn.visible)
 
 
@@ -18,5 +18,5 @@ def test_link_visibility():
         return isinstance(btn, LinkButton)
 
     h = LinkHandler(MagicMock(__name__="a"), visible=v)
-    btn: LinkButton = h.get_button({"a": 1})
+    btn = h.get_button({"a": 1})
     assert bool(btn.visible)
