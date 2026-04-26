@@ -72,6 +72,7 @@ dj = [
   "django",
 ]
 type-check = [
+  "django-stubs",
   "mypy",
 ]
 

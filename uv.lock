@@ -354,6 +354,7 @@ docs = [
     { name = "mkdocstrings-python" },
 ]
 type-check = [
+    { name = "django-stubs" },
     { name = "mypy" },
 ]
 
@@ -395,7 +396,10 @@ docs = [
     { name = "mkdocstrings", specifier = ">=0.28.1" },
     { name = "mkdocstrings-python", specifier = ">=1.16.1" },
 ]
-type-check = [{ name = "mypy" }]
+type-check = [
+    { name = "django-stubs" },
+    { name = "mypy" },
+]
 
 [[package]]
 name = "django-stubs"
