@@ -1,8 +1,11 @@
 import pytest
+from unittest.mock import Mock, MagicMock
 from demo.models import DemoModel1, DemoModel2
 from django.contrib.auth.models import Permission
 from django.urls import reverse
 from factory.django import DjangoModelFactory
+
+from admin_extra_buttons.handlers import LinkHandler, ChoiceHandler, ButtonHandler, ViewHandler
 
 
 class DemoModel1Factory(DjangoModelFactory):
@@ -98,3 +101,111 @@ def test_enabled(app, admin_user, monkeypatch):
     monkeypatch.setenv("BTN_ENABLED", "1")
     res = app.get(url, user=admin_user)
     assert not res.pyquery("#btn-enabled.disabled")
+
+
+def test_button_mixin_get_button_params():
+    from django.template import RequestContext
+
+    def func(m, r):
+        pass
+
+    handler = LinkHandler(func, href="http://example.com", label="Test", change_form=True, change_list=False)
+
+    mock_context = MagicMock(spec=RequestContext)
+    params = handler.get_button_params(mock_context)
+
+    assert params["href"] == "http://example.com"
+    assert params["label"] == "Test"
+    assert params["change_form"] is True
+    assert params["change_list"] is False
+
+
+def test_button_handler_get_button_params():
+    from django.template import RequestContext
+
+    def func(m, r):
+        pass
+
+    handler = ButtonHandler(func, label="TestLabel")
+
+    mock_context = MagicMock(spec=RequestContext)
+    params = handler.get_button_params(mock_context)
+
+    assert params["label"] == "TestLabel"
+
+
+def test_link_handler_get_button_with_label():
+    from django.template import RequestContext
+
+    def func(model_admin, btn):
+        btn.label = "Modified Label"
+
+    handler = LinkHandler(func, href="http://example.com", label=None)
+
+    mock_context = MagicMock(spec=RequestContext)
+    mock_model_admin = Mock()
+    handler.model_admin = mock_model_admin
+
+    button = handler.get_button(mock_context)
+
+    assert button.label == "Modified Label"
+
+
+def test_link_handler_get_button_no_label():
+    from django.template import RequestContext
+
+    def func(model_admin, btn):
+        pass
+
+    handler = LinkHandler(func, href="http://example.com")
+
+    mock_context = MagicMock(spec=RequestContext)
+    mock_model_admin = Mock()
+    handler.model_admin = mock_model_admin
+
+    button = handler.get_button(mock_context)
+
+    assert button.label == "func"
+
+
+def test_view_handler_url_pattern_custom():
+    def my_handler(m, r, pk, extra):
+        pass
+
+    handler = ViewHandler(my_handler, pattern="custom/<path:pk>/<path:extra>/")
+
+    assert handler.url_pattern == "custom/<path:pk>/<path:extra>/"
+
+
+def test_view_handler_url_pattern_auto():
+    def my_handler(m, r, pk, extra):
+        pass
+
+    handler = ViewHandler(my_handler)
+
+    assert handler.url_pattern == "<path:pk>/<path:extra>/my_handler/"
+
+
+def test_view_handler_url_pattern_empty():
+    def my_handler(m, r):
+        pass
+
+    handler = ViewHandler(my_handler)
+
+    assert handler.url_pattern == "my_handler/"
+
+
+def test_choice_handler_get_button_params():
+    from django.template import RequestContext
+
+    def func(ma, btn):
+        pass
+
+    handler = ChoiceHandler(func, href="http://example.com", label="Test", choices=[1, 2, 3])
+
+    mock_context = MagicMock(spec=RequestContext)
+    params = handler.get_button_params(mock_context)
+
+    assert params["choices"] == [1, 2, 3]
+    assert params["href"] == "http://example.com"
+    assert params["label"] == "Test"
