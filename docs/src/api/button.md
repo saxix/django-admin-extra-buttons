@@ -55,7 +55,7 @@ class MyModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
     Automatically disable button when any FORM in page is modified.
 
 `enabled` (defaults to `True`):
-    bool or callable to set enable status. The callable takes the `ButtonWidget` instance as a unique argument ; this argument gives access to the `request`, the template `context`, and the `original` object the is being edited in the admin.
+    bool or callable to set enable status. The callable takes the `StandardButton` instance as a unique argument ; this argument gives access to the `request`, the template `context`, and the `original` object the is being edited in the admin.
 
 `html_attrs` (defaults to `{}`):
     Dictionary of html tags to use in button rendering.
@@ -67,7 +67,7 @@ class MyModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
     url pattern to use for the url generation.
 
 `visible` (defaults to `True`):
-    bool or callable show/hide button. The callable takes the `ButtonWidget` instance as a unique argument ; this argument gives access to the `request`, the template `context`, and the `original` object the is being edited in the admin.
+    bool or callable show/hide button. The callable takes the `StandardButton` instance as a unique argument ; this argument gives access to the `request`, the template `context`, and the `original` object the is being edited in the admin.
 
 `permission` (defaults to `None`):
     Django permission code needed to access the view and display the button, or a callable that takes the `request`, edited `object`, and `handler` as arguments and that must return a `bool`.

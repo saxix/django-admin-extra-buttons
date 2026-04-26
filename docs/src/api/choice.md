@@ -64,7 +64,7 @@ class MyModelAdmin(ExtraButtonsMixin, admin.ModelAdmin):
     def menu1(self, button):
         original = button.original
         button.label = f"Search '{original.name}' on Google"
-        if button.requst.user.is_superuser:
+        if button.request.user.is_superuser:
             button.choices = [self.feat1, self.feat2, self.feat3, self.feat4]
         else:
             button.choices = [self.feat1, self.feat2]
