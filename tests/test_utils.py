@@ -1,8 +1,9 @@
 import pytest
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.http import StreamingHttpResponse
 
-from admin_extra_buttons.decorators import button
+from admin_extra_buttons.decorators import button, view
 from admin_extra_buttons.utils import check_decorator_errors, check_permission
 
 
@@ -41,3 +42,22 @@ class Class2:
 def test_check_decorator_errors(cls, expected):
     errors = check_decorator_errors(cls)
     assert len(errors) == expected, errors
+
+
+def test_view_streaming_response_type():
+    """Test that StreamingHttpResponse is accepted as return type for @view decorated functions.
+
+    StreamingHttpResponse is not a subclass of HttpResponse, so this test ensures that
+    the type annotations support it.
+    """
+
+    def streaming_view(self, request):
+        def generator():
+            yield b"chunk"
+            yield b"data"
+
+        return StreamingHttpResponse(streaming())
+
+    handler = view()(streaming_view)
+
+    assert handler.func is streaming_view

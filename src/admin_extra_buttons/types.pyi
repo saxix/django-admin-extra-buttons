@@ -2,12 +2,14 @@ from collections.abc import Callable
 from typing import Any, Protocol
 
 from django.db.models import Model
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, StreamingHttpResponse
 from django.template import RequestContext
 
 from .buttons import ChoiceButton, LinkButton, StandardButton
 from .handlers import BaseExtraHandler, ButtonHandler, ChoiceHandler, LinkHandler
 from .mixins import ExtraButtonsMixin
+
+type HttpResponseLike = HttpResponse | StreamingHttpResponse
 
 type VisibleButton = StandardButton | LinkButton | ChoiceButton
 
@@ -28,14 +30,14 @@ class BaseHandlerFunction(Protocol):
     __name__: str
     extra_buttons_handler: BaseExtraHandler
 
-type Callback1[_S: ExtraButtonsMixin] = Callable[[_S, HttpRequest], HttpResponse | None]
-type Callback2[_S: ExtraButtonsMixin] = Callable[[_S, HttpRequest, str], HttpResponse | None]
+type Callback1[_S: ExtraButtonsMixin] = Callable[[_S, HttpRequest], HttpResponseLike | None]
+type Callback2[_S: ExtraButtonsMixin] = Callable[[_S, HttpRequest, str], HttpResponseLike | None]
 
 type ViewHandlerFunction[_S: ExtraButtonsMixin] = Callback1[_S] | Callback2[_S]
 type ButtonHandlerFunction[_S: ExtraButtonsMixin] = ViewHandlerFunction[_S]
 
-type ChoiceHandlerFunction[_S: ExtraButtonsMixin, _B: VisibleButton] = Callable[[_S, _B], HttpResponse | None]
-type LinkHandlerFunction[_S: ExtraButtonsMixin, _B: VisibleButton] = Callable[[_S, _B], HttpResponse | None]
+type ChoiceHandlerFunction[_S: ExtraButtonsMixin, _B: VisibleButton] = Callable[[_S, _B], HttpResponseLike | None]
+type LinkHandlerFunction[_S: ExtraButtonsMixin, _B: VisibleButton] = Callable[[_S, _B], HttpResponseLike | None]
 
 type GenericHandler = (
     ButtonHandlerFunction[Any]
