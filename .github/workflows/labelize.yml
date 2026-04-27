@@ -1,0 +1,88 @@
+# Adds labels to pull requests for the type of change the PR makes
+name: Adds labels
+
+on:
+  pull_request:
+    types: [opened, synchronize, edited, ready_for_review]
+
+permissions:
+  pull-requests: write
+  id-token: write
+  contents: read
+
+jobs:
+  label-pullrequest:
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+    name: labels pull requests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Check for file changes
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          token: ${{ github.token }}
+          filters: .github/file-filters.yml
+
+      - name: Add Migration label
+        uses: actions-ecosystem/action-add-labels@v1
+        if: steps.changes.outputs.migrations == 'true'
+        with:
+          labels: 'Add/Change migration(s)'
+
+      - name: Add Dependencies label
+        uses: actions-ecosystem/action-add-labels@v1
+        if: steps.changes.outputs.dependencies == 'true'
+        with:
+          labels: 'Add/Change dependencies'
+
+      - name: Code configuration settings
+        uses: actions-ecosystem/action-add-labels@v1
+        if: steps.changes.outputs.code_settings == 'true'
+        with:
+          labels: 'Change Linters Configuration'
+
+      - name: GitHub Configuration
+        uses: actions-ecosystem/action-add-labels@v1
+        if: steps.changes.outputs.actions == 'true'
+        with:
+          labels: 'GitHub Actions'
+
+      - name: Check for coverage tweaks
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth 1
+          files=$(git diff origin/${{ github.base_ref }}...HEAD --name-only -- '*.py' | tr '\n' ' ')
+          if [ -n "$files" ] && echo "$files" | xargs grep -l "# pragma:no cover" 2>/dev/null; then
+            echo "coverage_incomplete=true" >> $GITHUB_OUTPUT
+          fi
+        id: coverage_check
+        shell: bash
+
+      - name: Add Coverage incomplete label
+        uses: actions-ecosystem/action-add-labels@v1
+        if: steps.coverage_check.outputs.coverage_incomplete == 'true'
+        with:
+          labels: 'Coverage Exclusions Added'
+
+
+      - name: Check for Security Tweaks
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth 1
+          files=$(git diff origin/${{ github.base_ref }}...HEAD --name-only -- '*.py' | tr '\n' ' ')
+          if [ -n "$files" ] && echo "$files" | xargs grep -l "# nosec" 2>/dev/null; then
+            echo "nosec_check=true" >> $GITHUB_OUTPUT
+          fi
+        id: nosec_check
+        shell: bash
+
+      - name: Add Coverage incomplete label
+        uses: actions-ecosystem/action-add-labels@v1
+        if: steps.coverage_check.outputs.nosec_check == 'true'
+        with:
+          labels: '# nosec'

@@ -10,7 +10,7 @@ from django.utils.functional import cached_property
 from .buttons import ChoiceButton, LinkButton, StandardButton
 from .utils import HttpResponseRedirectToReferrer, check_permission, handle_basic_auth, labelize
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
 
     from django.contrib.auth.models import AbstractBaseUser, AnonymousUser

@@ -1,0 +1,111 @@
+name: Security
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [develop]
+    types: [synchronize, opened, reopened, ready_for_review]
+
+defaults:
+  run:
+    shell: bash
+
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+
+
+permissions:
+  contents: read
+
+jobs:
+  changes:
+    name: check files
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    env:
+      GIT_DISCOVERY_ACROSS_FILESYSTEM: 1
+    outputs:
+      lint: ${{ steps.changes.outputs.lint }}
+      docker: ${{ steps.changes.outputs.docker_base }}
+      dependencies: ${{ steps.changes.outputs.dependencies }}
+    steps:
+      - run: git config --global --add safe.directory $(realpath .)
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - id: changes
+        name: Check for backend file changes
+        uses: dorny/paths-filter@v3
+        with:
+#          base: ${{ github.ref }}
+          token: ${{ github.token }}
+          filters: .github/file-filters.yml
+
+  bandit:
+    needs: changes
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false && needs.changes.outputs.lint == 'true'
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Bandit
+        run: pip install bandit[sarif]
+
+      - name: Run Bandit and generate SARIF
+        run: bandit -r src -f sarif -o bandit-results.sarif --exit-zero
+
+      - name: Upload Bandit SARIF to GitHub Security
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: bandit-results.sarif
+
+  trivy:
+    needs: changes
+    runs-on: ubuntu-latest
+    if: |
+      github.event_pull_request.draft == false &&
+      (needs.changes.outputs.dependencies == 'true' || github.event_name == 'workflow_dispatch')
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@v0.35.0
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+      - name: Show files
+        run: ls -l
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  pysentry:
+    needs: changes
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false && needs.changes.outputs.lint == 'true'
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pysentry
+        run: pip install pysentry-rs
+
+      - name: Run pysentry and generate SARIF
+        run: pysentry-rs . --fail-on high --format sarif --output pysentry-results.sarif
+
+      - name: Upload PySentry SARIF to GitHub Security
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: pysentry-results.sarif

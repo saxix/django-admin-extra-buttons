@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from django import template
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from django.template import RequestContext
 
     from admin_extra_buttons.mixins import ExtraButtonsMixin

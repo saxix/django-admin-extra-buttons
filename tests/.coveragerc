@@ -4,6 +4,7 @@ source = admin_extra_buttons
 include =
 
 omit = src/admin_extra_buttons/__init__.py
+       src/admin_extra_buttons/version.py
 
 [report]
 # Regexes for lines to exclude from consideration
@@ -20,7 +21,6 @@ exclude_lines =
     # Don't complain if non-runnable code isn't run:
     #if 0:
     if __name__ == .__main__.:
-    if TYPE_CHECKING:
 
 ignore_errors = True
 

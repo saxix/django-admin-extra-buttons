@@ -1,11 +1,12 @@
+from unittest.mock import MagicMock, Mock
+
 import pytest
-from unittest.mock import Mock, MagicMock
 from demo.models import DemoModel1, DemoModel2
 from django.contrib.auth.models import Permission
 from django.urls import reverse
 from factory.django import DjangoModelFactory
 
-from admin_extra_buttons.handlers import LinkHandler, ChoiceHandler, ButtonHandler, ViewHandler
+from admin_extra_buttons.handlers import ButtonHandler, ChoiceHandler, LinkHandler, ViewHandler
 
 
 class DemoModel1Factory(DjangoModelFactory):

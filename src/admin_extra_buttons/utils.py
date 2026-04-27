@@ -11,7 +11,7 @@ from django.core import checks
 from django.core.exceptions import PermissionDenied
 from django.http import HttpRequest, HttpResponseRedirect
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from _ast import FunctionDef
 
     from django.contrib.auth.models import AbstractBaseUser, AnonymousUser

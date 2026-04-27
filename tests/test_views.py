@@ -1,11 +1,11 @@
 import base64
 import logging
+from unittest.mock import Mock
 
 import pytest
 from django.urls import reverse
-from unittest.mock import Mock
 
-from admin_extra_buttons.handlers import BaseExtraHandler, ViewHandler, LinkHandler, ChoiceHandler
+from admin_extra_buttons.handlers import BaseExtraHandler, ChoiceHandler, LinkHandler, ViewHandler
 
 logger = logging.getLogger(__name__)
 

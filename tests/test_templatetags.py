@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import MagicMock, Mock
+
+import pytest
 
 from admin_extra_buttons.templatetags.extra_buttons import (
     default_if_empty,

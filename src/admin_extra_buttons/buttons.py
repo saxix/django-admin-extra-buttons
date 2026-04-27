@@ -8,7 +8,7 @@ from django.urls import NoReverseMatch, reverse
 
 from admin_extra_buttons.utils import check_permission, get_preserved_filters, labelize
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable, Generator
 
     from django.contrib.admin import AdminSite

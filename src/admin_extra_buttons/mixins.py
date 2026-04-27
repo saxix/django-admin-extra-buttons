@@ -18,7 +18,7 @@ from django.utils.safestring import SafeString
 
 from .handlers import BaseExtraHandler, ButtonHandler, ChoiceHandler, LinkHandler, ViewHandler
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable, Iterator
 
     from django.contrib.admin import AdminSite

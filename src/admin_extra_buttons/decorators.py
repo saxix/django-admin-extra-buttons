@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from .handlers import ButtonHandler, ChoiceHandler, LinkHandler, ViewHandler
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
 
     from .mixins import ExtraButtonsMixin
