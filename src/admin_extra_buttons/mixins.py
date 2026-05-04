@@ -108,13 +108,13 @@ class ExtraButtonsMixin(admin.ModelAdmin):  # type: ignore[type-arg]
 
     def __init__(self, model: type[Model], admin_site: AdminSite) -> None:
         self.extra_button_handlers: "dict[str, HandlerWithButton]" = {}
-        admin.ModelAdmin.__init__(self, model, admin_site)
+        super().__init__(model, admin_site)
 
     def message_error_to_user(self, request: HttpRequest, exception: Exception) -> None:
         self.message_user(request, f"{exception.__class__.__name__}: {exception}", messages.ERROR)
 
     def check(self, **kwargs: Any) -> list[CheckMessage]:
-        errors = admin.ModelAdmin.check(self, **kwargs)
+        errors = super().check(**kwargs)
         try:
             from admin_extra_buttons.utils import check_decorator_errors  # noqa: PLC0415
 
@@ -176,7 +176,7 @@ class ExtraButtonsMixin(admin.ModelAdmin):  # type: ignore[type-arg]
 
     def get_urls(self) -> list[URLPattern]:
         urls = self.get_extra_urls()
-        urls.extend(admin.ModelAdmin.get_urls(self))
+        urls.extend(super().get_urls())
         return urls
 
     def get_changeform_buttons(self, context: RequestContext) -> list[HandlerWithButton]:  # noqa: ARG002,
@@ -191,7 +191,7 @@ class ExtraButtonsMixin(admin.ModelAdmin):  # type: ignore[type-arg]
     @property
     def media(self) -> forms.Media:
         extra = "" if settings.DEBUG else ".min"
-        base = admin.ModelAdmin.media.fget(self)  # type: ignore[attr-defined]
+        base = super().media
         return cast("forms.Media", base) + forms.Media(
             js=[
                 f"admin/js/vendor/jquery/jquery{extra}.js",
