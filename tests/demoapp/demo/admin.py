@@ -13,7 +13,7 @@ from django.utils.safestring import SafeString
 from admin_extra_buttons.api import ExtraButtonsMixin, button, choice, confirm_action, link, view
 from admin_extra_buttons.utils import handle_basic_auth
 
-from .models import DemoModel1, DemoModel2, DemoModel3, DemoModel4, DemoModel5
+from .models import DemoModel1, DemoModel2, DemoModel3, DemoModel4, DemoModel5, DemoModel6
 from .upload import UploadMixin
 
 if TYPE_CHECKING:
@@ -27,8 +27,9 @@ if TYPE_CHECKING:
     _Base3 = admin.ModelAdmin[DemoModel3]
     _Base4 = admin.ModelAdmin[DemoModel4]
     _Base5 = admin.ModelAdmin[DemoModel5]
+    _Base6 = admin.ModelAdmin[DemoModel6]
 else:
-    _Base1 = _Base2 = _Base3 = _Base4 = _Base5 = admin.ModelAdmin
+    _Base1 = _Base2 = _Base3 = _Base4 = _Base5 = _Base6 = admin.ModelAdmin
 
 
 class TestFilter(SimpleListFilter):
@@ -229,8 +230,19 @@ class Admin5(ExtraButtonsMixin, _Base5):
         ]
 
 
+class DummyMixin(_Base6):
+    def __init__(self, model, admin_site):
+        super().__init__(model, admin_site)
+        self.dummy_property = "dummy"
+
+
+class Admin6(ExtraButtonsMixin, DummyMixin):
+    pass
+
+
 admin.site.register(DemoModel1, Admin1)
 admin.site.register(DemoModel2, Admin2)
 admin.site.register(DemoModel3, Admin3)
 admin.site.register(DemoModel4, Admin4)
 admin.site.register(DemoModel5, Admin5)
+admin.site.register(DemoModel6, Admin6)

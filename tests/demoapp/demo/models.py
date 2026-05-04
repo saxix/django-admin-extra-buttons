@@ -51,3 +51,11 @@ class DemoModel5(models.Model):
     class Meta:
         verbose_name = "Choice Example"
         verbose_name_plural = "Choice Examples"
+
+
+class DemoModel6(models.Model):
+    name = models.CharField(max_length=255)
+
+    class Meta:
+        verbose_name = "Example for composite admin"
+        verbose_name_plural = "Examples for composite admin"
