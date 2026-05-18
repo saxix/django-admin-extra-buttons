@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock, Mock
 
-from demo.models import DemoModel1
+from demo.models import DemoModel1, DemoModel6
 from django.contrib.admin import site
 from django.urls import reverse
 from factory.django import DjangoModelFactory
@@ -12,6 +12,11 @@ from admin_extra_buttons.mixins import DummyAdminform, ExtraButtonsMixin
 class DemoModel1Factory(DjangoModelFactory):
     class Meta:
         model = DemoModel1
+
+
+class DemoModel6Factory(DjangoModelFactory):
+    class Meta:
+        model = DemoModel6
 
 
 def test_get_common_context(db):
@@ -159,3 +164,8 @@ def test_extra_buttons_mixin_get_changelist_buttons():
     result = mixin.get_changelist_buttons(mock_context)
 
     assert result == []
+
+
+def test_composite_admin_gets_its_external_property_set(db):
+    m = site._registry[DemoModel6]
+    assert m.dummy_property == "dummy"
