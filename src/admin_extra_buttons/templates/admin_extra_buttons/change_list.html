@@ -2,10 +2,6 @@
 {% block object-tools-items %}
     {% if has_add_permission %}
         {{ block.super }}
-        {% include "admin_extra_buttons/includes/change_list_buttons.html" %}
-    {% else %}
-        <a href="#" class="addlink" style="display: none"></a>
-        {% include "admin_extra_buttons/includes/change_list_buttons.html" %}
     {% endif %}
-
+    {% include "admin_extra_buttons/includes/change_list_buttons.html" %}
 {% endblock object-tools-items %}
